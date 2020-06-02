@@ -15,6 +15,8 @@ class Api extends CI_Controller {
         $this->load->model('Country_model');
         $this->load->model('State_model');
         $this->load->model('City_model');
+        $this->load->model('Product_model');
+        $this->load->model('Inventory_model');
 
 
         $this->load->model('Models_model');
@@ -127,44 +129,31 @@ class Api extends CI_Controller {
          $password      = $post->password;
          if(!$email){
 
-            print json_encode(array('success'=>'false', 'msg'=>'Enter Complete login form','data'=>'e - '.$email));
+            print json_encode(array('success'=>0, 'msg'=>'Enter Complete login form','data'=>'e - '.$email));
 
          }else{
             $finaldata=$this->Users_model->checklogin($email);
            if($finaldata){
-                   if($finaldata->Password==$password){
+                   if($finaldata->Password==md5($password)){
 
-                        print json_encode(array('success'=>'true', 'msg'=>'Login successful','data'=>$finaldata));
+                        unset($finaldata->Password);
+                        print json_encode(array('success'=>1, 'msg'=>'Login successful','data'=>$finaldata));
 
                         }else{
 
-                        print json_encode(array('success'=>'false', 'msg'=>'Password Not Match'));
+                        print json_encode(array('success'=>0, 'msg'=>'Password Not Match'));
 
                         }
 
             }else{
-                        print json_encode(array('success'=>'false', 'msg'=>'Email or Mobile Not Exists'));
+                        print json_encode(array('success'=>0, 'msg'=>'Email or Mobile Not Exists'));
 
             }            
 
         }
         exit;
     }
-    function searchcustomer(){
-          $post=json_decode( file_get_contents('php://input') );
-        $result=$this->Customer_model->searchcustomer($post);
-        if($result){
-            print json_encode(array('success'=>'true', 'msg'=>'Record Found Successfully','data'=>$result));
 
-        }else{
-
-        print json_encode(array('success'=>'false', 'msg'=>'Record Not Found'));
-
-        }
-
-
-
-    }
     function getallddl(){
         $getCountry=$this->Country_model->get_all();
         $getState=$this->State_model->get_all();
@@ -175,6 +164,142 @@ class Api extends CI_Controller {
 
 
     }
+    public function addproduct(){
+        $post=json_decode( file_get_contents('php://input') );
+         $UserId      = $post->UserId;
+         $Name      = $post->Name;
+         $MinDeliveryDays      = $post->MinDeliveryDays;
+         $Price      = $post->Price;
+         $Description      = $post->Description;
+         $AdditionalInfo      = isset($post->AdditionalInfo) ? $post->AdditionalInfo : '';
+         $curdate= date('Y-m-d h:i:s');
+         $Image = "";
+         if(isset($post->Image) && $post->Image !=""){
+            $new_data=explode(",",$post->Image);
+            $exten=explode('/',$new_data[0]);
+            $exten1=explode(';',$exten[1]);
+            $decoded=base64_decode($new_data[1]);
+            $Image='product_'.uniqid().'.'.$exten1[0];
+            file_put_contents(APPPATH.'../uploads/'.$Image,$decoded);
+         }
+
+         $addProduct = $this->Product_model->add(array('PManuId'=>$UserId,'PName'=>$Name,'PMinDeliveryDays'=>$MinDeliveryDays,'PImage'=>$Image,'PPrice'=>$Price,'PDescription'=>$Description,'PAdditionalInfo'=>$AdditionalInfo,'PStatus'=>0,'Created_At'=>$curdate,'Updated_At'=>$curdate));
+         if($addProduct){
+            print json_encode(array('success'=>1, 'msg'=>'Product Added Successfully'));
+
+         }else{
+            print json_encode(array('success'=>0, 'msg'=>'Product Not Add'));
+
+         }
+
+
+    }
+    public function getproduct(){
+        $post=json_decode( file_get_contents('php://input') );
+        $UserId      = $post->UserId;
+        $getallproduct=$this->Product_model->get_all_by_userid($UserId);
+
+        if($getallproduct){
+            print json_encode(array('success'=>1, 'msg'=>'Product Found Successfully','data'=>$getallproduct));
+
+        }else{
+            print json_encode(array('success'=>0, 'msg'=>'Product Not Found'));
+
+        }
+
+
+
+    }
+
+
+
+    public function updateproduct(){
+        $post=json_decode( file_get_contents('php://input') );
+         $ProductId      = $post->ProductId;
+         $Name      = $post->Name;
+         $MinDeliveryDays      = $post->MinDeliveryDays;
+         $Price      = $post->Price;
+         $Description      = $post->Description;
+         $AdditionalInfo      = isset($post->AdditionalInfo) ? $post->AdditionalInfo : '';
+         $curdate= date('Y-m-d h:i:s');
+         $Image = "";
+         if(isset($post->Image) && $post->Image !=""){
+            $new_data=explode(",",$post->Image);
+            $exten=explode('/',$new_data[0]);
+            $exten1=explode(';',$exten[1]);
+            $decoded=base64_decode($new_data[1]);
+            $Image='product_'.uniqid().'.'.$exten1[0];
+            file_put_contents(APPPATH.'../uploads/'.$Image,$decoded);
+         }
+
+         $updateProduct = $this->Product_model->update($ProductId,array('PName'=>$Name,'PMinDeliveryDays'=>$MinDeliveryDays,'PImage'=>$Image,'PPrice'=>$Price,'PDescription'=>$Description,'PAdditionalInfo'=>$AdditionalInfo,'Updated_At'=>$curdate));
+         if($updateProduct){
+            print json_encode(array('success'=>1, 'msg'=>'Product Updated Successfully'));
+
+         }else{
+            print json_encode(array('success'=>0, 'msg'=>'Product Not Add'));
+
+         }
+
+
+    }
+
+    public function updateproductstatus(){
+        $post=json_decode( file_get_contents('php://input') );
+         $ProductId      = $post->ProductId;
+         $Status      = $post->Status;
+         $curdate= date('Y-m-d h:i:s');
+         $updateProduct = $this->Product_model->update($ProductId,array('PStatus'=>$Status,'Updated_At'=>$curdate));
+         if($updateProduct){
+            print json_encode(array('success'=>1, 'msg'=>'Product Status Changed Successfully'));
+
+         }else{
+            print json_encode(array('success'=>0, 'msg'=>'Product Not Add'));
+
+         }
+
+
+    }
+
+
+    public function updateproductstockstatus(){
+        $post=json_decode( file_get_contents('php://input') );
+         $ProductId      = $post->ProductId;
+         $Stock      = $post->Stock;
+         $curdate= date('Y-m-d h:i:s');
+
+         $updateStock = $this->Inventory_model->add(array('IProductId'=>$ProductId,'Stock_Qty'=>$Stock,'Created_At'=>$curdate,'Updated_At'=>$curdate));
+         if($updateStock){
+            print json_encode(array('success'=>1, 'msg'=>'Stock Updated Successfully'));
+
+         }else{
+            print json_encode(array('success'=>0, 'msg'=>'Product Not Add'));
+
+         }
+
+
+    }
+
+
+
+    public function getallproduct(){
+        $post=json_decode( file_get_contents('php://input') );
+        $getallproduct=$this->Product_model->get_all($UserId);
+
+        if($getallproduct){
+            print json_encode(array('success'=>1, 'msg'=>'Product Found Successfully','data'=>$getallproduct));
+
+        }else{
+            print json_encode(array('success'=>0, 'msg'=>'Product Not Found'));
+
+        }
+
+
+
+    }
+
+
+
 
 
 

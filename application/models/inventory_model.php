@@ -1,15 +1,12 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Product_model extends CI_Model
+class Inventory_model extends CI_Model
 {
-    public $table = 'product';
+    public $table = 'inventory';
 
-	public function get_Navigations_list(){
-		return $this->db->select('NavigationId, NavName')->get('Navigations')->result();
-	}
     public function get_all()
     {
-		return $this->db->where('PStatus','1')->get($this->table)->result();		
+		return $this->db->where('CStatus','1')->get($this->table)->result();		
     }
     public function get_all_by_userid($id)
     {
@@ -17,10 +14,8 @@ class Product_model extends CI_Model
     }
 	public function get_page($size, $pageno){
 		$this->db
-			// ->join('manufacture', 'product.PManuId = manufacture.MenuId', 'left')
-			->join('users', 'users.UserId = product.PManuId', 'left')
 			->limit($size, $pageno)
-			->select('product.*,users.CompanyName');
+			->select('category.catId,category.catName,category.catStatus');
 // 			->get('category')
 			
 // ->join('Navigations', 'Roles.NavigationId = Navigations.NavigationId', 'left outer');
@@ -71,23 +66,19 @@ class Product_model extends CI_Model
 
     public function update($id, $data)
     {
-        return $this->db->where('ProductId', $id)->update($this->table, $data);
+        return $this->db->where('IProductId', $id)->update($this->table, $data);
     }
 
     public function delete($id)
     {
-        $this->db->where('PManuId', $id)->delete($this->table);
+        $this->db->where('CatId', $id)->delete($this->table);
         return $this->db->affected_rows();
     }
     public function changestatus($id, $data)
     {
         return $this->db->where('CatId', $id)->update($this->table, $data);
-	}
-	public function getId($id)
-    {
-        return $this->db->where('ProductId', $id)->get($this->table)->row();
     }
-	// print  json_encode($this->country->get_all());
+	
 }
 
 ?>
