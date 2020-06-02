@@ -1,4 +1,4 @@
-<script src="static/appScript/OrderCtrl.js"></script>
+<script src="static/appScript/OrderCtrl.js?fdddddd"></script>
 
 <script>function getAuth(){ <?php echo $fx ?>;}</script>
 <?php if ($read): ?>
@@ -54,17 +54,17 @@
                         </tfoot>
                         <tbody>
                     <tr ng-repeat="item in list">
-                        <td class="text-capitalize">{{item.OrderId}}</td>
-                        <td class="text-capitalize" style="width: 200px !important">{{item.DateTime}}</td>
-                        <td class="text-capitalize">{{item.CustomerName}}</td>
-                        <td class="text-capitalize">{{item.PhoneNo}}</td>
+                        <td class="text-capitalize">{{item.OId}}</td>
+                        <td class="text-capitalize" style="width: 200px !important">{{item.Created_At}}</td>
+                        <td class="text-capitalize">{{item.FirstName}} {{item.LastName}}</td>
+                        <td class="text-capitalize">{{item.MobileNumber}}</td>
                         <td class="text-capitalize"><span ng-if="$index !=0">{{200 * $index }}</span> <span ng-if="$index ==0">200</span></td>
                         <td class="text-capitalize">{{(5 + $index) + 3}}</td>
                         <td class="text-capitalize"><span ng-if="$index !=0">{{200 * 5 * $index}}</span> <span ng-if="$index ==0">200</span></td>
                         <td>
-                            <a ng-show="item.Status == '1'" class="badge badge-danger" href="">Queue</a>
-                            <a ng-show="item.Status == '2'" class="badge badge-success" href="">Pending</a>
-                            <a ng-show="item.Status == '4'" class="badge badge-primary" href="">Completed</a>
+                            <a ng-show="item.OStatus == '1'" class="badge badge-danger" href="">Queue</a>
+                            <a ng-show="item.OStatus == '2'" class="badge badge-success" href="">Pending</a>
+                            <a ng-show="item.OStatus == '4'" class="badge badge-primary" href="">Completed</a>
                         </td>
 
                         <td>
@@ -238,31 +238,36 @@
         <br/><br/>
       <div class="order-details-box">
         <div class="order-main-info">
-          <span>Order #</span><strong>00121</strong>
+          <span>Order #</span><strong>{{order_id}}</strong>
         </div>
         <div class="order-sub-info">
-          <span>Placed On</span><strong>January 14th, 2020</strong>
+          <span>Placed On</span><strong>{{order_date}}</strong>
         </div>
       </div>
       <div class="order-controls">
         <form class="form-inline">
           <div class="form-group col-md-3">
             <label for="">Order Status</label>
-            <select class="form-control form-control-sm">
-              <option> Pending </option>
-              <option> Accept </option>
-              <option> Reject </option>
-              <option> Process</option>
-              <option> Shipped</option>
-              <option> Completed</option>
+            <select class="form-control form-control-sm" id="order_status">
+              <option value="Pending"> Pending </option>
+              <option value="Accept"> Accept </option>
+              <option value="Reject"> Reject </option>
+              <option value="Process"> Process</option>
+              <option value="Shipped"> Shipped</option>
+              <option value="Completed"> Completed</option>
             </select>
           </div>
           <div class="form-group col-md-6">
             <label for="">Assign Transporter</label>
-            <select class="form-control form-control-sm text-capitalize">
+            <!-- <select class="form-control form-control-sm text-capitalize">
               <option> Select Transporter </option>
               <option> Hareshbhai Hindocha </option>
               <option> Sitram Faundri</option>
+            </select> -->
+            <select name="transporter" id="transporter" ng-model="item.Transporter"  class="form-control" ng-focus="hideErrorMsg('transporterError')"  class="form-control">
+                <option value="null">Select Transporter</option>
+                <option  ng-repeat="transporter in TransporterList" value="{{transporter.UserId}}" ng-selected="item.TransId == transporter.TransId">{{transporter.CompanyName}}</option>
+
             </select>
           </div>
 <!--           <div class="form-group">
@@ -297,10 +302,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr ng-repeat="pitem in product_array">
                 <td>
                   <div class="product-name">
-                    Bricks 002
+                  {{pitem.product.PName}}
                   </div>
 <!--                   <div class="product-details">
                     <span>Designed by Nord Architects</span>
@@ -308,12 +313,12 @@
                 </td>
                 <td>
                    <div class="quantity-selector" align="center">
-                        15
+                        {{pitem.Qty}}
                    </div>
                 </td>
                 <td class="text-md-right">
                   <div class="product-price">
-                    ₹1,000
+                    ₹{{pitem.Price}}
                   </div>
                 </td>
               </tr>
@@ -341,24 +346,24 @@
                 <span>Subtotal</span>
               </div>
               <div class="order-summary-value">
-                ₹15,000
+                ₹{{subtotal}}
               </div>
             </div>
            
-            <div class="order-summary-row">
+            <!-- <div class="order-summary-row">
               <div class="order-summary-label">
                 <span>Taxes</span><strong>VAT 20%</strong>
               </div>
               <div class="order-summary-value">
                 ₹3000
               </div>
-            </div>
+            </div> -->
             <div class="order-summary-row as-total">
               <div class="order-summary-label">
                 <span>Total</span>
               </div>
               <div class="order-summary-value">
-                ₹18000
+                ₹{{total}}
               </div>
             </div>
           </div>
@@ -469,7 +474,7 @@
     <div class="ecommerce-customer-info">
       <div class="ecommerce-customer-main-info">
         <div class="ecc-name">
-          Sunil Mehta
+          {{FirstName}} {{LastName}}
         </div>
        
       </div>
@@ -479,7 +484,7 @@
             Email
           </div>
           <div class="sub-info-value">
-            <a href="#">sunil.mehta@gmail.com</a>
+            <a href="#">{{Email}}</a>
           </div>
         </div>
         <div class="ecc-sub-info-row">
@@ -487,7 +492,7 @@
             Phone
           </div>
           <div class="sub-info-value">
-            839.938.3944
+            {{MobileNumber}}
           </div>
         </div>
 
@@ -496,7 +501,7 @@
             Delivery Address
           </div>
           <div class="sub-info-value">
-            1726 Pasadena Drive, apt 726<br>Los Angeles, CA 97263
+           {{OAddress}}
           </div>
         </div>
         <div class="ecc-sub-info-row">
@@ -535,19 +540,19 @@
     <div class="ecommerce-customer-info">
       <div class="ecommerce-customer-main-info">
         <div class="ecc-name">
-          Raj and Sons.
+          {{MName}}
         </div>
        
       </div>
       <div class="ecommerce-customer-sub-info">
      <div class="ecc-sub-info-row">
         <div class="sub-info-label">Email </div>
-        <div class="sub-info-value"><a href="#">michael.collins@gmail.com</a></div>
+        <div class="sub-info-value"><a href="#">{{MEmail}}</a></div>
       </div>
 
       <div class="ecc-sub-info-row">
         <div class="sub-info-label">Phone Number</div>
-        <div class="sub-info-value"><a href="#">839.938.3944</a> </div>
+        <div class="sub-info-value"><a href="#">{{MMobileNumber}}</a> </div>
       </div>
 
     </div>

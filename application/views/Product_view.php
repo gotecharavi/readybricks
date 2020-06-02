@@ -1,4 +1,4 @@
-<script src="static/appScript/ProductCtrl.js"></script>
+<script src="static/appScript/ProductCtrl.js?3kdefd"></script>
 <script>function getAuth(){ <?php echo $fx ?>;}</script>
 <?php if ($read): ?>
 <div ng-controller="ProductCtrl">
@@ -36,37 +36,16 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            <tr>
-                                <td>Abc Company</td>
-                                <td>Bricks001</td>
-                                <td>20</td>
-                                <td>299</td>
-                                <td>This is new product diplay of data</td>
+                            
+                        <tr ng-repeat="item in list">
+                                <td>{{item.CompanyName}}</td>
+                                <td>{{item.PName}}</td>
+                                <td>{{item.PMinDeliveryDays}}</td>
+                                <td>{{item.PPrice}}</td>
+                                <td>{{item.PDescription}}</td>
                                 <td class="text-center">
                                     <button class="mb-2 btn btn-outline-info " ng-click="editItem(item)" type="button">  <i class="os-icon os-icon-ui-49" style="margin-top: -3px;"></i></button>
-                                    <button class="ml-0 mb-2 btn btn-outline-danger " ng-click="deleteItem(item)" type="button"> <i class="os-icon os-icon-ui-15" style="margin-top: -3px;"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Cde Company</td>
-                                <td>Bricks002</td>
-                                <td>15</td>
-                                <td>259</td>
-                                <td>This is new product diplay of data</td>
-                                <td class="text-center">
-                                    <button class="mb-2 btn btn-outline-info " ng-click="editItem(item)" type="button">  <i class="os-icon os-icon-ui-49" style="margin-top: -3px;"></i></button>
-                                    <button class="ml-0 mb-2 btn btn-outline-danger " ng-click="deleteItem(item)" type="button"> <i class="os-icon os-icon-ui-15" style="margin-top: -3px;"></i></button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Efg Company</td>
-                                <td>Bricks003</td>
-                                <td>10</td>
-                                <td>199</td>
-                                <td>This is new product diplay of data</td>
-                                <td class="text-center">
-                                    <button class="mb-2 btn btn-outline-info " ng-click="editItem(item)" type="button">  <i class="os-icon os-icon-ui-49" style="margin-top: -3px;"></i></button>
-                                    <button class="ml-0 mb-2 btn btn-outline-danger " ng-click="deleteItem(item)" type="button"> <i class="os-icon os-icon-ui-15" style="margin-top: -3px;"></i></button>
+                                    <button class="ml-0 mb-2 btn btn-outline-danger " ng-click="deleteItem(item.PManuId)" type="button"> <i class="os-icon os-icon-ui-15" style="margin-top: -3px;"></i></button>
                                 </td>
                             </tr>
                             <tr ng-show="list.length ==0"><td colspan="10" class="text-center">Customer Not found</td></tr>
@@ -104,8 +83,11 @@
 
         <div class="form-group" ng-class="countryError ? 'has-error':''">
             <label>Select Manufacture</label>
-            <select name="manufacture" id="manufacture" ng-model="item.Manufacture"  class="form-control" ng-focus="hideErrorMsg('manufactureError')">
-                <option selected>Select Manufacture</option>
+            
+            <select name="manufacture" id="manufacture" ng-model="item.Manufacture"  class="form-control" ng-focus="hideErrorMsg('manufactureError')"  class="form-control">
+                <option value="null">Select Manufacture</option>
+                <option  ng-repeat="manufacture in ManufactureList" value="{{manufacture.UserId}}" ng-selected="item.ManufactureId == manufacture.CId">{{manufacture.CompanyName}}</option>
+
             </select>
             <span ng-show="manufactureError" ng-bind="errors.manufactureMsg" class="help-block form-text text-muted form-control-feedback"></span>
         </div>

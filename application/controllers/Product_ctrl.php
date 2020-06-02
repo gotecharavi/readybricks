@@ -4,7 +4,8 @@ require_once('./application/libraries/base_ctrl.php');
 class Product_ctrl extends base_ctrl {
 	function __construct() {
 		parent::__construct();		
-	    $this->load->model('Category_model','model');
+		$this->load->model('Product_model','model');
+		$this->load->model('manufacture_model','manufacture');
 	}
 	public function index()
 	{
@@ -26,9 +27,13 @@ class Product_ctrl extends base_ctrl {
 		$success=FALSE;
 		$msg= 'You are not permitted.';
 		$id=0;
-		$tmpdata['catName']=$data->name;
-		$tmpdata['catStatus']='1';
-		if(!isset($data->RoleId))
+		$tmpdata['PManuId']=$data->Manufacture;
+		$tmpdata['PName']=$data->Name;
+		$tmpdata['PMinDeliveryDays']=$data->MinDay;
+		$tmpdata['PPrice ']=$data->Price;
+		$tmpdata['PDescription ']=$data->Description;
+		$tmpdata['PStatus']='1';
+		if(!isset($data->PManuId))
 		{
 			if($this->auth->IsInsert){
 				$id=$this->model->add($tmpdata);
@@ -39,7 +44,7 @@ class Product_ctrl extends base_ctrl {
 		}
 		else{
 			if($this->auth->IsUpdate){
-				$id=$this->model->update($data->RoleId, $data);
+				$id=$this->model->update($data->PManuId, $tmpdata);
 				$success=TRUE;
 				$msg='Data updated successfully';				
 			}		
@@ -78,6 +83,11 @@ class Product_ctrl extends base_ctrl {
 		$data=$this->post();
 		print json_encode($this->model->get($data->RoleId));
 	}
+	public function getId($id)
+	{	
+		// $data=$this->post();
+		print json_encode($this->model->get($id));
+	}
 	public function get_all()
 	{		
 		print json_encode($this->model->get_all());
@@ -92,6 +102,10 @@ class Product_ctrl extends base_ctrl {
 		$data=$this->post();
 		print json_encode($this->model->get_page_where($data->size, $data->pageno, $data));
 	}	
+	public function get_manufacture_list(){
+
+		print  json_encode($this->manufacture->get_all_manufacture());
+	}
 }
 
 ?>

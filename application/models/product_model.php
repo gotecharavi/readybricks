@@ -17,8 +17,10 @@ class Product_model extends CI_Model
     }
 	public function get_page($size, $pageno){
 		$this->db
+			// ->join('manufacture', 'product.PManuId = manufacture.MenuId', 'left')
+			->join('users', 'users.UserId = product.PManuId', 'left')
 			->limit($size, $pageno)
-			->select('category.catId,category.catName,category.catStatus');
+			->select('product.*,users.CompanyName');
 // 			->get('category')
 			
 // ->join('Navigations', 'Roles.NavigationId = Navigations.NavigationId', 'left outer');
@@ -74,14 +76,18 @@ class Product_model extends CI_Model
 
     public function delete($id)
     {
-        $this->db->where('CatId', $id)->delete($this->table);
+        $this->db->where('PManuId', $id)->delete($this->table);
         return $this->db->affected_rows();
     }
     public function changestatus($id, $data)
     {
         return $this->db->where('CatId', $id)->update($this->table, $data);
+	}
+	public function getId($id)
+    {
+        return $this->db->where('ProductId', $id)->get($this->table)->row();
     }
-	
+	// print  json_encode($this->country->get_all());
 }
 
 ?>

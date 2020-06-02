@@ -81,6 +81,10 @@ class Users_model extends CI_Model
         return $this->db->where('UserId', $id)->update($this->table, array('Status'=>'2'));
   //      return $this->db->affected_rows();
     }
+    public function getId($id)
+    {
+        return $this->db->where('UserId', $id)->get($this->table)->row();
+    }
     public function changestatus($id, $data)
     {
         return $this->db->where('UserId', $id)->update($this->table, $data);

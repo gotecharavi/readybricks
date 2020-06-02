@@ -68,15 +68,24 @@ class Order_model extends CI_Model
 
 	public function get_page($size, $pageno,$filter){
 		$where ="";
-		if($filter->search !=null){
-			$where = " And  orders.OrderId = '".$filter->search."' ";
-		}
-	 $query= $this->db->query("SELECT orders.OrderId,CustId,customer.Name as CustomerName,SerialNo,cPersonName,PhoneNo,orders.Address,orders.PaymentCollection,orders.Signature,orders.BuildingType,orders.PaymentMode,orders.DateTime,orders.OrderBy,orders.Remark,orders.OrderType,orders.Status,pump.PumpId,pump.Name as PumpName, GROUP_CONCAT(models.Name SEPARATOR ',') as ModelName,GROUP_CONCAT(concat(users.FirstName, ' ', users.LastName) SEPARATOR ',') as UserFullName FROM orders INNER JOIN  customer ON OCustId = CustId INNER JOIN pump ON pump.PumpId = orders.PumpId INNER JOIN models INNER JOIN users   WHERE  FIND_IN_SET(models.ModelId,orders.ModelId)<> 0 AND FIND_IN_SET(users.UserId,orders.OUserId)<> 0   AND OrderType= 'Installation' $where GROUP BY orders.OrderId  ORDER BY orders.OrderId DESC LIMIT $pageno,$size ");
+	// 	if($filter->search !=null){
+	// 		$where = " And  orders.OrderId = '".$filter->search."' ";
+	// 	}
+	//  $query= $this->db->query("SELECT orders.OrderId,CustId,customer.Name as CustomerName,SerialNo,cPersonName,PhoneNo,orders.Address,orders.PaymentCollection,orders.Signature,orders.BuildingType,orders.PaymentMode,orders.DateTime,orders.OrderBy,orders.Remark,orders.OrderType,orders.Status,pump.PumpId,pump.Name as PumpName, GROUP_CONCAT(models.Name SEPARATOR ',') as ModelName,GROUP_CONCAT(concat(users.FirstName, ' ', users.LastName) SEPARATOR ',') as UserFullName FROM orders INNER JOIN  customer ON OCustId = CustId INNER JOIN pump ON pump.PumpId = orders.PumpId INNER JOIN models INNER JOIN users   WHERE  FIND_IN_SET(models.ModelId,orders.ModelId)<> 0 AND FIND_IN_SET(users.UserId,orders.OUserId)<> 0   AND OrderType= 'Installation' $where GROUP BY orders.OrderId  ORDER BY orders.OrderId DESC LIMIT $pageno,$size ");
 	 	
 
-		$data = $query->result();
-		$total=count($this->count_all($filter));
-		return array("data"=>$data, "total"=>$total);
+	// 	$data = $query->result();
+	$this->db
+		 ->join('users', 'users.UserId = orders.OUserId', 'left')
+		 ->limit($size, $pageno)
+		 ->select('orders.*,users.FirstName,users.LastName,users.MobileNumber,users.Email');
+
+
+// ");
+		$data=$this->db->get($this->table)->result();
+		
+		$total=count($data);
+		return array("data"=>$data, "total"=>$total??'');
 	}
 	public function get_page_where($size, $pageno, $params){
 

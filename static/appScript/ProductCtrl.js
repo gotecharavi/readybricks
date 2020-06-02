@@ -5,23 +5,23 @@ function ProductCtrl($scope, $http){
 	$scope.datatype = "Add";
 	//Grid,dropdown data loading
 	loadGridData($scope.pagingOptions.pageSize,1);
-	
+	loadData('get_manufacture_list',{}).success(function(data){$scope.ManufactureList=data; $scope.item.Manufacture=null;});
 	//CRUD operation
 	$scope.saveItem=function(){	
 		var record={};
 		$scope.errors = {};
 		$scope.nameError =false;
-		if($scope.product==null || $scope.product=="" ){
+		if($scope.item==null || $scope.item=="" ){
             $scope.nameError = true;
             $scope.errors.nameMsg = 'Please enter product name.';
             return false;
         }
-		if($scope.product.name==null || $scope.product.name=="" ){
+		if($scope.item.Name==null || $scope.item.Name=="" ){
             $scope.nameError = true;
             $scope.errors.nameMsg = 'Please enter product name.';
             return false;
         }
-		angular.extend(record,$scope.product);
+		angular.extend(record,$scope.item);
 				//record.name=undefined;
 
 		loadData('save',record).success(function(data){
@@ -40,8 +40,13 @@ function ProductCtrl($scope, $http){
 		});
 	};			
 	$scope.editItem=function(row){	
-		$scope.item=row.entity;
-		
+		$scope.item=row;
+		$scope.datatype='Edit';
+		$scope.item.Manufacture=row.PManuId;
+		$scope.item.Name=row.PName;
+		$scope.item.MinDay=row.PMinDeliveryDays;
+		$scope.item.Price=row.PPrice;
+		$scope.item.Description=row.PDescription;
 		$scope.fgShowHide=false;				
 	};
 	$scope.deleteItem=function(row){
@@ -143,8 +148,8 @@ ProductCtrl.prototype.configureGrid=function($scope){
 };
 ProductCtrl.prototype.searchPopup=function($scope){
 	$scope.showForm=function(){$scope.fgShowHide=false; $scope.product=null;};
-
-	$scope.hideForm=function(){$scope.fgShowHide=true; 	$scope.datatype = "Add";};
+	// $scope.hideForm=function(){$scope.fgShowHide=true;  $scope.viewProfileDetail = false; $scope.datatype='Add'; $scope.item= {}; $scope.item.Country=null;  $scope.StateList=[];$scope.CityList=[];};
+	$scope.hideForm=function(){$scope.fgShowHide=true; 	$scope.datatype = "Add";$scope.item= {};$scope.item.Manufacture=null;};
 	$scope.openSearchDialog=function(){		
 		$scope.searchDialog=true;
 	};
