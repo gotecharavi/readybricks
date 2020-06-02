@@ -270,6 +270,9 @@ class Api extends CI_Controller {
 
          $updateStock = $this->Inventory_model->add(array('IProductId'=>$ProductId,'Stock_Qty'=>$Stock,'Created_At'=>$curdate,'Updated_At'=>$curdate));
          if($updateStock){
+            $this->db->where('ProductId', $post->ProductId);
+            $this->db->set('PStock', 'PStock+'.$Stock, FALSE);
+            $this->db->update('product');
             print json_encode(array('success'=>1, 'msg'=>'Stock Updated Successfully'));
 
          }else{
@@ -284,7 +287,7 @@ class Api extends CI_Controller {
 
     public function getallproduct(){
         $post=json_decode( file_get_contents('php://input') );
-        $getallproduct=$this->Product_model->get_all($UserId);
+        $getallproduct=$this->Product_model->get_all();
 
         if($getallproduct){
             print json_encode(array('success'=>1, 'msg'=>'Product Found Successfully','data'=>$getallproduct));
