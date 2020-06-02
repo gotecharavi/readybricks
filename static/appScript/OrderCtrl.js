@@ -59,7 +59,23 @@ function OrderCtrl($scope, $http,$location){
 	};
 //	$("#main-menu").addClass('menu-layout-mini');
 	$scope.viewItem=function(row){	
+		console.log(row);
 		$scope.item = row;
+		$scope.order_id=row.OId;
+		$scope.order_date=row.Created_At;
+		$scope.product_array=row.product_array;
+		$scope.total=row.OTotal;
+		$scope.subtotal=row.OTotal;
+		$scope.MName=row.product_array[0].merchant.CompanyName;
+		$scope.MEmail=row.product_array[0].merchant.Email;
+		$scope.MMobileNumber=row.product_array[0].merchant.MMobileNumber;
+		// $scope.=row.;
+		// $scope.=row.;
+		// $scope.=row.;
+		// $scope.=row.;
+		// $scope.=row.;
+
+		$scope
 		$scope.fgShowHide = false;
 		$scope.viewOrderDetail = true;
 	}

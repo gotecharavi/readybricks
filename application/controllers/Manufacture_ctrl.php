@@ -153,6 +153,11 @@ class Manufacture_ctrl extends base_ctrl {
 		$data=$this->post();
 		print json_encode($this->model->get($data->RoleId));
 	}
+	public function getId($id)
+	{	
+		// $data=$this->post();
+		print json_encode($this->model->getId($id));
+	}
 	public function get_all()
 	{		
 		print json_encode($this->model->get_all());

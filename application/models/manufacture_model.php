@@ -7,6 +7,11 @@ class Manufacture_model extends CI_Model
     public function get_all()
     {
 		return $this->db->get($this->table)->result();		
+	}
+	
+    public function get_all_manufacture()
+    {
+		return $this->db->join('users','users.UserId=manufacture.UserId')->get($this->table)->result();		
     }
 	public function get_page($size, $pageno){
 		$this->db
@@ -48,9 +53,13 @@ class Manufacture_model extends CI_Model
 		return $this->db			
 			->count_all_results($this->table);
 	}
-    public function get($id)
+    public function get()
     {
-        return $this->db->where('CustId', $id)->get($this->table)->row();
+        return $this->db->where('MenuId', $id)->get($this->table)->row();
+	}
+	public function getId($id)
+    {
+        return $this->db->where('MenuId', $id)->get($this->table)->row();
     }
   
     public function add($data)

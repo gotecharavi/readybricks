@@ -6,6 +6,8 @@ class Order_ctrl extends base_ctrl {
 		parent::__construct();		
 	    $this->load->model('Order_model','model');
 		$this->load->model('Users_model','model1');
+		$this->load->model('Product_model','product');
+		$this->load->model('manufacture_model','manufacture');
 	}
 	public function index()
 	{
@@ -105,7 +107,30 @@ public function get_Navigations_list(){
 	public function get_page()
 	{	
 		$data=$this->post();
-		print json_encode($this->model->get_page($data->size, $data->pageno,$data));
+		$data_array=$this->model->get_page($data->size, $data->pageno,$data);
+		// echo "<pre>";
+		// 	print_r($data_array);
+		// 	exit;
+		foreach($data_array['data'] as $key =>$val){
+			$product_array=(array)json_decode($val->JsonDetails);
+			foreach($product_array as $pkey =>$pval){
+				// $pval=(array)$pval;
+			// 	echo "<pre>";
+			// print_r($pval);
+			// exit;
+				$pval->merchant=$this->model1->getId($pval->MarchantId);
+				$pval->product=$this->product->getId($pval->ProductId);
+				$product_array[$pkey]=$pval;
+			}
+			$val->product_array=$product_array;
+		
+			// echo "<pre>";
+			// print_r($val);
+			// exit;
+			$data_array['data'][$key]=$val;
+		}
+		
+		print json_encode($data_array);
 	}
 
 	public function get_page_where()
