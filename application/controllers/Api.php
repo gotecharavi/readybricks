@@ -3,10 +3,10 @@ header('Content-Type: application/json; Charset=UTF-8');
 require_once('./application/libraries/base_ctrl.php');
 
 class Api extends CI_Controller {
-	function __construct() {
-		parent::__construct();		
- 		$this->load->database();   
-		$this->load->helper('url');
+    function __construct() {
+        parent::__construct();      
+        $this->load->database();   
+        $this->load->helper('url');
 
         $this->load->model('Users_model');
         $this->load->model('Customer_model');
@@ -17,21 +17,21 @@ class Api extends CI_Controller {
         $this->load->model('City_model');
         $this->load->model('Product_model');
         $this->load->model('Inventory_model');
-
+        $this->load->model('Cart_model');
+ 
 
         $this->load->model('Models_model');
         $this->load->model('Pump_model');
 
         $this->load->model('Category_model');
         $this->load->model('Menu_model');
-        $this->load->model('Cart_model');
         $this->load->model('Order_model');
         $this->load->model('Store_model');
         $this->load->model('Demo_model');
         $this->load->model('SerialNumber_model');
 
 
-	}
+    }
     public function loginwithsocial(){
         $post=json_decode( file_get_contents('php://input') );
         $Email     = $post->Email;
@@ -123,7 +123,7 @@ class Api extends CI_Controller {
     }
 
 
-	public function login(){
+    public function login(){
         $post=json_decode( file_get_contents('php://input') );
          $email      = $post->email;
          $password      = $post->password;
@@ -291,6 +291,43 @@ class Api extends CI_Controller {
 
         if($getallproduct){
             print json_encode(array('success'=>1, 'msg'=>'Product Found Successfully','data'=>$getallproduct));
+
+        }else{
+            print json_encode(array('success'=>0, 'msg'=>'Product Not Found'));
+
+        }
+
+
+
+    }
+
+    public function addtocart(){
+        $post=json_decode( file_get_contents('php://input') );
+         $ProductId      = $post->ProductId;
+         $UserId      = $post->UserId;
+         $Qty      = $post->Qty;
+         $Price      = $post->Price;
+         $curdate= date('Y-m-d h:i:s');
+
+         $addtocart = $this->Cart_model->add(array('CProductId'=>$ProductId,'CUserId'=>$UserId,'CPrice'=>$Price,'CQty'=>$Qty,'CreatedAt'=>$curdate,'UpdatedAt'=>$curdate,'CStatus'=>1));
+         if($addtocart){
+            print json_encode(array('success'=>1, 'msg'=>'Cart Added Successfully'));
+
+         }else{
+            print json_encode(array('success'=>0, 'msg'=>'Product Not Add'));
+
+         }
+
+
+    }
+
+    public function getcartbyuserid(){
+        $post=json_decode( file_get_contents('php://input') );
+        $UserId      = $post->UserId;
+        $getallcart=$this->Cart_model->get_all_by_userid($UserId);
+
+        if($getallcart){
+            print json_encode(array('success'=>1, 'msg'=>'Cart Found Successfully','data'=>$getallcart));
 
         }else{
             print json_encode(array('success'=>0, 'msg'=>'Product Not Found'));
@@ -552,7 +589,7 @@ class Api extends CI_Controller {
                      $getuser=$this->Users_model->get($orders->oUserId);
                      if($getuser){
                      $orders->PaymentCollectedBy=ucwords($getuser->FirstName.' '.$getuser->LastName);
-                 	}
+                    }
                     $splitmodel = explode(',', $orders->ModelId);
                     $getmodels=$this->Models_model->get($splitmodel[0]);
                     $ModelName = $getmodels->Name;
@@ -948,16 +985,16 @@ class Api extends CI_Controller {
                 }
 
                   if($orders->Status == '3'){
-                 	 $orders->PaymentCollectedBy ="";
+                     $orders->PaymentCollectedBy ="";
                      $getuser=$this->Users_model->get($orders->oUserId);
                      $orders->OwnerId=$orders->PaymentReceivedBy;
                      $getowner= $this->Users_model->get($orders->OwnerId);
                      if($getowner){
                      $orders->OwnerName=ucwords($getowner->FirstName.' '.$getowner->LastName);
-                 	}
+                    }
                      if($getuser){
                      $orders->PaymentCollectedBy=ucwords($getuser->FirstName.' '.$getuser->LastName);
-                 	}
+                    }
                     $splitmodel = explode(',', $orders->ModelId);
                     $getmodels=$this->Models_model->get($splitmodel[0]);
                     $ModelName = $getmodels->Name;
@@ -1254,13 +1291,13 @@ class Api extends CI_Controller {
 
 
     }
-	public function index()
-	{
+    public function index()
+    {
         echo '212121';
-//		$this->load->view('home_view');
-	}
+//      $this->load->view('home_view');
+    }
 
-	
+    
 }
 
 ?>

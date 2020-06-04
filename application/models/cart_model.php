@@ -10,6 +10,12 @@ class Cart_model extends CI_Model
 	//public function get_Navigations_list(){
 	// 	return $this->db->select('NavigationId, NavName')->get('Navigations')->result();
 	// }
+    public function get_all_by_userid($id)
+    {
+		return $this->db->select('CartId,ProductId,CQty,CPrice,PName,PImage,PMinDeliveryDays,CStatus')
+			->join('product', 'ProductId = CProductId', 'inner')
+			->where('CUserId',$id)->get($this->table)->result();		
+    }
     public function get_all()
     {
 		return $this->db->get($this->table)->result();		
