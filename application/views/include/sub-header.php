@@ -126,10 +126,10 @@
                       </div>
                       <div class="logged-user-info-w">
                         <div class="logged-user-name">
-                          Maria Gomez
+                          <?php echo $this->session->userdata('user')->FirstName.' '.$this->session->userdata('user')->LastName;?>
                         </div>
                         <div class="logged-user-role">
-                          Administrator
+                        <?php echo $this->session->userdata('user')->RoleName;?>
                         </div>
                       </div>
                     </div>

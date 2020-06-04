@@ -26,19 +26,18 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            <tr ng-repeat="item in list">
-                                <td>{{item.Name}}</td>
-                                <td>{{item.PhoneNo}}</td>
-                                <td>abc@gmail.com</td>
-                                <td>{{item.Address}}
-                                </td>
+                            <tr ng-repeat="item in list.transporter">
+                                <td>{{item.CompanyName}}</td>
+                                <td>{{item.MobileNumber}}</td>
+                                <td>{{item.Email}}</td>
+                                <td>{{item.Address}}</td>
                                 <td>
-                                    <a class="badge badge-danger" href="" ng-if="$index % 2 == 0">New</a>
-                                    <a class="badge badge-success" href="" ng-if="$index % 2 != 0">Edited</a>
+                                    <a class="badge badge-danger" href="" ng-if="item.Status % 2 == 0">New</a>
+                                    <a class="badge badge-success" href="" ng-if="item.Status % 2 != 0">Edited</a>
                                 </td>
                                 <td class="text-center">
-                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Transporter&type=New" ng-if="$index % 2 != 0" class="btn btn-outline-info"> <i class="os-icon os-icon-eye" style="margin-top: -3px;"></i></a>
-                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Transporter&type=Edited" ng-if="$index % 2 == 0" class="btn btn-outline-info"> <i class="os-icon os-icon-eye" style="margin-top: -3px;"></i></a>
+                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Transporter&type=New" ng-if="item.Status % 2 != 0" class="btn btn-outline-info"> <i class="os-icon os-icon-eye" style="margin-top: -3px;"></i></a>
+                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Transporter&type=Edited" ng-if="item.Status % 2 == 0" class="btn btn-outline-info"> <i class="os-icon os-icon-eye" style="margin-top: -3px;"></i></a>
                                 </td>
                             </tr>
                             <tr ng-show="list.length ==0"><td colspan="10" class="text-center">Customer Not found</td></tr>
