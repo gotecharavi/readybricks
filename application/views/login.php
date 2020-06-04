@@ -14,13 +14,13 @@
           <strong>Wrong!</strong> Email or Password.
         </div>
         <?php } ?>
-        <form action="<?php echo site_url();?>/login/submit">
+        <form action="<?php echo site_url();?>/login/submit" method="POST">
           <div class="form-group">
-            <label for="">Username</label><input class="form-control" placeholder="Enter your username" type="text">
+            <label for="">Username</label><input class="form-control" name="username" placeholder="Enter your username" type="text">
             <div class="pre-icon os-icon os-icon-user-male-circle"></div>
           </div>
           <div class="form-group">
-            <label for="">Password</label><input class="form-control" placeholder="Enter your password" type="password">
+            <label for="">Password</label><input class="form-control" name="password" placeholder="Enter your password" type="password">
             <div class="pre-icon os-icon os-icon-fingerprint"></div>
           </div>
           <div class="buttons-w">

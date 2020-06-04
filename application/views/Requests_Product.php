@@ -23,52 +23,24 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            <tr>
-                                <td>Abc Company</td>
-                                <td>Bricks001</td>
-                                <td>20</td>
-                                <td>299</td>
-                                <td>This is new product diplay of data</td>
+                        <tr  ng-repeat="item in list.products">
+                                <td>{{item.CompanyName}}</td>
+                                <td>{{item.PName}}</td>
+                                <td>{{item.PDescription}}</td>
+                                <td>{{item.PMinDeliveryDays}}</td>
+                                <td>{{item.PPrice}}</td>
                                 <td>
-                                    <a class="badge badge-danger" href="">New</a>
+                                    <a class="badge badge-danger" href="" ng-if="item.PStatus % 2 == 0">New</a>
+                                    <a class="badge badge-success" href="" ng-if="item.PStatus % 2 != 0">Edited</a>
                                 </td>
 
                                 <td class="text-center" style="width:10%">
-                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Product&type=New" ng-if="$index % 2 != 0" class="btn btn-outline-info" style="margin-top: -3px;"> <i class="os-icon os-icon-eye" ></i></a>
+                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Product&type=New" ng-if="item.PStatus % 2 != 0" class="btn btn-outline-info" style="margin-top: -3px;"> <i class="os-icon os-icon-eye" ></i></a>
+                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Product&type=Edited" ng-if="item.PStatus % 2 == 0" class="btn btn-outline-info" style="margin-top: -3px;"> <i class="os-icon os-icon-eye" ></i></a>
 
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Cde Company</td>
-                                <td>Bricks002</td>
-                                <td>15</td>
-                                <td>259</td>
-                                <td>This is new product diplay of data</td>
-                                <td>
-                                    <a class="badge badge-success" href="" >Edited</a>
-                                </td>
-
-                                <td class="text-center">
-                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Product&type=Edited"  class="btn btn-outline-info" style="margin-top: -8px;"> <i class="os-icon os-icon-eye" ></i></a>
-
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Efg Company</td>
-                                <td>Bricks003</td>
-                                <td>10</td>
-                                <td>199</td>
-                                <td>This is new product diplay of data</td>
-                                <td>
-                                    <a class="badge badge-danger" href="" ng-if="$index % 2 == 0">New</a>
-                                    <a class="badge badge-success" href="" ng-if="$index % 2 != 0">Edited</a>
-                                </td>
-
-                                <td class="text-center">
-                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Product&type=Edited" ng-if="$index % 2 != 0" class="btn btn-outline-info" style="margin-top: -8px;"> <i class="os-icon os-icon-eye" ></i></a>
-
-                                </td>
-                            </tr>
+                            
                             <tr ng-show="list.length ==0"><td colspan="10" class="text-center">Customer Not found</td></tr>
 
                             </tbody></table>

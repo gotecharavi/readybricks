@@ -15,7 +15,8 @@ class login extends CI_Controller {
 	public function submit(){
 		$uname = $this->input->post('username');
 		$pwd = $this->input->post('password');	
-		
+		// echo $uname;
+		// echo $pwd;
 		$result=$this->model->login($uname, $pwd );
 		if ($result)  {
 			$this->session->set_userdata('error', FALSE);

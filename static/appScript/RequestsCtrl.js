@@ -1,5 +1,6 @@
 
 function RequestsCtrl($scope, $http){	
+	console.log($scope,$http);
 	$scope.auth=getAuth();
 	this.init($scope);	
 function getParam( name )
@@ -67,6 +68,22 @@ console.log(window.location.href);
 		$scope.viewProfileDetail =name;
 		$scope.viewtype = type;
 		}
+	}
+	$scope.viewManufacturerItem=function(row){	
+                       
+		console.log(row);
+		$scope.item = row;
+		$scope.MEmail='djjkl';
+		$scope.MCompanyName=row.CompanyName;
+		// $scope.MobileNumber=row.MobileNumber;
+		// $scope.Address=row.Address;
+		// $scope.Landmark=row.Landmark;
+		// $scope.GSTIN=row.GSTIN;
+		// $scope.State=row.SName;
+		// $scope.Country=row.CName;
+		// $scope.VatNumber=row.VatNumber;
+		// $scope.fgShowHide = false;
+		$scope.viewProfileDetail = 'Manufacture';
 	}
 
 	$scope.viewProfileDetail(getParam( 'user' ),getParam( 'type' ));

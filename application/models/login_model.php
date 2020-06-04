@@ -11,14 +11,18 @@ class login_model extends CI_Model
     }
 	function login($username, $password)
 	{
-	   $this->db->select('UserId, Email, FirstName, LastName, Role');
+		// echo $username;
+		// echo $password;
+	   $this->db->select('UserId, Email, FirstName, LastName, Role,RoleName');
 	   $this -> db -> from('users');
+	   $this->db->join('roles','roles.RoleId=users.Role','left');
 	   $this -> db -> where('Email', $username);
-	   $this -> db -> where('Password', $password);
+	   $this -> db -> where('Password', md5($password));
        $this -> db -> where('Status', TRUE);
 	   $this -> db -> limit(1);
 	 
 	   $query = $this -> db -> get();
+	  
 	   if($query -> num_rows() == 1)
 	   {
 	     return $query->row();

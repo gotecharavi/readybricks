@@ -1,4 +1,4 @@
-<script src="static/appScript/RequestsCtrl.js"></script>
+<script src="static/appScript/RequestsCtrl.js?ffmkjfkkljdmmkf4"></script>
 <script>function getAuth(){ <?php echo $fx ?>;}</script>
 <?php if ($read): ?>
 <div ng-controller="RequestsCtrl">
@@ -216,7 +216,7 @@
             <div class="ecommerce-customer-main-info">
               <div class="ecc-avatar" style="background-image: url(<?php echo base_url(); ?>/static/img/avatar1.jpg)"></div>
               <div class="ecc-name">
-               Raj and Sons.
+              {{MCompanyName}}
               </div>
             </div>
             <div class="ecommerce-customer-sub-info">
@@ -224,7 +224,7 @@
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Email </div>
-                <div class="sub-info-value"><a href="#">michael.collins@gmail.com</a><strong class="badge badge-danger" style="float: right;"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong></div>
+                <div class="sub-info-value"><a href="#">{{MEmail}}</a><strong class="badge badge-danger" style="float: right;"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong></div>
               </div>
 
               <div class="ecc-sub-info-row">
@@ -261,7 +261,7 @@
             <div class="ecommerce-customer-main-info">
               <div class="ecc-avatar" style="background-image: url(<?php echo base_url(); ?>/static/img/avatar1.jpg)"></div>
               <div class="ecc-name">
-               Raj and Sons.
+              {{CompanyName}}
               </div>
             </div>
             <div class="ecommerce-customer-sub-info">
@@ -269,7 +269,7 @@
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Email </div>
-                <div class="sub-info-value"><a href="#">raj@songs.com</a><!-- <strong class="badge badge-danger" style="float: right;"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong> -->
+                <div class="sub-info-value"><a href="#">{{Email}}</a><!-- <strong class="badge badge-danger" style="float: right;"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong> -->
                 </div>
               </div>
 
