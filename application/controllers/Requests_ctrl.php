@@ -5,6 +5,11 @@ class Requests_ctrl extends base_ctrl {
 	function __construct() {
 		parent::__construct();		
 	    $this->load->model('request_model','model');
+		$this->load->model('manufacture_model','manufacture_model');
+		$this->load->model('transporter_model','transporter_model');
+		$this->load->model('Product_model','product_model');
+		
+		
 	}
 	public function index()
 	{
@@ -58,6 +63,39 @@ class Requests_ctrl extends base_ctrl {
 			print json_encode( array("success"=>FALSE,"msg"=>"You are not permitted"));
 		}
 	}
+	public function approve()
+	{
+		$data=$this->post();
+
+		print json_encode( array("success"=>TRUE,"msg"=>$this->model->approve($data->id)));
+
+	}
+	public function approve_product()
+	{
+		$data=$this->post();
+
+		print json_encode( array("success"=>TRUE,"msg"=>$this->model->approve_product($data->id)));
+
+	}
+		
+	public function rejectSaveProduct()
+	{
+		$data=$this->post();
+	// echo "<pre>";
+	// 		print_r($data);
+	// 		exit;
+		print json_encode( array("success"=>TRUE,"msg"=>$this->model->rejectSaveProduct($data)));
+
+	}
+	public function reject()
+	{
+		$data=$this->post();
+			// echo "<pre>";
+			// print_r($data);
+			// exit;
+		print json_encode( array("success"=>TRUE,"msg"=>$this->model->reject($data->id)));
+
+	}
 	public function changestatus()
 	{
 		$data=$this->post();
@@ -77,6 +115,22 @@ class Requests_ctrl extends base_ctrl {
 	{	
 		$data=$this->post();
 		print json_encode($this->model->get($data->RoleId));
+	}
+	public function getUserById()
+	{	
+		$data=$this->post();
+		if(isset($data->type)){
+			print json_encode($this->transporter_model->getWithJoin($data->UserId));
+			exit;
+		}
+		print json_encode($this->manufacture_model->getWithJoin($data->UserId));
+	}
+	
+	public function getProductById()
+	{	
+		$data=$this->post();
+
+		print json_encode($this->product_model->getWithJoin($data->PId));
 	}
 	public function get_all()
 	{		

@@ -36,7 +36,7 @@
 
                                 <td class="text-center" style="width:10%">
                                    <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Product&type=New" ng-if="item.PStatus % 2 != 0" class="btn btn-outline-info" style="margin-top: -3px;"> <i class="os-icon os-icon-eye" ></i></a>
-                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Product&type=Edited" ng-if="item.PStatus % 2 == 0" class="btn btn-outline-info" style="margin-top: -3px;"> <i class="os-icon os-icon-eye" ></i></a>
+                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Product&type=Edited&id={{item.ProductId}}" ng-if="item.PStatus % 2 == 0" class="btn btn-outline-info" style="margin-top: -3px;"> <i class="os-icon os-icon-eye" ></i></a>
 
                                 </td>
                             </tr>

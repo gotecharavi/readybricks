@@ -1,6 +1,5 @@
 
 function RequestsCtrl($scope, $http){	
-	console.log($scope,$http);
 	$scope.auth=getAuth();
 	this.init($scope);	
 function getParam( name )
@@ -16,7 +15,6 @@ else
 }
 
 
-console.log(window.location.href);	
 	//Grid,dropdown data loading
 	loadGridData($scope.pagingOptions.pageSize,1);
 	
@@ -62,12 +60,76 @@ console.log(window.location.href);
 		$scope.fgShowHide=false;				
 	};
 	$scope.viewProfileDetail=function(name,type){	
-		console.log(name);
-		if(name !=""){
+		console.log(name,type);
+		if(name !="" && name=='Manufacture'){
 		$scope.fgShowHide=false;				
 		$scope.viewProfileDetail =name;
 		$scope.viewtype = type;
+
+		// call API
+
+
+			loadData('getUserById',{'UserId' : getParam( 'id' )}).success(function(row){
+				console.log(row);
+				$scope.item=row;
+				$scope.MEmail=row.Email;
+				$scope.MCompanyName=row.CompanyName;
+				$scope.MobileNumber=row.MobileNumber;
+				$scope.Address=row.Address;
+				$scope.Landmark=row.Landmark;
+				$scope.GSTIN=row.GSTIN;
+				$scope.State=row.SName;
+				$scope.Country=row.CName;
+				$scope.VatNumber=row.VatNumber;
+				$scope.UserId=row.UserId;
+				$scope.fgShowHide = false;
+
+			});
 		}
+		if(name !="" && name=='Transporter'){
+			$scope.fgShowHide=false;				
+			$scope.viewProfileDetail =name;
+			$scope.viewtype = type;
+
+			// call API
+
+
+				loadData('getUserById',{'UserId' : getParam( 'id' ),'type':name}).success(function(row){
+					console.log(row);
+					$scope.item=row;
+					$scope.MEmail=row.Email;
+					$scope.MCompanyName=row.CompanyName;
+					$scope.MobileNumber=row.MobileNumber;
+					$scope.Address=row.Address;
+					$scope.Landmark=row.Landmark;
+					$scope.GSTIN=row.GSTIN;
+					$scope.State=row.SName;
+					$scope.Country=row.CName;
+					$scope.VatNumber=row.VatNumber;
+					$scope.UserId=row.UserId;
+					$scope.fgShowHide = false;
+
+				});
+			}
+			if(name !="" && name=='Product'){
+				$scope.fgShowHide=false;				
+				$scope.viewProfileDetail =name;
+				$scope.viewtype = type;
+		
+				// call API
+		
+		
+					loadData('getProductById',{'PId' : getParam( 'id' )}).success(function(row){
+						console.log(row);
+						$scope.item=row;
+						$scope.PName=row.PName;
+						$scope.PMinDeliveryDays=row.PMinDeliveryDays;
+						$scope.PPrice=row.PPrice;
+						$scope.CompanyName=row.CompanyName;
+						$scope.PDescription=row.PDescription;
+		
+					});
+				}
 	}
 	$scope.viewManufacturerItem=function(row){	
                        
@@ -93,7 +155,29 @@ console.log(window.location.href);
 		$scope.fgShowHide = false;
 		$scope.viewProfileDetail = true;
 	}
+	$scope.rejectProduct=function(row){
+		console.log($scope.item);
+		console.log(row);
+		$scope.item = $scope.item;
+	}
+	$scope.rejectSaveProduct=function(row){
+
+			var id = {'data':row};
+			loadData('rejectSaveProduct',id).success(function(data){
+				loadGridData($scope.pagingOptions.pageSize,$scope.pagingOptions.currentPage);
+		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data rejected successfully</p>', {
+		                type: 'info',
+		                delay: 2500,
+		                allow_dismiss: true
+					});
+					document.getElementById("openModalButton").click();
+					
+			});
+			
+	}
+	
 	$scope.deleteItem=function(row){
+
 		if(confirm('Delete sure!')){
 			var id = {'id':row};
 			loadData('delete',id).success(function(data){
@@ -106,6 +190,65 @@ console.log(window.location.href);
 			});
 		}
 	};
+	$scope.approve=function(row){
+		// console.log($scope.item);
+		// console.log(row);
+		if(confirm('Sure!')){
+			var id = {'id':$scope.item.UserId};
+			loadData('approve',id).success(function(data){
+				loadGridData($scope.pagingOptions.pageSize,$scope.pagingOptions.currentPage);
+		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data Approved successfully</p>', {
+		                type: 'info',
+		                delay: 2500,
+		                allow_dismiss: true
+		            });
+			});
+		}
+	};
+	$scope.approveProduct=function(row){
+		if(confirm('Sure!')){
+			var id = {'id':$scope.item.ProductId};
+			loadData('approve_product',id).success(function(data){
+				loadGridData($scope.pagingOptions.pageSize,$scope.pagingOptions.currentPage);
+		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data Approved successfully</p>', {
+		                type: 'info',
+		                delay: 2500,
+		                allow_dismiss: true
+		            });
+			});
+		}
+	};
+	// $scope.reject=function(row){
+	// 	if(confirm('Sure!')){
+	// 		var id = {'id':$scope.item.UserId};
+	// 		loadData('reject',id).success(function(data){
+	// 			loadGridData($scope.pagingOptions.pageSize,$scope.pagingOptions.currentPage);
+	// 	            $.bootstrapGrowl('<h4>Success!</h4> <p>Data Rejected successfully</p>', {
+	// 	                type: 'info',
+	// 	                delay: 2500,
+	// 	                allow_dismiss: true
+	// 	            });
+	// 		});
+	// 	}
+	// };
+	$scope.reject=function(row){
+		console.log($scope.item);
+		console.log(row);
+		$scope.item = $scope.item;
+	}
+	$scope.rejectSave=function(row){
+
+			var id = {'data':row};
+			loadData('rejectSave',id).success(function(data){
+				loadGridData($scope.pagingOptions.pageSize,$scope.pagingOptions.currentPage);
+		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data rejected successfully</p>', {
+		                type: 'info',
+		                delay: 2500,
+		                allow_dismiss: true
+					});
+					
+			});
+	}
 	$scope.changeItemStatus=function(row,status){
 			var data = {'id':row,'status':status};
 			loadData('changestatus',data).success(function(data){

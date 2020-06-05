@@ -78,7 +78,30 @@ $data['products']=$this->db->get('product')->result();
     {
         return $this->db->where('MenuId', $id)->update($this->table, $data);
     }
+    public function approve($id)
+    {
 
+        return $this->db->where('UserId', $id)->update('users', ['isAccount'=>'1']);
+    }
+    public function approve_product($id)
+    {
+
+        return $this->db->where('ProductId', $id)->update('product', ['isAccount'=>'1']);
+    }
+    public function rejectSaveProduct($data)
+    {
+        if(isset($data->data->ProductId)){
+            return $this->db->where('ProductId', $data->data->ProductId)->update('product', ['Reason'=>$data->data->Reason,'isAccount'=>'0']);
+        }
+        return $this->db->where('UserId', $data->data->UserId)->update('users', ['Reason'=>$data->data->Reason,'isAccount'=>'0']);
+
+    }
+    
+    
+    public function reject($id)
+    {
+        return $this->db->where('UserId', $id)->update('users', ['isAccount'=>'0']);
+    }
     public function delete($id)
     {
     	$this->db->where('UserId',$id)->delete($this->table);
