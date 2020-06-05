@@ -337,8 +337,45 @@ class Api extends CI_Controller {
 
 
     }
+   public function addorder(){
+        $post=json_decode( file_get_contents('php://input') );
+         $UserId      = $post->UserId;
+         $IsSameAddress   = $post->IsSameAddress;
+         $Address   = isset($post->Address)? $post->Address : '';
+         $Landmark  = isset($post->Landmark) ? $post->Landmark : '';
+         $CountryId = isset($post->CountryId) ? $post->CountryId : 0;
+         $StateId   = isset($post->StateId) ? $post->StateId : 0;
+         $CityId    = isset($post->CityId) ? $post->CityId : 0;
+         $DeliveryDate    = $post->DeliveryDate;
+
+         $curdate= date('Y-m-d h:i:s');
+
+        // select cart by id
+
+         $getallcart=$this->Cart_model->get_all_cart_by_userid($UserId);
+
+         $total = 0;
+         foreach($getallcart as $cart){
+
+            $productPrice = $cart->Price* $cart->Qty;
+
+            $total += $productPrice;
+         }
+        $cartJson = json_encode($getallcart);
+
+        $addorder = $this->Order_model->add(array('JsonDetails'=>$cartJson,'OUserId'=>$UserId,'OAddress'=>$Address,'OLandMark'=>$Landmark,'OCountryId'=>$CountryId,'OStateId'=>$StateId,'OCityId'=>$CityId,'IsSameAddress'=>$IsSameAddress,'ODeliveryDate'=>$DeliveryDate,"OTotal"=>$total,"OStatus"=>'1','Created_At'=>$curdate,'Updated_At'=>$curdate));
+         if($addorder){
+
+            $deleteCart =$this->Cart_model->delete_by_userid($UserId);
+            print json_encode(array('success'=>1, 'msg'=>'Order Added Successfully'));
+
+         }else{
+            print json_encode(array('success'=>0, 'msg'=>'Cart Not Found'));
+
+         }
 
 
+    }
 
 
 
