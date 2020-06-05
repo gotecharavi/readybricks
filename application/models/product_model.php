@@ -86,6 +86,11 @@ class Product_model extends CI_Model
 	public function getId($id)
     {
         return $this->db->where('ProductId', $id)->get($this->table)->row();
+	}
+	public function getWithJoin($id)
+    {
+
+		return $this->db->join('users','users.UserId=product.PManuId')->where('product.ProductId', $id)->get($this->table)->row();		
     }
 	// print  json_encode($this->country->get_all());
 }

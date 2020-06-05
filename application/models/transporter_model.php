@@ -93,6 +93,10 @@ class Transporter_model extends CI_Model
 	return $data;
 //				$this->db->like("catName",$params->search);
 	}
+	public function getWithJoin($id)
+    {
+		return $this->db->join('users','users.UserId=transporter.UserId')->where('users.UserId', $id)->get($this->table)->row();		
+    }
 	
 }
 

@@ -1,4 +1,4 @@
-<script src="static/appScript/RequestsCtrl.js?ffmkjfkkljdmmkf4"></script>
+<script src="static/appScript/RequestsCtrl.js?fldklkfkllkmkjfkllfkmkkkklkljmllldmmfkmjdf4"></script>
 <script>function getAuth(){ <?php echo $fx ?>;}</script>
 <?php if ($read): ?>
 <div ng-controller="RequestsCtrl">
@@ -53,26 +53,30 @@
 
 
   <div aria-hidden="true" aria-labelledby="mySmallModalLabel" class="modal fade bd-example-modal-sm" role="dialog" tabindex="-1">
+  <form action="#"  name="myFormd" method="post" enctype="multipart/form-data"  onsubmit="return false;">
       <div class="modal-dialog modal-sm">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">
               Confirm
             </h5>
-            <button aria-label="Close" class="close" data-dismiss="modal" type="button"><span aria-hidden="true"> &times;</span></button>
+            <button aria-label="Close" class="close" data-dismiss="modal" id="openModalButton" type="button"><span aria-hidden="true"> &times;</span></button>
           </div>
           <div class="modal-body">
-            <form>
+            <!-- <form> -->
               <div class="form-group">
-                <label for=""> Reason</label><input class="form-control" placeholder="Enter Reason" type="text">
+              <input class="form-control" name="reason" id="reason" ng-model="item.ID"   type="hidden">
+                <label for=""> Reason</label><input class="form-control" name="reason" id="reason" ng-model="item.Reason"  placeholder="Enter Reason" type="text">
               </div>
-            </form>
+            <!-- </form> -->
           </div>
           <div class="modal-footer text-left">
-            <button class="btn btn-secondary" data-dismiss="modal" type="button"> Close</button><button class="btn btn-primary" type="button"> Confirm</button>
+            <button class="btn btn-secondary"   data-dismiss="modal" type="button"> Close</button>
+            <button class="btn btn-primary" ng-click="rejectSaveProduct(item)"  type="button"> Confirm</button>
           </div>
         </div>
       </div>
+      </form>
     </div>
  
 
@@ -199,7 +203,6 @@
 
 }
 </style>
-
 <div ng-show="viewProfileDetail == 'Manufacture' || viewProfileDetail == 'Transporter' " style="display:none">
     <div class="element-wrapper">
 
@@ -209,7 +212,6 @@
            <h6 class="element-header"><a href="<?php echo base_url(); ?>index.php/#/Requests" class="btn btn-sm btn-success"   >Back </a> {{viewProfileDetail}} Detail</h6>
           </div>
       </div>
-
     	<div class="row m-b">
         	 <div class="" ng-class="viewtype=='Edited' ? 'col-md-6' : 'col-md-8 offset-md-2'">
             <div class="ecommerce-customer-info">
@@ -229,39 +231,44 @@
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Phone Number</div>
-                <div class="sub-info-value"><a href="#">839.938.3944</a> <strong class="badge badge-success" style="float: right;"><i class="os-icon os-icon-checkmark " ></i></strong></div>
+                <div class="sub-info-value"><a href="#">{{MobileNumber}}</a> <strong class="badge badge-success" style="float: right;"><i class="os-icon os-icon-checkmark " ></i></strong></div>
               </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Address</div>
-                <div class="sub-info-value">1726 Praduman Park, Block 104<br/>New Delhi, IN 10001</div>
+                <div class="sub-info-value">{{Address}}, {{Landmark}}<br/>{{State}}, {{Country}}</div>
               </div>
 
                <div class="ecc-sub-info-row">
                 <div class="sub-info-label">GSTIN / UIN Number</div>
-                <div class="sub-info-value">255588778781</div>
+                <div class="sub-info-value">{{GSTIN}}</div>
               </div>
                <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Vat Number</div>
-                <div class="sub-info-value">5487878878</div>
+                <div class="sub-info-value">{{VatNumber}}</div>
               </div>
 
 
             </div>   
-            <div ng-if="viewtype=='New'">
-              <button   ng-click="saveItem()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
-              <button class="btn btn-warning cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+            <div class="row m-b" ng-if="viewtype=='New'">
+          <div class="text-center col-md-12">
+           <div class="ecommerce-customer-info">
+              <button   ng-click="approve()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
+              <button   ng-click="reject()" class="btn btn-warning cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+            </div>
             </div>
       </div>
         
         </div> 
-
+        </div>
+        
+        <!-- </div>  -->
         <div class="col-md-6 " ng-if="viewtype=='Edited'">
             <div class="ecommerce-customer-info">
             <div class="ecommerce-customer-main-info">
               <div class="ecc-avatar" style="background-image: url(<?php echo base_url(); ?>/static/img/avatar1.jpg)"></div>
               <div class="ecc-name">
-              {{CompanyName}}
+              {{MCompanyName}}
               </div>
             </div>
             <div class="ecommerce-customer-sub-info">
@@ -269,30 +276,30 @@
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Email </div>
-                <div class="sub-info-value"><a href="#">{{Email}}</a><!-- <strong class="badge badge-danger" style="float: right;"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong> -->
+                <div class="sub-info-value"><a href="#">{{MEmail}}</a><!-- <strong class="badge badge-danger" style="float: right;"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong> -->
                 </div>
               </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Phone Number</div>
-                <div class="sub-info-value"><a href="#">886.447.2103</a> <!-- <strong class="badge badge-success" style="float: right;"><i class="os-icon os-icon-checkmark " ></i></strong> -->
+                <div class="sub-info-value"><a href="#">{{MobileNumber}}</a> <!-- <strong class="badge badge-success" style="float: right;"><i class="os-icon os-icon-checkmark " ></i></strong> -->
                 </div>
               </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Address</div>
-                <div class="sub-info-value">18 Shiv Shakti Colony,<br/>Kolkta, IN 20001</div>
+                <div class="sub-info-value">{{Address}}, {{Landmark}}<br/>{{State}}, {{Country}}</div>
               </div>
 
                <div class="ecc-sub-info-row">
                 <div class="sub-info-label">GSTIN / UIN Number</div>
-                <div class="sub-info-value">89898998998</div>
+                <div class="sub-info-value">{{GSTIN}}</div>
               </div>
                <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Vat Number</div>
-                <div class="sub-info-value">32932898932</div>
+                <div class="sub-info-value">{{VatNumber}}</div>
               </div>
-
+              <input type="hidden" name="UserId" id="UserId" ng-model="item.UserId" >
 
             </div>
       </div>
@@ -304,8 +311,8 @@
       <div class="row m-b" ng-if="viewtype=='Edited'">
           <div class="text-center col-md-12">
            <div class="ecommerce-customer-info">
-              <button   ng-click="saveItem()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
-              <button class="btn btn-warning cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+              <button   ng-click="approve()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
+              <button   ng-click="reject()" class="btn btn-warning cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
             </div></div>
     </div>
 
@@ -506,35 +513,35 @@
             <div class="ecommerce-customer-info">
             <div class="ecommerce-customer-main-info">
               <div class="ecc-name">
-               Abc Company
+              {{CompanyName}}
               </div>
             </div>
             <div class="ecommerce-customer-sub-info">
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Product Name</div>
-                <div class="sub-info-value">Bricks001</div>
+                <div class="sub-info-value">{{PName}}</div>
               </div>
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">MIN DELIVERY DAYS </div>
-                <div class="sub-info-value"><a href="#">20</a></div>
+                <div class="sub-info-value"><a href="#">{{PMinDeliveryDays}}</a></div>
               </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">PRICE</div>
-                <div class="sub-info-value"><a href="#">299</a> </div>
+                <div class="sub-info-value"><a href="#">{{PPrice}}</a> </div>
               </div>
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Description</div>
-                <div class="sub-info-value">This is new product diplay of data</div>
+                <div class="sub-info-value">{{PDescription}}</div>
               </div>
               
 
             </div>   
             <div ng-if="viewtype=='New'">
-              <button   ng-click="saveItem()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
-              <button class="btn btn-warning cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+              <button   ng-click="approveProduct()" class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
+              <button ng-click="rejectProduct()"  class="btn btn-warning cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
             </div>
       </div>
         
@@ -544,7 +551,7 @@
             <div class="ecommerce-customer-info">
             <div class="ecommerce-customer-main-info">
               <div class="ecc-name">
-               Abc Company
+               {{CompanyName}}
               </div>
             </div>
             <div class="ecommerce-customer-sub-info">
@@ -552,21 +559,21 @@
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Product Name</div>
-                <div class="sub-info-value">Bricks0332</div>
+                <div class="sub-info-value">{{PName}}</div>
               </div>
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">MIN DELIVERY DAYS </div>
-                <div class="sub-info-value"><a href="#">10</a></div>
+                <div class="sub-info-value"><a href="#">{{PMinDeliveryDays}}</a></div>
               </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">PRICE</div>
-                <div class="sub-info-value"><a href="#">309</a> </div>
+                <div class="sub-info-value"><a href="#">{{PPrice}}</a> </div>
               </div>
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Description</div>
-                <div class="sub-info-value">This is changed product diplay of data</div>
+                <div class="sub-info-value">{{PDescription}}</div>
               </div>
 
 
@@ -580,8 +587,8 @@
       <div class="row m-b" ng-if="viewtype=='Edited'">
           <div class="text-center col-md-12">
            <div class="ecommerce-customer-info">
-              <button   ng-click="saveItem()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
-              <button class="btn btn-warning cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+              <button  ng-click="approveProduct()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
+              <button  ng-click="rejectProduct()"   class="btn btn-warning cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
             </div></div>
     </div>
 
