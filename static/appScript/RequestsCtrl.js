@@ -1,6 +1,5 @@
 
 function RequestsCtrl($scope, $http){	
-	console.log($scope,$http);
 	$scope.auth=getAuth();
 	this.init($scope);	
 function getParam( name )
@@ -16,7 +15,6 @@ else
 }
 
 
-console.log(window.location.href);	
 	//Grid,dropdown data loading
 	loadGridData($scope.pagingOptions.pageSize,1);
 	
@@ -67,6 +65,22 @@ console.log(window.location.href);
 		$scope.fgShowHide=false;				
 		$scope.viewProfileDetail =name;
 		$scope.viewtype = type;
+
+		// call API
+			loadData('getUserById',{'UserId' : getParam( 'id' )}).success(function(row){
+
+				$scope.MEmail=row.Email;
+				$scope.MCompanyName=row.CompanyName;
+				$scope.MobileNumber=row.MobileNumber;
+				$scope.Address=row.Address;
+				$scope.Landmark=row.Landmark;
+				$scope.GSTIN=row.GSTIN;
+				$scope.State=row.SName;
+				$scope.Country=row.CName;
+				$scope.VatNumber=row.VatNumber;
+				$scope.fgShowHide = false;
+
+			});
 		}
 	}
 	$scope.viewManufacturerItem=function(row){	

@@ -5,6 +5,7 @@ class Requests_ctrl extends base_ctrl {
 	function __construct() {
 		parent::__construct();		
 	    $this->load->model('request_model','model');
+	    $this->load->model('manufacture_model','manufacture_model');
 	}
 	public function index()
 	{
@@ -77,6 +78,11 @@ class Requests_ctrl extends base_ctrl {
 	{	
 		$data=$this->post();
 		print json_encode($this->model->get($data->RoleId));
+	}
+	public function getUserById()
+	{	
+		$data=$this->post();
+		print json_encode($this->manufacture_model->getWithJoin($data->UserId));
 	}
 	public function get_all()
 	{		

@@ -36,7 +36,7 @@
 
                                 </td>
                                 <td class="text-center">
-                                   <a ng-click="viewManufacturerItem(item)" href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Manufacture&type=Edited" ng-if="item.Status % 2 != 0" class="btn btn-outline-info"> <i class="os-icon os-icon-eye" style="margin-top: -3px;"></i></a>
+                                   <a ng-click="viewManufacturerItem(item)" href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Manufacture&type=Edited&id={{item.UserId}}" ng-if="item.Status % 2 != 0" class="btn btn-outline-info"> <i class="os-icon os-icon-eye" style="margin-top: -3px;"></i></a>
                                    <a ng-click="viewManufacturerItem(item)" href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Manufacture&type=New" ng-if="item.Status % 2 == 0" class="btn btn-outline-info"> <i class="os-icon os-icon-eye" style="margin-top: -3px;"></i></a>
                                 </td>
                             </tr>

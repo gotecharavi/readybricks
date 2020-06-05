@@ -61,6 +61,11 @@ class Manufacture_model extends CI_Model
     {
         return $this->db->where('MenuId', $id)->get($this->table)->row();
     }
+    public function getWithJoin($id)
+    {
+		return $this->db->join('users','users.UserId=manufacture.UserId')->where('users.UserId', $id)->get($this->table)->row();		
+    }
+
   
     public function add($data)
     {
