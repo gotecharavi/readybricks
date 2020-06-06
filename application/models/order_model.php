@@ -85,7 +85,7 @@ class Order_model extends CI_Model
 		$data=$this->db->get($this->table)->result();
 		
 		$total=count($data);
-		return array("data"=>$data, "total"=>$total??'');
+		return array("data"=>$data, "total"=>$total);
 	}
 	public function get_page_where($size, $pageno, $params){
 
