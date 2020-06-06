@@ -14,6 +14,7 @@ class Request_model extends CI_Model
 			->select('users.*,manufacture.MenuId,manufacture.GSTIN,manufacture.VatNumber')
              ->join('users', 'users.UserId = manufacture.UserId', 'inner')
              ->where('role','3')
+             ->where('users.isAccount !=','1')
 		 	->group_by('UserId');
         $data['manufacturer']=$this->db->get($this->table)->result();
         
@@ -21,6 +22,7 @@ class Request_model extends CI_Model
         ->limit($size, $pageno)
         ->select('users.*,transporter.TransId,transporter.GSTIN,transporter.VatNumber')
          ->join('users', 'users.UserId = transporter.UserId', 'inner')
+         ->where('users.isAccount !=','1')
          ->group_by('UserId');
     $data['transporter']=$this->db->get('transporter')->result();
 
@@ -28,6 +30,7 @@ class Request_model extends CI_Model
     $this->db
     ->limit($size, $pageno)
     ->select('product.*,users.CompanyName')
+    ->where('product.isAccount !=','1')
     ->join('users', 'users.UserId = product.PManuId', 'inner');
 $data['products']=$this->db->get('product')->result();
 
@@ -91,16 +94,16 @@ $data['products']=$this->db->get('product')->result();
     public function rejectSaveProduct($data)
     {
         if(isset($data->data->ProductId)){
-            return $this->db->where('ProductId', $data->data->ProductId)->update('product', ['Reason'=>$data->data->Reason,'isAccount'=>'0']);
+            return $this->db->where('ProductId', $data->data->ProductId)->update('product', ['Reason'=>$data->data->Reason,'isAccount'=>'2']);
         }
-        return $this->db->where('UserId', $data->data->UserId)->update('users', ['Reason'=>$data->data->Reason,'isAccount'=>'0']);
+        return $this->db->where('UserId', $data->data->UserId)->update('users', ['Reason'=>$data->data->Reason,'isAccount'=>'2']);
 
     }
     
     
     public function reject($id)
     {
-        return $this->db->where('UserId', $id)->update('users', ['isAccount'=>'0']);
+        return $this->db->where('UserId', $id)->update('users', ['isAccount'=>'2']);
     }
     public function delete($id)
     {

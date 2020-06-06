@@ -14,6 +14,7 @@ class Transporter_model extends CI_Model
 			->select('country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,transporter.TransId,users.FirstName,users.LastName,users.MobileNumber ,users.Address,users.Email,users.Status,transporter.GSTIN,transporter.VatNumber')
 			->join('users','users.UserId=transporter.UserId')
 			->join('country','country.CId=users.CountryId','left')
+			->where('users.isAccount','1')
 			->join('state','state.StateId=users.StateId','left');
 			
 		$data=$this->db->get($this->table)->result();

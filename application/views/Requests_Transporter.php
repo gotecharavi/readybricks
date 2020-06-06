@@ -32,7 +32,8 @@
                                 <td>{{item.Email}}</td>
                                 <td>{{item.Address}}</td>
                                 <td>
-                                    <a class="badge badge-danger" href="" ng-if="item.Status % 2 == 0">New</a>
+                                <a class="badge badge-danger" href="" ng-if="((item.Status % 2) == 0 && (item.isAccount=='2'))">Rejected</a>
+                                    <a class="badge badge-danger" href="" ng-if="((item.Status % 2 == 0 && item.isAccount!=='2'))">New</a>
                                     <a class="badge badge-success" href="" ng-if="item.Status % 2 != 0">Edited</a>
                                 </td>
                                 <td class="text-center">
