@@ -15,6 +15,7 @@ class Request_model extends CI_Model
              ->join('users', 'users.UserId = manufacture.UserId', 'inner')
              ->where('role','3')
              ->where('users.IsAccount !=','1')
+             ->where('users.PUserId ','0')
 		 	->group_by('UserId');
         $data['manufacturer']=$this->db->get($this->table)->result();
         
@@ -23,6 +24,7 @@ class Request_model extends CI_Model
         ->select('users.*,transporter.TransId,transporter.GSTIN,transporter.VatNumber')
          ->join('users', 'users.UserId = transporter.UserId', 'inner')
          ->where('users.IsAccount !=','1')
+         ->where('users.PUserId ','0')
          ->group_by('UserId');
     $data['transporter']=$this->db->get('transporter')->result();
 
@@ -31,6 +33,7 @@ class Request_model extends CI_Model
     ->limit($size, $pageno)
     ->select('product.*,users.CompanyName')
     ->where('product.IsAccount !=','1')
+    ->where('product.PProductId ','0')
     ->join('users', 'users.UserId = product.PManuId', 'inner');
 $data['products']=$this->db->get('product')->result();
 
@@ -90,6 +93,8 @@ $data['products']=$this->db->get('product')->result();
     {
 
         return $this->db->where('ProductId', $id)->update('product', ['IsAccount'=>'1']);
+        $this->db->where('PUserId', $id)->delete('users');
+        return $this->db->where('UserId', $id)->update('users', ['IsEdited'=>'0','Status'=>'1','isAccount'=>'1']);
     }
     public function rejectSaveProduct($data)
     {
