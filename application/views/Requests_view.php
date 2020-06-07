@@ -1,4 +1,4 @@
-<script src="static/appScript/RequestsCtrl.js?fldklkfkllkmkjfkllfkmkkkklkljmllldmmfkmjdf4"></script>
+<script src="static/appScript/RequestsCtrl.js?g;kmkrllkkkfl;kkldkll;jmllldmmfkmjdf4"></script>
 <script>function getAuth(){ <?php echo $fx ?>;}</script>
 <?php if ($read): ?>
 <div ng-controller="RequestsCtrl">
@@ -247,14 +247,17 @@
                 <div class="sub-info-label">Vat Number</div>
                 <div class="sub-info-value">{{VatNumber}}</div>
               </div>
-
+              <div  ng-if="isAccount == 2"  class="ecc-sub-info-row">
+                <div class="sub-info-label">Reason</div>
+                <div class="sub-info-value">{{Reason}}</div>
+              </div>
 
             </div>   
             <div class="row m-b" ng-if="viewtype=='New'">
           <div class="text-center col-md-12">
            <div class="ecommerce-customer-info">
               <button   ng-click="approve()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
-              <button   ng-click="reject()" class="btn btn-warning cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+              <button   ng-click="reject()" ng-if="isAccount != 2" class="btn btn-warning cancel reject_product_cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
             </div>
             </div>
       </div>
@@ -299,6 +302,10 @@
                 <div class="sub-info-label">Vat Number</div>
                 <div class="sub-info-value">{{VatNumber}}</div>
               </div>
+              <div  ng-if="isAccount == 2"  class="ecc-sub-info-row">
+                <div class="sub-info-label">Reason</div>
+                <div class="sub-info-value">{{Reason}}</div>
+              </div>
               <input type="hidden" name="UserId" id="UserId" ng-model="item.UserId" >
 
             </div>
@@ -312,7 +319,7 @@
           <div class="text-center col-md-12">
            <div class="ecommerce-customer-info">
               <button   ng-click="approve()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
-              <button   ng-click="reject()" class="btn btn-warning cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+              <button   ng-click="reject()" ng-if="isAccount != 2" class="btn btn-warning cancel reject_product_cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
             </div></div>
     </div>
 
@@ -536,12 +543,15 @@
                 <div class="sub-info-label">Description</div>
                 <div class="sub-info-value">{{PDescription}}</div>
               </div>
-              
+              <div ng-if="isAccount == 2" class="ecc-sub-info-row">
+                <div class="sub-info-label">Reason</div>
+                <div class="sub-info-value">{{Reason}}</div>
+              </div>
 
             </div>   
             <div ng-if="viewtype=='New'">
               <button   ng-click="approveProduct()" class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
-              <button ng-click="rejectProduct()"  class="btn btn-warning cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+              <button ng-click="rejectProduct()"  ng-if="isAccount != 2"  class="btn btn-warning cancel reject_product_cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
             </div>
       </div>
         
@@ -575,7 +585,10 @@
                 <div class="sub-info-label">Description</div>
                 <div class="sub-info-value">{{PDescription}}</div>
               </div>
-
+              <div ng-if="isAccount == 2" class="ecc-sub-info-row">
+                <div class="sub-info-label">Reason</div>
+                <div class="sub-info-value">{{Reason}}</div>
+              </div>
 
             </div>
       </div>
@@ -588,7 +601,7 @@
           <div class="text-center col-md-12">
            <div class="ecommerce-customer-info">
               <button  ng-click="approveProduct()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
-              <button  ng-click="rejectProduct()"   class="btn btn-warning cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+              <button   ng-click="rejectProduct()" ng-if="isAccount != 2" class="btn btn-warning cancel reject_product_cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
             </div></div>
     </div>
 

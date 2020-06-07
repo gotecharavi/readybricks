@@ -46,7 +46,7 @@ else
             });
 			//toastr.success(data.msg);
 			if(data.success){
-				loadGridData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+				loadGridData($scope.pagingOptions.pageSize,1);
 				$scope.fgShowHide=true;			
 				$scope.item=null;
 			}
@@ -79,10 +79,13 @@ else
 				$scope.Landmark=row.Landmark;
 				$scope.GSTIN=row.GSTIN;
 				$scope.State=row.SName;
+				$scope.Reason=row.Reason;
 				$scope.Country=row.CName;
 				$scope.VatNumber=row.VatNumber;
 				$scope.UserId=row.UserId;
+				$scope.isAccount=row.isAccount;
 				$scope.fgShowHide = false;
+
 
 			});
 		}
@@ -107,6 +110,8 @@ else
 					$scope.Country=row.CName;
 					$scope.VatNumber=row.VatNumber;
 					$scope.UserId=row.UserId;
+					$scope.Reason=row.Reason;
+					$scope.isAccount=row.isAccount;
 					$scope.fgShowHide = false;
 
 				});
@@ -126,6 +131,8 @@ else
 						$scope.PMinDeliveryDays=row.PMinDeliveryDays;
 						$scope.PPrice=row.PPrice;
 						$scope.CompanyName=row.CompanyName;
+						$scope.Reason=row.Reason;
+						$scope.isAccount=row.isAccount;
 						$scope.PDescription=row.PDescription;
 		
 					});
@@ -158,19 +165,29 @@ else
 	$scope.rejectProduct=function(row){
 		console.log($scope.item);
 		console.log(row);
+		// $scope.viewProfileDetail(getParam( 'user' ),getParam( 'type' ));
 		$scope.item = $scope.item;
 	}
 	$scope.rejectSaveProduct=function(row){
 
 			var id = {'data':row};
 			loadData('rejectSaveProduct',id).success(function(data){
-				loadGridData($scope.pagingOptions.pageSize,$scope.pagingOptions.currentPage);
+				console.log(data);
+				loadGridData($scope.pagingOptions.pageSize,1);
 		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data rejected successfully</p>', {
 		                type: 'info',
 		                delay: 2500,
 		                allow_dismiss: true
 					});
+					$scope.isAccount=2;
+					$('.reject_product_cancel').hide();
+					// $scope.viewProfileDetail=false;
+					// $scope.fgShowHide=true;
+
+					// $window.open('localhost/readybricks5/index.php/#/Requests');
+					// $scope.viewProfileDetail(getParam( 'user' ),getParam( 'type' ));
 					document.getElementById("openModalButton").click();
+					// window.location.href="/#/Requests";
 					
 			});
 			
@@ -181,7 +198,7 @@ else
 		if(confirm('Delete sure!')){
 			var id = {'id':row};
 			loadData('delete',id).success(function(data){
-				loadGridData($scope.pagingOptions.pageSize,$scope.pagingOptions.currentPage);
+				loadGridData($scope.pagingOptions.pageSize,1);
 		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data removed successfully</p>', {
 		                type: 'info',
 		                delay: 2500,
@@ -196,7 +213,7 @@ else
 		if(confirm('Sure!')){
 			var id = {'id':$scope.item.UserId};
 			loadData('approve',id).success(function(data){
-				loadGridData($scope.pagingOptions.pageSize,$scope.pagingOptions.currentPage);
+				loadGridData($scope.pagingOptions.pageSize,1);
 		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data Approved successfully</p>', {
 		                type: 'info',
 		                delay: 2500,
@@ -209,7 +226,7 @@ else
 		if(confirm('Sure!')){
 			var id = {'id':$scope.item.ProductId};
 			loadData('approve_product',id).success(function(data){
-				loadGridData($scope.pagingOptions.pageSize,$scope.pagingOptions.currentPage);
+				loadGridData($scope.pagingOptions.pageSize,1);
 		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data Approved successfully</p>', {
 		                type: 'info',
 		                delay: 2500,
@@ -222,7 +239,7 @@ else
 	// 	if(confirm('Sure!')){
 	// 		var id = {'id':$scope.item.UserId};
 	// 		loadData('reject',id).success(function(data){
-	// 			loadGridData($scope.pagingOptions.pageSize,$scope.pagingOptions.currentPage);
+	// 			loadGridData($scope.pagingOptions.pageSize,1);
 	// 	            $.bootstrapGrowl('<h4>Success!</h4> <p>Data Rejected successfully</p>', {
 	// 	                type: 'info',
 	// 	                delay: 2500,
@@ -240,7 +257,7 @@ else
 
 			var id = {'data':row};
 			loadData('rejectSave',id).success(function(data){
-				loadGridData($scope.pagingOptions.pageSize,$scope.pagingOptions.currentPage);
+				loadGridData($scope.pagingOptions.pageSize,1);
 		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data rejected successfully</p>', {
 		                type: 'info',
 		                delay: 2500,
@@ -252,7 +269,7 @@ else
 	$scope.changeItemStatus=function(row,status){
 			var data = {'id':row,'status':status};
 			loadData('changestatus',data).success(function(data){
-				loadGridData($scope.pagingOptions.pageSize,$scope.pagingOptions.currentPage);
+				loadGridData($scope.pagingOptions.pageSize,1);
 		            $.bootstrapGrowl('<h4>Success!</h4> <p>'+data.msg+'</p>', {
 		                type: 'info',
 		                delay: 2500,
@@ -265,7 +282,7 @@ else
 	
 	$scope.setPage = function(page){
 		$scope.pagingOptions.currentPage=page;
-	 	loadGridData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
+		loadGridData($scope.pagingOptions.pageSize,1);
 	}
 	//search
 	$scope.doSearch=function(){
