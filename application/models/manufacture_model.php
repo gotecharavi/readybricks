@@ -64,7 +64,9 @@ class Manufacture_model extends CI_Model
     }
     public function getWithJoin($id)
     {
-		return $this->db->join('users','users.UserId=manufacture.UserId')->where('users.UserId', $id)->get($this->table)->row();		
+		$data['trans1']=$this->db->join('users','users.UserId=manufacture.UserId')->where('users.UserId', $id)->get($this->table)->row();		
+		$data['trans2']=$this->db->join('users','users.PUserId=manufacture.UserId')->where('users.PUserId', $id)->get($this->table)->row();		
+		return $data;
     }
 
   

@@ -71,19 +71,35 @@ else
 
 			loadData('getUserById',{'UserId' : getParam( 'id' )}).success(function(row){
 				console.log(row);
-				$scope.item=row;
-				$scope.MEmail=row.Email;
-				$scope.MCompanyName=row.CompanyName;
-				$scope.MobileNumber=row.MobileNumber;
-				$scope.Address=row.Address;
-				$scope.Landmark=row.Landmark;
-				$scope.GSTIN=row.GSTIN;
-				$scope.State=row.SName;
-				$scope.Reason=row.Reason;
-				$scope.Country=row.CName;
-				$scope.VatNumber=row.VatNumber;
-				$scope.UserId=row.UserId;
-				$scope.isAccount=row.isAccount;
+				var row1,row2;
+				row1=row.trans1;
+				row2=row.trans2;
+				$scope.item=row1;
+				$scope.MEmail=row1.Email;
+				$scope.MCompanyName=row1.CompanyName;
+				$scope.MobileNumber=row1.MobileNumber;
+				$scope.Address=row1.Address;
+				$scope.Landmark=row1.Landmark;
+				$scope.GSTIN=row1.GSTIN;
+				$scope.State=row1.SName;
+				$scope.Reason=row1.Reason;
+				$scope.Country=row1.CName;
+				$scope.VatNumber=row1.VatNumber;
+				$scope.UserId=row1.UserId;
+
+				$scope.MEmail2=row2.Email;
+				$scope.MCompanyName2=row2.CompanyName;
+				$scope.MobileNumber2=row2.MobileNumber;
+				$scope.Address2=row2.Address;
+				$scope.Landmark2=row2.Landmark;
+				$scope.GSTIN2=row2.GSTIN;
+				$scope.State2=row2.SName;
+				$scope.Reason2=row2.Reason;
+				$scope.Country2=row2.CName;
+				$scope.VatNumber2=row2.VatNumber;
+				$scope.UserId2=row2.UserId;
+
+				$scope.isAccount=row1.isAccount;
 				$scope.fgShowHide = false;
 
 
@@ -99,19 +115,35 @@ else
 
 				loadData('getUserById',{'UserId' : getParam( 'id' ),'type':name}).success(function(row){
 					console.log(row);
-					$scope.item=row;
-					$scope.MEmail=row.Email;
-					$scope.MCompanyName=row.CompanyName;
-					$scope.MobileNumber=row.MobileNumber;
-					$scope.Address=row.Address;
-					$scope.Landmark=row.Landmark;
-					$scope.GSTIN=row.GSTIN;
-					$scope.State=row.SName;
-					$scope.Country=row.CName;
-					$scope.VatNumber=row.VatNumber;
-					$scope.UserId=row.UserId;
-					$scope.Reason=row.Reason;
-					$scope.isAccount=row.isAccount;
+					row1=row.trans1;
+					row2=row.trans2;
+					$scope.item=row1;
+					$scope.MEmail=row1.Email;
+					$scope.MCompanyName=row1.CompanyName;
+					$scope.MobileNumber=row1.MobileNumber;
+					$scope.Address=row1.Address;
+					$scope.Landmark=row1.Landmark;
+					$scope.GSTIN=row1.GSTIN;
+					$scope.State=row1.SName;
+					$scope.Country=row1.CName;
+					$scope.VatNumber=row1.VatNumber;
+					$scope.UserId=row1.UserId;
+					$scope.Reason=row1.Reason;
+
+					$scope.MEmail2=row2.Email;
+					$scope.MCompanyName2=row2.CompanyName;
+					$scope.MobileNumber2=row2.MobileNumber;
+					$scope.Address2=row2.Address;
+					$scope.Landmark2=row2.Landmark;
+					$scope.GSTIN2=row2.GSTIN;
+					$scope.State2=row2.SName;
+					$scope.Country2=row2.CName;
+					$scope.VatNumber2=row2.VatNumber;
+					$scope.UserId2=row2.UserId;
+					$scope.Reason2=row2.Reason;
+
+
+					$scope.isAccount=row1.isAccount;
 					$scope.fgShowHide = false;
 
 				});
@@ -125,15 +157,25 @@ else
 		
 		
 					loadData('getProductById',{'PId' : getParam( 'id' )}).success(function(row){
-						console.log(row);
-						$scope.item=row;
-						$scope.PName=row.PName;
-						$scope.PMinDeliveryDays=row.PMinDeliveryDays;
-						$scope.PPrice=row.PPrice;
-						$scope.CompanyName=row.CompanyName;
-						$scope.Reason=row.Reason;
-						$scope.isAccount=row.isAccount;
-						$scope.PDescription=row.PDescription;
+						// console.log(row);
+						row1=row.product_by_id;
+						prow=row.product_by_pid;
+						$scope.item=row1;
+						$scope.PName=row1.PName;
+						$scope.PMinDeliveryDays=row1.PMinDeliveryDays;
+						$scope.PPrice=row1.PPrice;
+						$scope.CompanyName=row1.CompanyName;
+						$scope.Reason=row1.Reason;
+						$scope.isAccount=row1.isAccount;
+						$scope.PDescription=row1.PDescription;
+						
+						$scope.PName2=prow.PName;
+						$scope.PMinDeliveryDays2=prow.PMinDeliveryDays;
+						$scope.PPrice2=prow.PPrice;
+						$scope.CompanyName2=prow.CompanyName;
+						$scope.Reason2=prow.Reason;
+						$scope.isAccount2=prow.isAccount;
+						$scope.PDescription2=prow.PDescription;
 		
 					});
 				}
@@ -183,7 +225,7 @@ else
 					$('.reject_product_cancel').hide();
 					// $scope.viewProfileDetail=false;
 					// $scope.fgShowHide=true;
-
+					// $scope.fgShowHide = false;
 					// $window.open('localhost/readybricks5/index.php/#/Requests');
 					// $scope.viewProfileDetail(getParam( 'user' ),getParam( 'type' ));
 					document.getElementById("openModalButton").click();
@@ -214,6 +256,8 @@ else
 			var id = {'id':$scope.item.UserId};
 			loadData('approve',id).success(function(data){
 				loadGridData($scope.pagingOptions.pageSize,1);
+				$scope.viewProfileDetail=false;
+				$scope.fgShowHide=true;
 		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data Approved successfully</p>', {
 		                type: 'info',
 		                delay: 2500,
@@ -227,6 +271,8 @@ else
 			var id = {'id':$scope.item.ProductId};
 			loadData('approve_product',id).success(function(data){
 				loadGridData($scope.pagingOptions.pageSize,1);
+				$scope.viewProfileDetail=false;
+					$scope.fgShowHide=true;
 		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data Approved successfully</p>', {
 		                type: 'info',
 		                delay: 2500,

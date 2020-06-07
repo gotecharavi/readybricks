@@ -1,4 +1,4 @@
-<script src="static/appScript/RequestsCtrl.js?g;kmkrllkkkfl;kkldkll;jmllldmmfkmjdf4"></script>
+<script src="static/appScript/RequestsCtrl.js"></script>
 <script>function getAuth(){ <?php echo $fx ?>;}</script>
 <?php if ($read): ?>
 <div ng-controller="RequestsCtrl">
@@ -279,32 +279,32 @@
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Email </div>
-                <div class="sub-info-value"><a href="#">{{MEmail}}</a><!-- <strong class="badge badge-danger" style="float: right;"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong> -->
+                <div class="sub-info-value"><a href="#">{{MEmail2}}</a><!-- <strong class="badge badge-danger" style="float: right;"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong> -->
                 </div>
               </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Phone Number</div>
-                <div class="sub-info-value"><a href="#">{{MobileNumber}}</a> <!-- <strong class="badge badge-success" style="float: right;"><i class="os-icon os-icon-checkmark " ></i></strong> -->
+                <div class="sub-info-value"><a href="#">{{MobileNumber2}}</a> <!-- <strong class="badge badge-success" style="float: right;"><i class="os-icon os-icon-checkmark " ></i></strong> -->
                 </div>
               </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Address</div>
-                <div class="sub-info-value">{{Address}}, {{Landmark}}<br/>{{State}}, {{Country}}</div>
+                <div class="sub-info-value">{{Address2}}, {{Landmark2}}<br/>{{State2}}, {{Country2}}</div>
               </div>
 
                <div class="ecc-sub-info-row">
                 <div class="sub-info-label">GSTIN / UIN Number</div>
-                <div class="sub-info-value">{{GSTIN}}</div>
+                <div class="sub-info-value">{{GSTIN2}}</div>
               </div>
                <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Vat Number</div>
-                <div class="sub-info-value">{{VatNumber}}</div>
+                <div class="sub-info-value">{{VatNumber2}}</div>
               </div>
               <div  ng-if="isAccount == 2"  class="ecc-sub-info-row">
                 <div class="sub-info-label">Reason</div>
-                <div class="sub-info-value">{{Reason}}</div>
+                <div class="sub-info-value">{{Reason2}}</div>
               </div>
               <input type="hidden" name="UserId" id="UserId" ng-model="item.UserId" >
 
@@ -569,25 +569,25 @@
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Product Name</div>
-                <div class="sub-info-value">{{PName}}</div>
+                <div class="sub-info-value">{{PName2}}</div>
               </div>
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">MIN DELIVERY DAYS </div>
-                <div class="sub-info-value"><a href="#">{{PMinDeliveryDays}}</a></div>
+                <div class="sub-info-value"><a href="#">{{PMinDeliveryDays2}}</a></div>
               </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">PRICE</div>
-                <div class="sub-info-value"><a href="#">{{PPrice}}</a> </div>
+                <div class="sub-info-value"><a href="#">{{PPrice2}}</a> </div>
               </div>
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Description</div>
-                <div class="sub-info-value">{{PDescription}}</div>
+                <div class="sub-info-value">{{PDescription2}}</div>
               </div>
               <div ng-if="isAccount == 2" class="ecc-sub-info-row">
                 <div class="sub-info-label">Reason</div>
-                <div class="sub-info-value">{{Reason}}</div>
+                <div class="sub-info-value">{{Reason2}}</div>
               </div>
 
             </div>

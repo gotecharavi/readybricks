@@ -90,7 +90,9 @@ class Product_model extends CI_Model
 	public function getWithJoin($id)
     {
 
-		return $this->db->select('product.*,users.CompanyName')->join('users','users.UserId=product.PManuId')->where('product.ProductId', $id)->get($this->table)->row();		
+		$data['product_by_id']=$this->db->select('product.*,users.CompanyName')->join('users','users.UserId=product.PManuId')->where('product.ProductId', $id)->get($this->table)->row();		
+		$data['product_by_pid']=$this->db->where('product.PProductId', $id)->get($this->table)->row();		
+		return $data;
     }
 	// print  json_encode($this->country->get_all());
 }

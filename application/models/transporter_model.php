@@ -11,10 +11,11 @@ class Transporter_model extends CI_Model
 	public function get_page($size, $pageno){
 		$this->db
 			->limit($size, $pageno)
-			->select('country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,transporter.TransId,users.FirstName,users.LastName,users.MobileNumber ,users.Address,users.Email,users.Status,transporter.GSTIN,transporter.VatNumber')
+			->select('country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,transporter.TransId,users.FirstName,users.LastName,users.MobileNumber ,users.Address,users.PUserId,users.IsEdited,users.Email,users.Status,transporter.GSTIN,transporter.VatNumber')
 			->join('users','users.UserId=transporter.UserId')
 			->join('country','country.CId=users.CountryId','left')
 			->where('users.isAccount','1')
+			->where('users.PUserId','0')
 			->join('state','state.StateId=users.StateId','left');
 			
 		$data=$this->db->get($this->table)->result();
@@ -96,7 +97,10 @@ class Transporter_model extends CI_Model
 	}
 	public function getWithJoin($id)
     {
-		return $this->db->join('users','users.UserId=transporter.UserId')->where('users.UserId', $id)->get($this->table)->row();		
+		$data['trans1']=$this->db->join('users','users.UserId=transporter.UserId')->where('users.UserId', $id)->get($this->table)->row();		
+		$data['trans2']=$this->db->join('users','users.PUserId=transporter.UserId')->where('users.PUserId', $id)->get($this->table)->row();		
+		return $data;
+		// return $this->db->join('users','users.UserId=transporter.UserId')->where('users.UserId', $id)->get($this->table)->row();		
     }
 	
 }
