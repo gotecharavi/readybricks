@@ -20,7 +20,7 @@ class Manufacture_model extends CI_Model
 			 ->join('users', 'users.UserId = manufacture.UserId', 'inner')
 			->join('country','country.CId=users.CountryId','left')
 			->join('state','state.StateId=users.StateId','left')
-			->where('users.isAccount','1')
+			->where('users.IsAccount','1')
 		 	->group_by('UserId');
 		$data=$this->db->get($this->table)->result();
 		$total=$this->count_all();
