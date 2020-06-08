@@ -38,12 +38,10 @@ class Api extends CI_Controller {
         $checkEmail=$this->Users_model->checkSocialEmail($Email);
            if($checkEmail){
                 print json_encode(array('success'=>1, 'msg'=>'Email Address Exists','data'=>$checkEmail));
-                        exit;
-
+                exit;
            }else{
 
                 print json_encode(array('success'=>0, 'msg'=>'Email Address Not Exists'));
-                        exit;
            }
 
     }
@@ -89,19 +87,18 @@ class Api extends CI_Controller {
                             $addTransporter = $this->Transporter_model->add(array('UserId'=>$addUser,'GSTIN'=>$GstNo,'VatNumber'=>$VatNo));;
                         }
                         print json_encode(array('success'=>1, 'msg'=>'Signup step2 successful','data'=>$addUser));
-                        exit;
+                    exit;
 
                     }else{
 
                     print json_encode(array('success'=>3, 'msg'=>'Mobile Number Already Exists'));
-                        exit;
+                    exit;
 
                     }
 
             }else{
                         print json_encode(array('success'=>2, 'msg'=>'Email Already Exists'));
 
-                        exit;
             }            
 
         exit;
@@ -117,21 +114,11 @@ class Api extends CI_Controller {
          $CityId    = $post->CityId;
          $UserId    = $post->UserId;
 
-          $getUser=$this->Users_model->getId($UserId);
-          $IsAccount = 0;
-            if($getUser){
-                $Role = $getUser->Role;
-                if($Role == 2){
-                    $IsAccount = 1;
-                }
-            }
-            $updateUser=$this->Users_model->update($UserId,array('Address'=>$Address,'Landmark'=>$Landmark,'CountryId'=>$CountryId,'StateId'=>$StateId,'CityId'=>$CityId,'IsAccount'=>$IsAccount,'Status'=>1));
+            $updateUser=$this->Users_model->update($UserId,array('Address'=>$Address,'Landmark'=>$Landmark,'CountryId'=>$CountryId,'StateId'=>$StateId,'CityId'=>$CityId,'Status'=>'1'));
             if($updateUser){
                 print json_encode(array('success'=>1, 'msg'=>'Signup successful','data'=>$updateUser));
-                exit;
             }else{
                 print json_encode(array('success'=>0, 'msg'=>'Something Wrong'));
-                exit;
             }
 
 
@@ -145,7 +132,7 @@ class Api extends CI_Controller {
          if(!$email){
 
             print json_encode(array('success'=>0, 'msg'=>'Enter Complete login form','data'=>'e - '.$email));
-            exit;
+                    exit;
 
          }else{
             $finaldata=$this->Users_model->checklogin($email);
@@ -153,35 +140,18 @@ class Api extends CI_Controller {
                    if($finaldata->Password==md5($password)){
 
                         unset($finaldata->Password);
-
-                        if($finaldata->IsAccount ==0){
-
-                        print json_encode(array('success'=>2, 'msg'=>'Account Not Verify'));
-                        exit;
-
-                        }
-                        if($finaldata->IsAccount ==2){
-
-                        print json_encode(array('success'=>3, 'msg'=>$finaldata->Reason));
-                        exit;
-
-                        }
-
-
                         print json_encode(array('success'=>1, 'msg'=>'Login successful','data'=>$finaldata));
-                        exit;
-
-                    }else{
-
-                    print json_encode(array('success'=>0, 'msg'=>'Password Not Match'));
                     exit;
 
-                    }
+                        }else{
+
+                        print json_encode(array('success'=>0, 'msg'=>'Password Not Match'));
+                    exit;
+
+                        }
 
             }else{
-
-
-                print json_encode(array('success'=>0, 'msg'=>'Invalid Username and Password'));
+                        print json_encode(array('success'=>0, 'msg'=>'Email or Mobile Not Exists'));
 
             }            
 
@@ -256,26 +226,18 @@ class Api extends CI_Controller {
          $Price      = $post->Price;
          $Description      = $post->Description;
          $AdditionalInfo      = isset($post->AdditionalInfo) ? $post->AdditionalInfo : '';
-         $IsImage      = $post->IsImage;
          $curdate= date('Y-m-d h:i:s');
          $Image = "";
-         $getProductById= $this->Product_model->getId($ProductId);
-         $Image = $getProductById->PImage;
-         if($IsImage == 1){
+         if(isset($post->Image) && $post->Image !=""){
+            $new_data=explode(",",$post->Image);
+            $exten=explode('/',$new_data[0]);
+            $exten1=explode(';',$exten[1]);
+            $decoded=base64_decode($new_data[1]);
+            $Image='product_'.uniqid().'.'.$exten1[0];
+            file_put_contents(APPPATH.'../uploads/'.$Image,$decoded);
+         }
 
-             if(isset($post->Image) && $post->Image !=""){
-                $new_data=explode(",",$post->Image);
-                $exten=explode('/',$new_data[0]);
-                $exten1=explode(';',$exten[1]);
-                $decoded=base64_decode($new_data[1]);
-                $Image='product_'.uniqid().'.'.$exten1[0];
-                file_put_contents(APPPATH.'../uploads/'.$Image,$decoded);
-             }
-        }
-
-         $updateProduct = $this->Product_model->update($ProductId,array('IsEdited'=>'1'));
-         
-         $addProduct = $this->Product_model->add(array('PProductId'=>$ProductId,'PManuId'=>$getProductById->PManuId,'PName'=>$Name,'PMinDeliveryDays'=>$MinDeliveryDays,'PImage'=>$Image,'PPrice'=>$Price,'PDescription'=>$Description,'PAdditionalInfo'=>$AdditionalInfo,'Created_At'=>$curdate,'Updated_At'=>$curdate));
+         $updateProduct = $this->Product_model->update($ProductId,array('PName'=>$Name,'PMinDeliveryDays'=>$MinDeliveryDays,'PImage'=>$Image,'PPrice'=>$Price,'PDescription'=>$Description,'PAdditionalInfo'=>$AdditionalInfo,'Updated_At'=>$curdate));
          if($updateProduct){
             print json_encode(array('success'=>1, 'msg'=>'Product Updated Successfully'));
 

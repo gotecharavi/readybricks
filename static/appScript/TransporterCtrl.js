@@ -95,6 +95,7 @@ function TransporterCtrl($scope, $http){
 		$scope.datatype='Edit';
 		console.log($scope.item);
 		$scope.item.Name=row.CompanyName;
+		$scope.item.Password = null;
 		$scope.item.PhoneNo=row.MobileNumber;
 		$scope.item.Country =row.CountryId;
 		$scope.item.State = null;
@@ -114,11 +115,13 @@ function TransporterCtrl($scope, $http){
 		$scope.Email=row.Email;
 		$scope.Name=row.FirstName+' '+row.LastName;
 		$scope.MobileNumber=row.MobileNumber;
+		$scope.IsMobileNumberVerify=row.IsMobileNumberVerify;
 		$scope.Address=row.Address;
 		$scope.Landmark=row.Landmark;
 		$scope.GSTIN=row.GSTIN;
 		$scope.State=row.SName;
 		$scope.Country=row.CName;
+		$scope.CityName=row.CityName;
 		$scope.VatNumber=row.VatNumber;
 		$scope.fgShowHide = false;
 		$scope.viewProfileDetail = true;

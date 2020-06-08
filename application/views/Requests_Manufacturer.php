@@ -21,7 +21,8 @@
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>Name</th><th>Company Name</th><th>Phone No</th><th>Email</th><th>Address</th><th>Status</th> 
+                                <th>Company Name</th><th>Phone No</th><th>Email</th><th>Address</th><th>Status</th> 
+                                <th>Action</th>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -31,17 +32,17 @@
                                 <td>{{item.Email}}</td>
                                 <td>{{item.Address}}</td>
                                 <td>
-                                    <a class="badge badge-danger" href="" ng-if="((item.Status % 2) == 0 && (item.isAccount=='2'))">Rejected</a>
-                                    <a class="badge badge-danger" href="" ng-if="((item.Status % 2 == 0 && item.isAccount!=='2'))">New</a>
-                                    <a class="badge badge-success" href="" ng-if="item.Status % 2 != 0">Edited</a>
+                                    <a class="badge badge-danger" href="" ng-if="item.IsAccount=='2' ">Rejected</a>
+                                    <a class="badge badge-primary" href="" ng-if="item.IsEdited == 0 && item.IsAccount ==0">New</a>
+                                    <a class="badge badge-success" href="" ng-if="item.IsEdited == 1 && item.IsAccount ==1">Edited</a>
 
                                 </td>
                                 <td class="text-center">
-                                   <a ng-click="viewManufacturerItem(item)" href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Manufacture&type=Edited&id={{item.UserId}}" ng-if="item.IsEdited % 2 != 0" class="btn btn-outline-info"> <i class="os-icon os-icon-eye" style="margin-top: -3px;"></i></a>
-                                   <a ng-click="viewManufacturerItem(item)" href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Manufacture&type=New&id={{item.UserId}}" ng-if="item.IsEdited % 2 == 0" class="btn btn-outline-info"> <i class="os-icon os-icon-eye" style="margin-top: -3px;"></i></a>
+                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Manufacture&type=Edited&id={{item.UserId}}" ng-if="item.IsEdited == 1 && item.IsAccount !=0" class="btn btn-outline-info"> <i class="os-icon os-icon-eye" style="margin-top: -3px;"></i></a>
+                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Manufacture&type=New&id={{item.UserId}}"  ng-if="item.IsEdited == 0 && item.IsAccount !=1" class="btn btn-outline-info"> <i class="os-icon os-icon-eye" style="margin-top: -3px;"></i></a>
                                 </td>
                             </tr>
-                            <tr ng-show="list.length ==0"><td colspan="10" class="text-center">Customer Not found</td></tr>
+                            <tr ng-show="list.manufacturer.length ==0"><td colspan="10" class="text-center">Records Not found</td></tr>
 
                             </tbody></table>
 

@@ -11,11 +11,13 @@ class Customer_model extends CI_Model
 	public function get_page($size, $pageno){
 		$this->db
 			->limit($size, $pageno)
-			->select('country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,customer.CustId,users.FirstName,users.LastName,users.MobileNumber ,users.Address,users.Email,users.Status,customer.GSTIN,customer.VatNumber')
+			->select('city.CName as CityName,country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,customer.CustId,users.FirstName,users.LastName,users.MobileNumber ,users.Address,users.Email,users.Status,customer.GSTIN,customer.VatNumber')
 			->join('users','users.UserId=customer.UserId')
 			->join('country','country.CId=users.CountryId','left')
+			->join('city','city.CityId=users.CityId','left')
+			->join('state','state.StateId=users.StateId','left')
 			->where('users.IsAccount','1')
-			->join('state','state.StateId=users.StateId','left');
+			->where('users.PUserId','0');
 			
 		$data=$this->db->get($this->table)->result();
 		$total=$this->count_all();
@@ -23,9 +25,15 @@ class Customer_model extends CI_Model
 	}
 	public function get_page_where($size, $pageno, $params){
 		$this->db->limit($size, $pageno)
-		->select('CustId,Name,PhoneNo,AltPhoneNo,Address,Date,Status');
+			->select('city.CName as CityName,country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,customer.CustId,users.FirstName,users.LastName,users.MobileNumber ,users.Address,users.Email,users.Status,customer.GSTIN,customer.VatNumber')
+			->join('users','users.UserId=customer.UserId')
+			->join('city','city.CityId=users.CityId','left')
+			->join('country','country.CId=users.CountryId','left')
+			->join('state','state.StateId=users.StateId','left')
+			->where('users.IsAccount','1')
+			->where('users.PUserId','0');
 		if(isset($params->search) && !empty($params->search)){
-				$this->db->where("Name LIKE '%$params->search%' OR PhoneNo LIKE '%$params->search%' OR Address LIKE '%$params->search%'  ");
+				$this->db->where("users.FirstName LIKE '%$params->search%' OR users.LastName LIKE '%$params->search%' OR Email LIKE '%$params->search%' OR Address LIKE '%$params->search%' OR MobileNumber LIKE '%$params->search%'  ");
 //				$this->db->like("catName",$params->search);
 			}	
 
@@ -37,17 +45,30 @@ class Customer_model extends CI_Model
 	{	
 // 		$this->db
 // ->join('Navigations', 'Roles.NavigationId = Navigations.NavigationId', 'left outer');
+			$this->db->join('users','users.UserId=customer.UserId')
+			->join('city','city.CityId=users.CityId','left')
+			->join('country','country.CId=users.CountryId','left')
+			->join('state','state.StateId=users.StateId','left')
+			->where('users.IsAccount','1')
+			->where('users.PUserId','0');
 
 		if(isset($params->search) && !empty($params->search)){
-				$this->db->where("Name LIKE '%$params->search%' OR PhoneNo LIKE '%$params->search%' OR Address LIKE '%$params->search%'  ");				// $this->db->like("catId",$params->search);
+				$this->db->where("users.FirstName LIKE '%$params->search%' OR users.LastName LIKE '%$params->search%' OR Email LIKE '%$params->search%' OR Address LIKE '%$params->search%' OR MobileNumber LIKE '%$params->search%'  ");
 				// $this->db->like("catName",$params->search);
 			}	
-		return $this->db->count_all_results($this->table);
+	 	return count($this->db->get($this->table)->result());
 	}
     public function count_all()
 	{
-		return $this->db			
-			->count_all_results($this->table);
+		 $this->db			
+			->join('users','users.UserId=customer.UserId')
+			->join('country','country.CId=users.CountryId','left')
+			->join('city','city.CityId=users.CityId','left')
+			->join('state','state.StateId=users.StateId','left')
+			->where('users.IsAccount','1')
+			->where('users.PUserId','0');
+	 	return count($this->db->get($this->table)->result());
+
 	}
     public function get($id)
     {

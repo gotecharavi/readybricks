@@ -7,11 +7,11 @@
                   Manage Manufacture
                 </h6>
                 <div class="element-box">
-                  <div class="form-desc">
+<!--                   <div class="form-desc">
                         <button type="button" ng-show="auth.insert" ng-click="showForm()" class="btn btn-success" ><i class="icon-plus icon-white"></i><b> Add </b></button>
 
                   </div>
-                  <div class="table-responsive">
+ -->                  <div class="table-responsive">
                         <div class="row">
                             <div class="col-sm-12 col-md-6">
                                 <div class="dataTables_length"><label>Show <select name="dataTable1_length" class="form-control form-control-sm rounded bright" style="width:75px"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries </label></div>
@@ -241,17 +241,21 @@
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Email </div>
-                <div class="sub-info-value"><a href="#">{{Email}}</a><strong class="badge badge-danger" style="float: right;"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong></div>
+                <div class="sub-info-value"><a href="#">{{Email}}</a></div>
               </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Phone Number</div>
-                <div class="sub-info-value"><a href="#">{{MobileNumber}}</a> <strong class="badge badge-success" style="float: right;"><i class="os-icon os-icon-checkmark " ></i></strong></div>
+                <div class="sub-info-value"><a href="#">{{MobileNumber}}</a> 
+                  <strong class="badge badge-success" style="float: right;"  ng-If="IsMobileNumberVerify"><i class="os-icon os-icon-checkmark " ></i></strong>
+                  <strong class="badge badge-danger" style="float: right;" ng-If="!IsMobileNumberVerify"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong>
+
+                </div>
               </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Address</div>
-                <div class="sub-info-value">{{Address}} {{Landmark}}<br/>{{State}}, {{Country}}</div>
+                <div class="sub-info-value">{{Address}} <br/>{{Landmark}}<br/>{{CityName}},{{State}}, {{Country}}</div>
               </div>
 
                <div class="ecc-sub-info-row">

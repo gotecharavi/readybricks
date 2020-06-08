@@ -14,8 +14,8 @@ class Request_model extends CI_Model
 			->select('users.*,manufacture.MenuId,manufacture.GSTIN,manufacture.VatNumber')
              ->join('users', 'users.UserId = manufacture.UserId', 'inner')
              ->where('role','3')
-             ->where('users.IsAccount !=','1')
-             ->where('users.PUserId ','0')
+             ->where("(users.IsAccount !='1' OR users.IsEdited ='1')")
+             ->where('users.PUserId =','0')
 		 	->group_by('UserId');
         $data['manufacturer']=$this->db->get($this->table)->result();
         
@@ -23,7 +23,7 @@ class Request_model extends CI_Model
         ->limit($size, $pageno)
         ->select('users.*,transporter.TransId,transporter.GSTIN,transporter.VatNumber')
          ->join('users', 'users.UserId = transporter.UserId', 'inner')
-         ->where('users.IsAccount !=','1')
+         ->where("(users.IsAccount !='1' OR users.IsEdited ='1')")
          ->where('users.PUserId ','0')
          ->group_by('UserId');
     $data['transporter']=$this->db->get('transporter')->result();
@@ -32,7 +32,7 @@ class Request_model extends CI_Model
     $this->db
     ->limit($size, $pageno)
     ->select('product.*,users.CompanyName')
-    ->where('product.IsAccount !=','1')
+    ->where("(product.IsAccount !='1' OR product.IsEdited ='1')")
     ->where('product.PProductId ','0')
     ->join('users', 'users.UserId = product.PManuId', 'inner');
 $data['products']=$this->db->get('product')->result();
@@ -87,21 +87,20 @@ $data['products']=$this->db->get('product')->result();
     public function approve($id)
     {
 
-        return $this->db->where('UserId', $id)->update('users', ['IsAccount'=>'1']);
+        return $this->db->where('UserId', $id)->update('users', ['IsAccount'=>'1','Reason'=>'']);
     }
     public function approve_product($id)
     {
 
-        return $this->db->where('ProductId', $id)->update('product', ['IsAccount'=>'1']);
-        $this->db->where('PUserId', $id)->delete('users');
-        return $this->db->where('UserId', $id)->update('users', ['IsEdited'=>'0','Status'=>'1','isAccount'=>'1']);
+        return $this->db->where('ProductId', $id)->update('product', ['IsAccount'=>'1','Reason'=>'','PStatus'=>'1']);
+        // $this->db->where('PUserId', $id)->delete('users');
     }
     public function rejectSaveProduct($data)
     {
         if(isset($data->data->ProductId)){
             return $this->db->where('ProductId', $data->data->ProductId)->update('product', ['Reason'=>$data->data->Reason,'IsAccount'=>'2']);
         }
-        return $this->db->where('UserId', $data->data->UserId)->update('users', ['Reason'=>$data->data->Reason,'IsAccount'=>'2']);
+        // return $this->db->where('UserId', $data->data->UserId)->update('users', ['Reason'=>$data->data->Reason,'IsAccount'=>'2']);
 
     }
     

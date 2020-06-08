@@ -106,7 +106,7 @@ class Users_model extends CI_Model
 
     public function checklogin($email)
     {
-        return $this->db->select('UserId,Role,Type,Password,IsAccount,Reason')->where("MobileNumber ='".$email."' AND Role!='1' AND Status= '1' ")->get($this->table)->row(); //OR  Email='".$email."'
+        return $this->db->select('UserId,Role,Type,Password')->where("MobileNumber ='".$email."' OR  Email='".$email."' AND Role!='1' AND Status= '1' ")->get($this->table)->row();
     }
     public function checkSocialEmail($email)
     {

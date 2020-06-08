@@ -27773,6 +27773,27 @@ body.rentals-wrapper .select2-container--default .select2-results__option[aria-s
   -webkit-animation: os-rotating 2s linear infinite;
           animation: os-rotating 2s linear infinite;
 }
+.loading-customizer-btn{
+  color: #fff;
+  padding: 0px 20px;
+  text-align: center;
+  display: inherit;
+  vertical-align: middle;
+  font-size: 1.08rem;
+  cursor: pointer;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+
+}
+.loading-customizer-btn > .icon-w {
+  line-height: 1;
+  vertical-align: middle;
+  font-size:40px;
+  color: #0e2c36 !important;
+  display: inline-block;
+  -webkit-animation: os-rotating 2s linear infinite;
+          animation: os-rotating 2s linear infinite;
+}
 
 .floated-customizer-btn > .icon-w i {
   font-size: 24px;

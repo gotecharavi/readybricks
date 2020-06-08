@@ -11,9 +11,10 @@ class Transporter_model extends CI_Model
 	public function get_page($size, $pageno){
 		$this->db
 			->limit($size, $pageno)
-			->select('country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,transporter.TransId,users.FirstName,users.LastName,users.MobileNumber ,users.Address,users.PUserId,users.IsEdited,users.Email,users.Status,transporter.GSTIN,transporter.VatNumber')
+			->select('city.CName as CityName,country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,transporter.TransId,users.FirstName,users.LastName,users.MobileNumber ,users.Address,users.PUserId,users.IsEdited,users.Email,users.Status,transporter.GSTIN,transporter.VatNumber')
 			->join('users','users.UserId=transporter.UserId')
 			->join('country','country.CId=users.CountryId','left')
+			->join('city','city.CityId=users.CityId','left')
 			->where('users.isAccount','1')
 			->where('users.PUserId','0')
 			->join('state','state.StateId=users.StateId','left');
@@ -27,9 +28,16 @@ class Transporter_model extends CI_Model
 	}
 	public function get_page_where($size, $pageno, $params){
 		$this->db->limit($size, $pageno)
-		->select('TransId,Name,PhoneNo,AltPhoneNo,Address,Date,Status');
+			->select('city.CName as CityName,country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,transporter.TransId,users.FirstName,users.LastName,users.MobileNumber ,users.Address,users.PUserId,users.IsEdited,users.Email,users.Status,transporter.GSTIN,transporter.VatNumber')
+			->join('users','users.UserId=transporter.UserId')
+			->join('country','country.CId=users.CountryId','left')
+			->where('users.isAccount','1')
+			->join('state','state.StateId=users.StateId','left')
+			->join('city','city.CityId=users.CityId','left')
+			->where('users.isAccount','1')
+			->where('users.PUserId','0');
 		if(isset($params->search) && !empty($params->search)){
-				$this->db->where("Name LIKE '%$params->search%' OR PhoneNo LIKE '%$params->search%' OR Address LIKE '%$params->search%'  ");
+				$this->db->where("CompanyName LIKE '%$params->search%' OR Email LIKE '%$params->search%' OR Address LIKE '%$params->search%' OR MobileNumber LIKE '%$params->search%'  ");
 //				$this->db->like("catName",$params->search);
 			}	
 
@@ -41,17 +49,28 @@ class Transporter_model extends CI_Model
 	{	
 // 		$this->db
 // ->join('Navigations', 'Roles.NavigationId = Navigations.NavigationId', 'left outer');
+	$this->db->join('users','users.UserId=transporter.UserId')
+			->join('country','country.CId=users.CountryId','left')
+			->join('city','city.CityId=users.CityId','left')
+			->where('users.isAccount','1')
+			->where('users.PUserId','0')
+			->join('state','state.StateId=users.StateId','left');
 
 		if(isset($params->search) && !empty($params->search)){
-				$this->db->where("Name LIKE '%$params->search%' OR PhoneNo LIKE '%$params->search%' OR Address LIKE '%$params->search%'  ");				// $this->db->like("catId",$params->search);
+				$this->db->where("CompanyName LIKE '%$params->search%' OR Email LIKE '%$params->search%' OR Address LIKE '%$params->search%' OR MobileNumber LIKE '%$params->search%'  ");
 				// $this->db->like("catName",$params->search);
 			}	
-		return $this->db->count_all_results($this->table);
+ 	return count($this->db->get($this->table)->result());
 	}
     public function count_all()
 	{
-		return $this->db			
-			->count_all_results($this->table);
+		$this->db->join('users','users.UserId=transporter.UserId')
+			->join('country','country.CId=users.CountryId','left')
+			->join('city','city.CityId=users.CityId','left')
+			->where('users.isAccount','1')
+			->where('users.PUserId','0')
+			->join('state','state.StateId=users.StateId','left');
+		 	return count($this->db->get($this->table)->result());
 	}
     public function get($id)
     {
@@ -71,7 +90,8 @@ class Transporter_model extends CI_Model
 
     public function delete($id)
     {
-        $this->db->where('TransId', $id)->delete($this->table);
+        $this->db->where('UserId', $id)->delete($this->table);
+        $this->db->where('UserId', $id)->delete('users');
         return $this->db->affected_rows();
     }
     public function changestatus($id, $data)
@@ -98,7 +118,7 @@ class Transporter_model extends CI_Model
 	public function getWithJoin($id)
     {
 		$data['trans1']=$this->db->join('users','users.UserId=transporter.UserId')->where('users.UserId', $id)->get($this->table)->row();		
-		$data['trans2']=$this->db->join('users','users.PUserId=transporter.UserId')->where('users.PUserId', $id)->get($this->table)->row();		
+		$data['trans2']=$this->db->join('users','users.UserId=transporter.UserId')->where('users.PUserId', $id)->get($this->table)->row();		
 		return $data;
 		// return $this->db->join('users','users.UserId=transporter.UserId')->where('users.UserId', $id)->get($this->table)->row();		
     }

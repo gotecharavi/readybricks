@@ -7,10 +7,10 @@
                   Manage Transporter
                 </h6>
                 <div class="element-box">
-                  <div class="form-desc">
+<!--                   <div class="form-desc">
                         <button type="button" ng-show="auth.insert" ng-click="showForm()" class="btn btn-success" ><i class="icon-plus icon-white"></i><b> Add </b></button>
 
-                  </div>
+                  </div> -->
                   <div class="table-responsive">
                         <div class="row">
                             <div class="col-sm-12 col-md-6">
@@ -26,13 +26,13 @@
                         <thead>
                             <tr>
                                 <th>Name</th><th>Phone No</th><th>Email</th><th>Address</th><th>Status</th> 
-                                <th>Action</th>
+                                <th colspan="2">Action</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>Name</th><th>Phone No</th><th>Email</th><th>Address</th><th>Status</th> 
-                                <th>Action</th>
+                                <th colspan="2">Action</th>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -42,13 +42,15 @@
                                 <td>{{item.Email}}</td>
                                 <td>{{item.Address}}</td>
                                 <td>
-                                    <a class="badge badge-danger" href="" ng-if="item.Status % 2 == 0">Deactive</a>
-                                    <a class="badge badge-success" href="" ng-if="item.Status % 2 != 0">Active</a>
-
+                                  <lable ng-show="item.Status == '1'" class="badge badge-success">Active</lable>
+                                  <lable ng-show="item.Status == '0'" class="badge badge-danger">Deactive</lable>
                                 </td>
                                 <td class="text-center">
-                                   <button type="button" class="ml-3 mb-2 btn  btn-xs btn-danger" ng-click="changeItemStatus(item,0)" ng-if="item.Status % 2 != 0">Deactive</button> 
-                                   <button type="button" class="ml-3 mb-2 btn  btn-xs btn-success" ng-click="changeItemStatus(item,1)" ng-if="item.Status % 2 == 0">Active</button>
+
+                                  <button type="button" class="ml-3 mb-2 btn  btn-xs btn-success" ng-show="item.Status == '0'" ng-click="changeItemStatus(item,1)">Active</button>
+                                  <button type="button" class="ml-3 mb-2 btn  btn-xs btn-danger" ng-show="item.Status == '1'" ng-click="changeItemStatus(item,0)">Deactive</button>
+                                </td>
+                                <td>
 
                                     <button class="ml-3 mb-2 btn btn-outline-info " ng-click="viewItem(item)" type="button">  <i class="os-icon os-icon-eye" style="margin-top: -3px;"></i></button>
                                     <button class="mb-2 btn btn-outline-info " ng-click="editItem(item)" type="button">  <i class="os-icon os-icon-ui-49" style="margin-top: -3px;"></i></button>
@@ -224,12 +226,16 @@
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Phone Number</div>
-                <div class="sub-info-value"><a href="#">{{MobileNumber}}</a> <strong class="badge badge-success" style="float: right;"><i class="os-icon os-icon-checkmark " ></i></strong></div>
+                <div class="sub-info-value"><a href="#">{{MobileNumber}}</a> 
+                  <strong class="badge badge-success" style="float: right;"  ng-If="IsMobileNumberVerify"><i class="os-icon os-icon-checkmark " ></i></strong>
+                  <strong class="badge badge-danger" style="float: right;" ng-If="!IsMobileNumberVerify"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong>
+
+                </div>
               </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Address</div>
-                <div class="sub-info-value">{{Address}} {{Landmark}}<br/>{{State}}, {{Country}}</div>
+                <div class="sub-info-value">{{Address}} <br/>{{Landmark}}<br/>{{CityName}},{{State}}, {{Country}}</div>
               </div>
 
                <div class="ecc-sub-info-row">

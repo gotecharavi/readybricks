@@ -62,6 +62,7 @@ else
 	$scope.viewProfileDetail=function(name,type){	
 		console.log(name,type);
 		if(name !="" && name=='Manufacture'){
+		$scope.isLoadingBar = true;
 		$scope.fgShowHide=false;				
 		$scope.viewProfileDetail =name;
 		$scope.viewtype = type;
@@ -74,38 +75,46 @@ else
 				var row1,row2;
 				row1=row.trans1;
 				row2=row.trans2;
+				console.log(row2);
 				$scope.item=row1;
 				$scope.MEmail=row1.Email;
+				$scope.MImage=row1.Image;
 				$scope.MCompanyName=row1.CompanyName;
 				$scope.MobileNumber=row1.MobileNumber;
+				$scope.IsMobileNumberVerify=row1.IsMobileNumberVerify;
 				$scope.Address=row1.Address;
 				$scope.Landmark=row1.Landmark;
 				$scope.GSTIN=row1.GSTIN;
 				$scope.State=row1.SName;
 				$scope.Reason=row1.Reason;
 				$scope.Country=row1.CName;
+				$scope.CityName=row1.CityName;
 				$scope.VatNumber=row1.VatNumber;
 				$scope.UserId=row1.UserId;
 
+				$scope.MImage2=row2.Image;
 				$scope.MEmail2=row2.Email;
 				$scope.MCompanyName2=row2.CompanyName;
 				$scope.MobileNumber2=row2.MobileNumber;
+				$scope.IsMobileNumberVerify2=row2.IsMobileNumberVerify;
 				$scope.Address2=row2.Address;
 				$scope.Landmark2=row2.Landmark;
 				$scope.GSTIN2=row2.GSTIN;
 				$scope.State2=row2.SName;
+				$scope.CityName2=row2.CityName;
 				$scope.Reason2=row2.Reason;
 				$scope.Country2=row2.CName;
 				$scope.VatNumber2=row2.VatNumber;
 				$scope.UserId2=row2.UserId;
 
-				$scope.isAccount=row1.isAccount;
+				$scope.IsAccount=row1.IsAccount;
 				$scope.fgShowHide = false;
-
+				$scope.isLoadingBar = false;
 
 			});
 		}
 		if(name !="" && name=='Transporter'){
+			$scope.isLoadingBar = true;
 			$scope.fgShowHide=false;				
 			$scope.viewProfileDetail =name;
 			$scope.viewtype = type;
@@ -122,8 +131,11 @@ else
 					$scope.MCompanyName=row1.CompanyName;
 					$scope.MobileNumber=row1.MobileNumber;
 					$scope.Address=row1.Address;
+					$scope.CityName=row1.CityName;
 					$scope.Landmark=row1.Landmark;
 					$scope.GSTIN=row1.GSTIN;
+					$scope.IsMobileNumberVerify=row1.IsMobileNumberVerify;
+
 					$scope.State=row1.SName;
 					$scope.Country=row1.CName;
 					$scope.VatNumber=row1.VatNumber;
@@ -136,19 +148,23 @@ else
 					$scope.Address2=row2.Address;
 					$scope.Landmark2=row2.Landmark;
 					$scope.GSTIN2=row2.GSTIN;
+					$scope.IsMobileNumberVerify2=row2.IsMobileNumberVerify;
 					$scope.State2=row2.SName;
 					$scope.Country2=row2.CName;
+					$scope.CityName2=row2.CityName;
 					$scope.VatNumber2=row2.VatNumber;
 					$scope.UserId2=row2.UserId;
 					$scope.Reason2=row2.Reason;
 
 
 					$scope.isAccount=row1.isAccount;
+					$scope.isLoadingBar = false;
 					$scope.fgShowHide = false;
 
 				});
 			}
 			if(name !="" && name=='Product'){
+				$scope.isLoadingBar = true;
 				$scope.fgShowHide=false;				
 				$scope.viewProfileDetail =name;
 				$scope.viewtype = type;
@@ -162,20 +178,23 @@ else
 						prow=row.product_by_pid;
 						$scope.item=row1;
 						$scope.PName=row1.PName;
+						$scope.PImage=row1.PImage;
 						$scope.PMinDeliveryDays=row1.PMinDeliveryDays;
 						$scope.PPrice=row1.PPrice;
 						$scope.CompanyName=row1.CompanyName;
 						$scope.Reason=row1.Reason;
-						$scope.isAccount=row1.isAccount;
+						$scope.IsAccount=row1.IsAccount;
 						$scope.PDescription=row1.PDescription;
 						
 						$scope.PName2=prow.PName;
+						$scope.PImage2=prow.PImage;
 						$scope.PMinDeliveryDays2=prow.PMinDeliveryDays;
 						$scope.PPrice2=prow.PPrice;
 						$scope.CompanyName2=prow.CompanyName;
 						$scope.Reason2=prow.Reason;
-						$scope.isAccount2=prow.isAccount;
+						$scope.IsAccount2=prow.IsAccount;
 						$scope.PDescription2=prow.PDescription;
+						$scope.isLoadingBar = false;
 		
 					});
 				}
@@ -253,9 +272,10 @@ else
 		// console.log($scope.item);
 		// console.log(row);
 		if(confirm('Sure!')){
-			var id = {'id':$scope.item.UserId};
+			var id = {'id':$scope.item.UserId,'role':$scope.item.Role,'viewtype': $scope.viewtype};
 			loadData('approve',id).success(function(data){
 				loadGridData($scope.pagingOptions.pageSize,1);
+				window.location=BASE_URL+"#/Requests";
 				$scope.viewProfileDetail=false;
 				$scope.fgShowHide=true;
 		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data Approved successfully</p>', {
@@ -268,9 +288,10 @@ else
 	};
 	$scope.approveProduct=function(row){
 		if(confirm('Sure!')){
-			var id = {'id':$scope.item.ProductId};
+			var id = {'id':$scope.item.ProductId,'viewtype': $scope.viewtype};
 			loadData('approve_product',id).success(function(data){
 				loadGridData($scope.pagingOptions.pageSize,1);
+				window.location=BASE_URL+"#/Requests";
 				$scope.viewProfileDetail=false;
 					$scope.fgShowHide=true;
 		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data Approved successfully</p>', {

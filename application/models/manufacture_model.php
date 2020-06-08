@@ -16,23 +16,31 @@ class Manufacture_model extends CI_Model
 	public function get_page($size, $pageno){
 		$this->db
 			->limit($size, $pageno)
-			->select('country.CName,state.SName,users.*,manufacture.MenuId,manufacture.GSTIN,manufacture.VatNumber')
+			->select('city.CName as CityName, country.CName,state.SName,users.*,manufacture.MenuId,manufacture.GSTIN,manufacture.VatNumber')
 			 ->join('users', 'users.UserId = manufacture.UserId', 'inner')
 			->join('country','country.CId=users.CountryId','left')
 			->join('state','state.StateId=users.StateId','left')
+			->join('city','city.CityId=users.CityId','left')
 			->where('users.IsAccount','1')
-		 	->group_by('UserId');
+			->where('users.PUserId','0')
+		 	->group_by('users.UserId');
 		$data=$this->db->get($this->table)->result();
 		$total=$this->count_all();
 		return array("data"=>$data, "total"=>$total);
 	}
 	public function get_page_where($size, $pageno, $params){
 		$this->db->limit($size, $pageno)
-		->select('CustId,Name,PhoneNo,AltPhoneNo,Address,Date,Status');
+			->select('city.CName as CityName, country.CName,state.SName,users.*,manufacture.MenuId,manufacture.GSTIN,manufacture.VatNumber')
+			 ->join('users', 'users.UserId = manufacture.UserId', 'inner')
+			->join('country','country.CId=users.CountryId','left')
+			->join('state','state.StateId=users.StateId','left')
+			->join('city','city.CityId=users.CityId','left')
+			->where('users.IsAccount','1');
 		if(isset($params->search) && !empty($params->search)){
-				$this->db->where("Name LIKE '%$params->search%' OR PhoneNo LIKE '%$params->search%' OR Address LIKE '%$params->search%'  ");
+				$this->db->where("CompanyName LIKE '%$params->search%' OR Email LIKE '%$params->search%' OR Address LIKE '%$params->search%' OR MobileNumber LIKE '%$params->search%'  ");
 //				$this->db->like("catName",$params->search);
 			}	
+	 	$this->db->group_by('users.UserId');
 
 		$data=$this->db->get($this->table)->result();
 		$total=$this->count_where($params);
@@ -40,19 +48,29 @@ class Manufacture_model extends CI_Model
 	}
 	public function count_where($params)
 	{	
-// 		$this->db
-// ->join('Navigations', 'Roles.NavigationId = Navigations.NavigationId', 'left outer');
+			 $this->db->join('users', 'users.UserId = manufacture.UserId', 'inner')
+			->join('country','country.CId=users.CountryId','left')
+			->join('state','state.StateId=users.StateId','left')
+			->join('city','city.CityId=users.CityId','left')
+			->where('users.IsAccount','1');
 
 		if(isset($params->search) && !empty($params->search)){
-				$this->db->where("Name LIKE '%$params->search%' OR PhoneNo LIKE '%$params->search%' OR Address LIKE '%$params->search%'  ");				// $this->db->like("catId",$params->search);
+				$this->db->where("CompanyName LIKE '%$params->search%' OR Email LIKE '%$params->search%' OR Address LIKE '%$params->search%' OR MobileNumber LIKE '%$params->search%'  ");
 				// $this->db->like("catName",$params->search);
-			}	
-		return $this->db->count_all_results($this->table);
+			}
+	 	$this->db->group_by('users.UserId');
+	 	return count($this->db->get($this->table)->result());
 	}
     public function count_all()
 	{
-		return $this->db			
-			->count_all_results($this->table);
+			 $this->db
+			 ->join('users', 'users.UserId = manufacture.UserId', 'inner')
+			->join('country','country.CId=users.CountryId','left')
+			->join('state','state.StateId=users.StateId','left')
+			->join('city','city.CityId=users.CityId','left')
+			->where('users.IsAccount','1')
+		 	->group_by('users.UserId');
+		 	return count($this->db->get($this->table)->result());
 	}
     public function get()
     {
@@ -64,8 +82,16 @@ class Manufacture_model extends CI_Model
     }
     public function getWithJoin($id)
     {
-		$data['trans1']=$this->db->join('users','users.UserId=manufacture.UserId')->where('users.UserId', $id)->get($this->table)->row();		
-		$data['trans2']=$this->db->join('users','users.PUserId=manufacture.UserId')->where('users.PUserId', $id)->get($this->table)->row();		
+		$data['trans1']=$this->db->select('users.*,country.CName,state.SName,manufacture.*,city.CName as CityName')->join('users','users.UserId=manufacture.UserId')
+		->join('country','country.CId=users.CountryId')
+		->join('state','state.StateId=users.StateId')
+		->join('city','city.CityId=users.CityId')
+		->where('users.UserId', $id)->get($this->table)->row();		
+		$data['trans2']=$this->db->select('users.*,country.CName,state.SName,manufacture.*,city.CName as CityName')->join('users','users.UserId=manufacture.UserId')
+		->join('country','country.CId=users.CountryId')
+		->join('state','state.StateId=users.StateId')
+		->join('city','city.CityId=users.CityId')
+		->where('users.PUserId', $id)->get($this->table)->row();		
 		return $data;
     }
 

@@ -30,19 +30,19 @@
                                 <td>{{item.PMinDeliveryDays}}</td>
                                 <td>{{item.PPrice}}</td>
                                 <td>
-                                    <a class="badge badge-danger" href="" ng-if="((item.PStatus % 2) == 0 && (item.isAccount=='2'))">Rejected</a>
-                                    <a class="badge badge-danger" href="" ng-if="((item.PStatus % 2 == 0 && item.isAccount!=='2'))">New</a>
-                                    <a class="badge badge-success" href="" ng-if="item.PStatus % 2 != 0">Edited</a>
+                                    <a class="badge badge-danger" href="" ng-if="item.IsAccount=='2' ">Rejected</a>
+                                    <a class="badge badge-primary" href="" ng-if="item.IsEdited == 0 && item.IsAccount ==0">New</a>
+                                    <a class="badge badge-success" href="" ng-if="item.IsEdited == 1 && item.IsAccount ==1">Edited</a>
                                 </td>
 
                                 <td class="text-center" style="width:10%">
-                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Product&type=New&id={{item.ProductId}}" ng-if="item.PStatus % 2 != 0" class="btn btn-outline-info" style="margin-top: -3px;"> <i class="os-icon os-icon-eye" ></i></a>
-                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Product&type=Edited&id={{item.ProductId}}" ng-if="item.PStatus % 2 == 0" class="btn btn-outline-info" style="margin-top: -3px;"> <i class="os-icon os-icon-eye" ></i></a>
+                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Product&type=New&id={{item.ProductId}}" ng-if="item.IsEdited == 0 && item.IsAccount !=1" class="btn btn-outline-info" style="margin-top: -3px;"> <i class="os-icon os-icon-eye" ></i></a>
+                                   <a href="<?php echo site_url(); ?>/#/viewRequestProfile?user=Product&type=Edited&id={{item.ProductId}}" ng-if="item.IsEdited == 1 && item.IsAccount !=0" class="btn btn-outline-info" style="margin-top: -3px;"> <i class="os-icon os-icon-eye" ></i></a>
 
                                 </td>
                             </tr>
                             
-                            <tr ng-show="list.length ==0"><td colspan="10" class="text-center">Customer Not found</td></tr>
+                            <tr ng-show="list.products.length ==0"><td colspan="10" class="text-center">Record Not found</td></tr>
 
                             </tbody></table>
                   </div>

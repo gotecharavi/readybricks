@@ -6,6 +6,7 @@ class Requests_ctrl extends base_ctrl {
 		parent::__construct();		
 	    $this->load->model('request_model','model');
 		$this->load->model('manufacture_model','manufacture_model');
+		$this->load->model('users_model','users_model');
 		$this->load->model('transporter_model','transporter_model');
 		$this->load->model('Product_model','product_model');
 		
@@ -67,14 +68,64 @@ class Requests_ctrl extends base_ctrl {
 	{
 		$data=$this->post();
 
+		if($data->viewtype == 'Edited'){
+
+			if($data->role == '3'){
+					// select puserid recprd
+				$getrows= $this->manufacture_model->getWithJoin($data->id);
+
+	            $updateUser=$this->users_model->update($getrows['trans1']->UserId,array('Address'=>$getrows['trans2']->Address,'Landmark'=>$getrows['trans2']->Landmark,'CountryId'=>$getrows['trans2']->CountryId,'StateId'=>$getrows['trans2']->StateId,'CityId'=>$getrows['trans2']->CityId,'CompanyName'=>$getrows['trans2']->CompanyName,'FirstName'=>$getrows['trans2']->FirstName,'LastName'=>$getrows['trans2']->LastName,'Image'=>$getrows['trans2']->Image,'IsAccount'=>'1','IsEdited'=>0,'Reason'=>'','Status'=>'1'));
+
+	            $updateManufacture = $this->manufacture_model->update($getrows['trans1']->MenuId,array('GSTIN'=>$getrows['trans2']->GSTIN,'VatNumber'=>$getrows['trans2']->VatNumber));
+
+	            $deleteSubUser = $this->manufacture_model->delete($getrows['trans2']->UserId);
+
+				print json_encode( array("success"=>TRUE,"msg"=>'Approved'));
+
+			}
+			if($data->role == '4'){
+
+				$getrows= $this->transporter_model->getWithJoin($data->id);
+
+	            $updateUser=$this->users_model->update($getrows['trans1']->UserId,array('Address'=>$getrows['trans2']->Address,'Landmark'=>$getrows['trans2']->Landmark,'CountryId'=>$getrows['trans2']->CountryId,'StateId'=>$getrows['trans2']->StateId,'CityId'=>$getrows['trans2']->CityId,'CompanyName'=>$getrows['trans2']->CompanyName,'FirstName'=>$getrows['trans2']->FirstName,'LastName'=>$getrows['trans2']->LastName,'Image'=>$getrows['trans2']->Image,'IsAccount'=>'1','IsEdited'=>0,'Reason'=>'','Status'=>'1'));
+
+	            $updateManufacture = $this->transporter_model->update($getrows['trans1']->MenuId,array('GSTIN'=>$getrows['trans2']->GSTIN,'VatNumber'=>$getrows['trans2']->VatNumber));
+
+	            $deleteSubUser = $this->transporter_model->delete($getrows['trans2']->UserId);
+
+				print json_encode( array("success"=>TRUE,"msg"=>'Approved'));
+
+			}
+			exit;
+		}else{
+
 		print json_encode( array("success"=>TRUE,"msg"=>$this->model->approve($data->id)));
+
+		}
+
+
+//		print json_encode( array("success"=>TRUE,"msg"=>$this->model->approve($data->id)));
 
 	}
 	public function approve_product()
 	{
 		$data=$this->post();
+		if($data->viewtype == 'Edited'){
+
+				$getrows= $this->product_model->getWithJoin($data->id);
+
+	            $updateUser=$this->product_model->update($getrows['product_by_id']->ProductId,array('PName'=>$getrows['product_by_pid']->PName,'PImage'=>$getrows['product_by_pid']->PImage,'PMinDeliveryDays'=>$getrows['product_by_pid']->PMinDeliveryDays,'PPrice'=>$getrows['product_by_pid']->PPrice,'PStock'=>$getrows['product_by_pid']->PStock,'PDescription'=>$getrows['product_by_pid']->PDescription,'PAdditionalInfo'=>$getrows['product_by_pid']->PAdditionalInfo,'IsAccount'=>'1','IsEdited'=>0,'Reason'=>'','PStatus'=>'1'));
+
+	            $deleteSubUser = $this->product_model->delete($getrows['product_by_pid']->ProductId);
+
+				print json_encode( array("success"=>TRUE,"msg"=>'Approved'));
+
+
+
+		}else{
 
 		print json_encode( array("success"=>TRUE,"msg"=>$this->model->approve_product($data->id)));
+		}
 
 	}
 		

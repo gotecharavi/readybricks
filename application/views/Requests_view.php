@@ -83,7 +83,6 @@
 
 
 
-
 <div ng-show="!fgShowHide && !viewProfileDetail" style="display:none">
     <div class="element-wrapper">
                 <h6 class="element-header">{{datatype}} Customer</h6>
@@ -204,7 +203,16 @@
 }
 </style>
 <div ng-show="viewProfileDetail == 'Manufacture' || viewProfileDetail == 'Transporter' " style="display:none">
-    <div class="element-wrapper">
+    <div class="element-wrapper" ng-if="isLoadingBar">
+          <div class="loading-customizer-btn">
+              <div class="icon-w ">
+                  <i class="os-icon os-icon-loader os-icon-spin"></i>
+                </div>
+              </div>
+    </div>
+
+
+    <div class="element-wrapper" ng-if="!isLoadingBar">
 
       <div class="row m-b">
 
@@ -216,7 +224,7 @@
         	 <div class="" ng-class="viewtype=='Edited' ? 'col-md-6' : 'col-md-8 offset-md-2'">
             <div class="ecommerce-customer-info">
             <div class="ecommerce-customer-main-info">
-              <div class="ecc-avatar" style="background-image: url(<?php echo base_url(); ?>/static/img/avatar1.jpg)"></div>
+              <div class="ecc-avatar" style="background-image: url(<?php echo base_url(); ?>uploads/{{MImage}})"></div>
               <div class="ecc-name">
               {{MCompanyName}}
               </div>
@@ -226,17 +234,20 @@
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Email </div>
-                <div class="sub-info-value"><a href="#">{{MEmail}}</a><strong class="badge badge-danger" style="float: right;"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong></div>
+                <div class="sub-info-value"><a href="#">{{MEmail}}</a></div>
               </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Phone Number</div>
-                <div class="sub-info-value"><a href="#">{{MobileNumber}}</a> <strong class="badge badge-success" style="float: right;"><i class="os-icon os-icon-checkmark " ></i></strong></div>
+                <div class="sub-info-value"><a href="#">{{MobileNumber}}</a> 
+                  <strong class="badge badge-success" style="float: right;"  ng-If="IsMobileNumberVerify"><i class="os-icon os-icon-checkmark " ></i></strong>
+                  <strong class="badge badge-danger" style="float: right;" ng-If="!IsMobileNumberVerify"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong>
+                </div>
               </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Address</div>
-                <div class="sub-info-value">{{Address}}, {{Landmark}}<br/>{{State}}, {{Country}}</div>
+                <div class="sub-info-value">{{Address}}, <br/>{{Landmark}}<br/>{{CityName}} ,{{State}}, {{Country}}</div>
               </div>
 
                <div class="ecc-sub-info-row">
@@ -247,7 +258,7 @@
                 <div class="sub-info-label">Vat Number</div>
                 <div class="sub-info-value">{{VatNumber}}</div>
               </div>
-              <div  ng-if="isAccount == 2"  class="ecc-sub-info-row">
+              <div  ng-if="IsAccount == 2"  class="ecc-sub-info-row">
                 <div class="sub-info-label">Reason</div>
                 <div class="sub-info-value">{{Reason}}</div>
               </div>
@@ -257,7 +268,7 @@
           <div class="text-center col-md-12">
            <div class="ecommerce-customer-info">
               <button   ng-click="approve()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
-              <button   ng-click="reject()" ng-if="isAccount != 2" class="btn btn-warning cancel reject_product_cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+              <button   ng-click="reject()" ng-if="IsAccount != 2" class="btn btn-warning cancel reject_product_cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
             </div>
             </div>
       </div>
@@ -271,7 +282,7 @@
             <div class="ecommerce-customer-main-info">
               <div class="ecc-avatar" style="background-image: url(<?php echo base_url(); ?>/static/img/avatar1.jpg)"></div>
               <div class="ecc-name">
-              {{MCompanyName}}
+              {{MCompanyName2}}
               </div>
             </div>
             <div class="ecommerce-customer-sub-info">
@@ -285,13 +296,16 @@
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Phone Number</div>
-                <div class="sub-info-value"><a href="#">{{MobileNumber2}}</a> <!-- <strong class="badge badge-success" style="float: right;"><i class="os-icon os-icon-checkmark " ></i></strong> -->
+                <div class="sub-info-value"><a href="#">{{MobileNumber2}}</a>
+                  <strong class="badge badge-success" style="float: right;"  ng-If="IsMobileNumberVerify2"><i class="os-icon os-icon-checkmark " ></i></strong>
+                  <strong class="badge badge-danger" style="float: right;" ng-If="!IsMobileNumberVerify2"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong>
+
                 </div>
               </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Address</div>
-                <div class="sub-info-value">{{Address2}}, {{Landmark2}}<br/>{{State2}}, {{Country2}}</div>
+                <div class="sub-info-value">{{Address2}}, <br/>{{Landmark2}}<br/>{{CityName2}},{{State2}}, {{Country2}}</div>
               </div>
 
                <div class="ecc-sub-info-row">
@@ -302,7 +316,7 @@
                 <div class="sub-info-label">Vat Number</div>
                 <div class="sub-info-value">{{VatNumber2}}</div>
               </div>
-              <div  ng-if="isAccount == 2"  class="ecc-sub-info-row">
+              <div  ng-if="IsAccount == 2"  class="ecc-sub-info-row">
                 <div class="sub-info-label">Reason</div>
                 <div class="sub-info-value">{{Reason2}}</div>
               </div>
@@ -319,7 +333,7 @@
           <div class="text-center col-md-12">
            <div class="ecommerce-customer-info">
               <button   ng-click="approve()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
-              <button   ng-click="reject()" ng-if="isAccount != 2" class="btn btn-warning cancel reject_product_cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+              <button   ng-click="reject()" ng-if="IsAccount != 2" class="btn btn-warning cancel reject_product_cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
             </div></div>
     </div>
 
@@ -506,7 +520,15 @@
 
 
 <div ng-show="viewProfileDetail == 'Product'" style="display:none">
-    <div class="element-wrapper">
+    <div class="element-wrapper" ng-if="isLoadingBar">
+          <div class="loading-customizer-btn">
+              <div class="icon-w ">
+                  <i class="os-icon os-icon-loader os-icon-spin"></i>
+                </div>
+              </div>
+    </div>
+
+    <div class="element-wrapper" ng-if="!isLoadingBar">
 
       <div class="row m-b">
 
@@ -524,6 +546,10 @@
               </div>
             </div>
             <div class="ecommerce-customer-sub-info">
+              <div class="ecc-sub-info-row">
+                <div class="sub-info-label">Product Image</div>
+                <div class="sub-info-value"><img src="<?php echo base_url(); ?>uploads/{{PImage}}" width="120px"></div>
+              </div>
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Product Name</div>
@@ -543,7 +569,7 @@
                 <div class="sub-info-label">Description</div>
                 <div class="sub-info-value">{{PDescription}}</div>
               </div>
-              <div ng-if="isAccount == 2" class="ecc-sub-info-row">
+              <div ng-if="IsAccount == 2" class="ecc-sub-info-row">
                 <div class="sub-info-label">Reason</div>
                 <div class="sub-info-value">{{Reason}}</div>
               </div>
@@ -551,7 +577,7 @@
             </div>   
             <div ng-if="viewtype=='New'">
               <button   ng-click="approveProduct()" class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
-              <button ng-click="rejectProduct()"  ng-if="isAccount != 2"  class="btn btn-warning cancel reject_product_cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+              <button ng-click="rejectProduct()"  ng-if="IsAccount != 2"  class="btn btn-warning cancel reject_product_cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
             </div>
       </div>
         
@@ -566,6 +592,10 @@
             </div>
             <div class="ecommerce-customer-sub-info">
               
+              <div class="ecc-sub-info-row">
+                <div class="sub-info-label">Product Image</div>
+                <div class="sub-info-value"><img src="<?php echo base_url(); ?>uploads/{{PImage2}}" width="120px"></div>
+              </div>
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Product Name</div>
@@ -585,7 +615,7 @@
                 <div class="sub-info-label">Description</div>
                 <div class="sub-info-value">{{PDescription2}}</div>
               </div>
-              <div ng-if="isAccount == 2" class="ecc-sub-info-row">
+              <div ng-if="IsAccount == 2" class="ecc-sub-info-row">
                 <div class="sub-info-label">Reason</div>
                 <div class="sub-info-value">{{Reason2}}</div>
               </div>
@@ -601,7 +631,7 @@
           <div class="text-center col-md-12">
            <div class="ecommerce-customer-info">
               <button  ng-click="approveProduct()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
-              <button   ng-click="rejectProduct()" ng-if="isAccount != 2" class="btn btn-warning cancel reject_product_cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+              <button   ng-click="rejectProduct()" ng-if="IsAccount != 2" class="btn btn-warning cancel reject_product_cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
             </div></div>
     </div>
 

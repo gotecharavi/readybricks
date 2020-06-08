@@ -31,7 +31,7 @@ function ManufactureCtrl($scope, $http){
             $scope.errors.emailMsg = 'Please enter your email address.';
             return false;
         }
-		if($scope.item.Password==null || $scope.item.Password=="" ){
+		if(($scope.item.Password==null || $scope.item.Password=="") && datatype=='Add'){
             $('#password').focus();
             $scope.passwordError = true;
             $scope.errors.passwordMsg = 'Please enter password.';
@@ -152,6 +152,7 @@ console.log($scope.item);
 		$scope.datatype='Edit';
 		console.log($scope.item);
 		$scope.item.Country ='1';
+		$scope.item.Password = null;
 		$scope.item.State = null;
 		$scope.item.City = null;
 		$scope.item.GstNo = row.GSTIN; 
@@ -169,10 +170,12 @@ console.log($scope.item);
 		$scope.Email=row.Email;
 		$scope.CompanyName=row.CompanyName;
 		$scope.MobileNumber=row.MobileNumber;
+		$scope.IsMobileNumberVerify=row.IsMobileNumberVerify;
 		$scope.Address=row.Address;
 		$scope.Landmark=row.Landmark;
 		$scope.GSTIN=row.GSTIN;
 		$scope.State=row.SName;
+		$scope.CityName=row.CityName;
 		$scope.Country=row.CName;
 		$scope.VatNumber=row.VatNumber;
 		$scope.fgShowHide = false;

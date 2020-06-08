@@ -60,7 +60,7 @@ class Product_model extends CI_Model
 	}
     public function get($id)
     {
-        return $this->db->where('RoleId', $id)->get($this->table)->row();
+        return $this->db->where('ProductId', $id)->get($this->table)->row();
     }
   
     public function add($data)
@@ -76,7 +76,7 @@ class Product_model extends CI_Model
 
     public function delete($id)
     {
-        $this->db->where('PManuId', $id)->delete($this->table);
+        $this->db->where('ProductId', $id)->delete($this->table);
         return $this->db->affected_rows();
     }
     public function changestatus($id, $data)
