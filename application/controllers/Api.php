@@ -311,6 +311,16 @@ class Api extends CI_Controller {
          $Stock      = $post->Stock;
          $curdate= date('Y-m-d h:i:s');
 
+         $getProductById= $this->Product_model->getId($ProductId);
+        if($getProductById->IsAccount == 0){
+            print json_encode(array('success'=>1, 'msg'=>'Product Is Pending'));
+            exit;
+        }
+        if($getProductById->IsAccount == 2){
+            print json_encode(array('success'=>2, 'msg'=>'Product Rejected By Admin'));
+            exit;
+        }
+
          $updateStock = $this->Inventory_model->add(array('IProductId'=>$ProductId,'Stock_Qty'=>$Stock,'Created_At'=>$curdate,'Updated_At'=>$curdate));
          if($updateStock){
             $this->db->where('ProductId', $post->ProductId);
@@ -319,7 +329,7 @@ class Api extends CI_Controller {
             print json_encode(array('success'=>1, 'msg'=>'Stock Updated Successfully'));
 
          }else{
-            print json_encode(array('success'=>0, 'msg'=>'Product Not Add'));
+            print json_encode(array('success'=>3, 'msg'=>'Product Not Add'));
 
          }
 
@@ -330,10 +340,18 @@ class Api extends CI_Controller {
 
     public function getallproduct(){
         $post=json_decode( file_get_contents('php://input') );
-        $getallproduct=$this->Product_model->get_all();
+        // Filter
+
+        $Manufacture      = isset($post->Manufacture) ? $post->Manufacture: '';
+        $Price      = isset($post->Price) ? $post->Price: '';
+
+
+        $getallproduct=$this->Product_model->get_all($Manufacture,$Price);
+
+        $getallmenufature = $this->Manufacture_model->get_all_active_manufacture();
 
         if($getallproduct){
-            print json_encode(array('success'=>1, 'msg'=>'Product Found Successfully','data'=>$getallproduct));
+            print json_encode(array('success'=>1, 'msg'=>'Product Found Successfully','data'=>$getallproduct,'manufacturer'=>$getallmenufature));
 
         }else{
             print json_encode(array('success'=>0, 'msg'=>'Product Not Found'));

@@ -7,8 +7,12 @@ class Product_model extends CI_Model
 	public function get_Navigations_list(){
 		return $this->db->select('NavigationId, NavName')->get('Navigations')->result();
 	}
-    public function get_all()
+    public function get_all($Manufacture,$Price)
     {
+    	if($Manufacture !=""){	
+			$this->db->where_in('PManuId',array($Manufacture));    		
+    	}
+
 		return $this->db->where('PStatus','1')->get($this->table)->result();		
     }
     public function get_all_by_userid($id)

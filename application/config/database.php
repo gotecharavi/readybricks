@@ -48,10 +48,15 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'root';
-$db['default']['password'] = '';
-$db['default']['database'] = 'readybricks3';
+$db['default']['hostname'] = 'auth-db175.hostinger.com';
+// $db['default']['username'] = 'root';
+// $db['default']['password'] = '';
+// $db['default']['database'] = 'readybricks';
+
+$db['default']['username'] = 'u224982069_bricks';
+$db['default']['password'] = '972424Ravi@';
+$db['default']['database'] = 'u224982069_bricks';
+
 $db['default']['dbdriver'] = 'mysqli';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
