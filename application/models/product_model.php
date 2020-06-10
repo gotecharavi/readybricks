@@ -7,13 +7,32 @@ class Product_model extends CI_Model
 	public function get_Navigations_list(){
 		return $this->db->select('NavigationId, NavName')->get('Navigations')->result();
 	}
-    public function get_all($Manufacture,$Price)
+    public function get_all($Manufacture,$Price,$Sorting)
     {
     	if($Manufacture !=""){	
 			$this->db->where_in('PManuId',array($Manufacture));    		
     	}
+    	if($Price !=""){	
+			$this->db->where('PPrice <='.$Price);    		
+    	}
+    	if($Sorting !=""){	
+    		if($Sorting ==1){
+    			$sort= "Desc";
+    		}
+    		if($Sorting ==2){
+    			$sort= "Desc";
+    		}
+    		if($Sorting ==3){
+    			$sort= "Asc";
+    		}
+			$this->db->order_by('PPrice',$sort);    		
+    	}
 
-		return $this->db->where('PStatus','1')->get($this->table)->result();		
+		return $this->db->select('ProductId,PManuId,PName,PImage,PMinDeliveryDays,PPrice,PStock,PDescription,PAdditionalInfo,CompanyName')->join('users','users.UserId=product.PManuId')
+
+		->where('product.IsAccount','1')
+		->where('product.IsEdited','0')
+		->where('product.PStatus','1')->get($this->table)->result();		
     }
     public function get_all_by_userid($id)
     {

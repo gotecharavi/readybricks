@@ -26,9 +26,9 @@
                         <tr  ng-repeat="item in list.products">
                                 <td>{{item.CompanyName}}</td>
                                 <td>{{item.PName}}</td>
-                                <td>{{item.PDescription}}</td>
                                 <td>{{item.PMinDeliveryDays}}</td>
                                 <td>{{item.PPrice}}</td>
+                                <td>{{item.PDescription}}</td>
                                 <td>
                                     <a class="badge badge-danger" href="" ng-if="item.IsAccount=='2' ">Rejected</a>
                                     <a class="badge badge-primary" href="" ng-if="item.IsEdited == 0 && item.IsAccount ==0">New</a>

@@ -16,6 +16,7 @@ class Request_model extends CI_Model
              ->where('role','3')
              ->where("(users.IsAccount !='1' OR users.IsEdited ='1')")
              ->where('users.PUserId =','0')
+             ->where('users.Address !=','')
 		 	->group_by('UserId');
         $data['manufacturer']=$this->db->get($this->table)->result();
         
@@ -25,6 +26,7 @@ class Request_model extends CI_Model
          ->join('users', 'users.UserId = transporter.UserId', 'inner')
          ->where("(users.IsAccount !='1' OR users.IsEdited ='1')")
          ->where('users.PUserId ','0')
+         ->where('users.Address !=','')
          ->group_by('UserId');
     $data['transporter']=$this->db->get('transporter')->result();
 
@@ -34,6 +36,7 @@ class Request_model extends CI_Model
     ->select('product.*,users.CompanyName')
     ->where("(product.IsAccount !='1' OR product.IsEdited ='1')")
     ->where('product.PProductId ','0')
+     ->where('users.Address !=','')
     ->join('users', 'users.UserId = product.PManuId', 'inner');
 $data['products']=$this->db->get('product')->result();
 

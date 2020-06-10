@@ -2,21 +2,14 @@
 
 class Vehicle_model extends CI_Model
 {
-    public $table = 'users';
+    public $table = 'vehicle';
 
     public function get_all()
     {
         return $this->db->get($this->table)->result();      
     }
-    public function get_all_employee()
-    {
-        return $this->db->select("UserId,FirstName,LastName,MobileNumber")->where("Role = '3' AND Status = '1' ")->get($this->table)->result();      
-    }
-    public function get_all_users()
-    {
-        return $this->db->where("Role != '1' AND Status = '1' ")->get($this->table)->result();      
-    }
-	public function get_page($size, $pageno){
+  
+  	public function get_page($size, $pageno){
 		$this->db
 			->limit($size, $pageno)
 			->select('users.UserId,users.FirstName,users.LastName,users.Address,users.MobileNumber,users.Image,users.Email,users.Password,users.Role,users.Status')
@@ -71,48 +64,20 @@ class Vehicle_model extends CI_Model
 
     public function update($id, $data)
     {
-        return $this->db->where('UserId', $id)->update($this->table, $data);
+        return $this->db->where('VId', $id)->update($this->table, $data);
     }
 
     public function delete($id)
     {
 //        $this->db->where('UserId', $id)->delete($this->table);
-        return $this->db->where('UserId', $id)->update($this->table, array('Status'=>'2'));
+        return $this->db->where('VId', $id)->update($this->table, array('Status'=>'2'));
   //      return $this->db->affected_rows();
     }
     public function changestatus($id, $data)
     {
-        return $this->db->where('UserId', $id)->update($this->table, $data);
+        return $this->db->where('VId', $id)->update($this->table, $data);
     }
 	
-    public function getemail($email)
-    {
-        return $this->db->where('Email', $email)->get($this->table)->row();
-    }
-    public function checkEmail($email)
-    {
-        return $this->db->where('Email',$email)->where('Status','1')->get($this->table)->row();
-    }
-
-    public function checkMobileNumber($MobileNumber)
-    {
-        return $this->db->where("MobileNumber",$MobileNumber)->where('Status','1')->get($this->table)->row();
-    }
-
-    public function checklogin($email)
-    {
-        return $this->db->select('UserId,Role,Type,Password')->where("MobileNumber ='".$email."' OR  Email='".$email."' AND Role!='1' AND Status= '1' ")->get($this->table)->row();
-    }
-    public function checkSocialEmail($email)
-    {
-        return $this->db->select("UserId,MobileNumber,Email,Role")->where('Email',$email)->where('Type !=','Normal')->where('Status','1')->get($this->table)->row();
-    }
-
-    public function getmobile($mobile)
-    {
-        return $this->db->where('MobileNumber', $mobile)->get($this->table)->row();
-    }
-
 
 }
 

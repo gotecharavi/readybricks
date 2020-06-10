@@ -2,11 +2,48 @@
 function OrderCtrl($scope, $http,$location){	
 	$scope.auth=getAuth();
 	this.init($scope);	
+	function getParam( name )
+	{
+	 name = name.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+	 var regexS = "[\\?&]"+name+"=([^&#]*)";
+	 var regex = new RegExp( regexS );
+	 var results = regex.exec( window.location.href );
+	 if( results == null )
+	  return "";
+	else
+	 return results[1];
+	}
+
 	var url = window.location.href; 
 
-	loadData('get_all_user',{}).success(function(data){$scope.UserList=data;});
+	if(getParam('type')=='OrderItem'){
+		$scope.fgShowHide = false;
+		$scope.viewOrderItem = true;
+		$scope.viewOrderDetail = false;
+		loadGridData($scope.pagingOptions.pageSize,1);
+	}else if(getParam('type')=='OrderDetail'){
+		$scope.fgShowHide = false;
+		$scope.viewOrderItem = false;
+		$scope.viewOrderDetail = true;
+		loadData('get_order_detail',{id:getParam('id')}).success(function(data){
+			console.log(data);
+			$scope.OrderDetail=data.data;
+			$scope.CustomerDetail=data.customer;
+			$scope.ManufactuerDetail=data.manufactur;
+			$scope.TransporterDetail=data.transporter;
+			$scope.TransporterList=data.alltransporters;
+			$("#order_status").val(data.data.OdStatus);
+		});
+	}else{
+		$scope.fgShowHide = true;
+		$scope.viewOrderItem = false;
+		$scope.viewOrderDetail = false;
+		loadGridData($scope.pagingOptions.pageSize,1);
+	//Grid,dropdown data loading
+	}
 
-	loadGridData($scope.pagingOptions.pageSize,1);
+//	loadData('get_all_user',{}).success(function(data){$scope.UserList=data;});
+
 
 	//CRUD operation
 	$scope.saveItem=function(){	
@@ -74,11 +111,42 @@ function OrderCtrl($scope, $http,$location){
 		// $scope.=row.;
 		// $scope.=row.;
 		// $scope.=row.;
-
-		$scope
 		$scope.fgShowHide = false;
 		$scope.viewOrderDetail = true;
 	}
+	$scope.updateOrderStatus=function(){
+			var data = {'id':getParam( 'id' ),'transId':$("#transporter").val(),'status':$scope.item.Status};
+			console.log($scope.item);
+			if($scope.item.Status ==null){
+				$scope.StatusError = true;
+				$scope.StatusMsg = "Select Status";
+			}
+			if($scope.item.Transporter ==null || $scope.item.Transporter ==""){
+				$scope.TransporterError = true;
+				$scope.TransporterMsg = "Select Transporter";
+			}
+			loadData('changestatus',data).success(function(data){
+//				loadGridData($scope.pagingOptions.pageSize,$scope.pagingOptions.currentPage);
+		loadData('get_order_detail',{id:getParam('id')}).success(function(data){
+			console.log(data);
+			$scope.OrderDetail=data.data;
+			$scope.CustomerDetail=data.customer;
+			$scope.ManufactuerDetail=data.manufactur;
+			$scope.TransporterDetail=data.transporter;
+			$scope.TransporterList=data.alltransporters;
+			$("#order_status").val(data.data.OdStatus);
+		});
+
+		            $.bootstrapGrowl('<h4>Success!</h4> <p>Order updated successfully</p>', {
+		                type: 'info',
+		                delay: 2500,
+		                allow_dismiss: true
+		            });
+			});
+
+	};
+
+
 	$scope.deleteItem=function(row){
 		if(confirm('Delete sure!')){
 			var id = {'id':row};
@@ -194,6 +262,8 @@ console.log(window.location.href.indexOf('orderid'));
 			$scope.search = url.split('=').pop();
 		}
 		params['search']=$scope.search;
+		params['pageType']=getParam('type');
+		params['Id']=getParam('id');
 		loadData(action,params).success(function(res){
 			$scope.list=res.data;
 			$scope.totalpaging=Math.ceil(res.total/$scope.pagingOptions.pageSize);

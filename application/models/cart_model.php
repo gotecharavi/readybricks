@@ -12,13 +12,13 @@ class Cart_model extends CI_Model
 	// }
     public function get_all_by_userid($id)
     {
-		return $this->db->select('CartId,ProductId,CQty,CPrice,PName,PImage,PMinDeliveryDays,CStatus')
+		return $this->db->select('CartId,ProductId,CQty,CPrice,PName,PImage,PMinDeliveryDays,PStock,CStatus')
 			->join('product', 'ProductId = CProductId', 'inner')
 			->where('CUserId',$id)->get($this->table)->result();		
     }
     public function get_all_cart_by_userid($id)
     {
-		return $this->db->select('PManuId as ManufactureId,ProductId,CQty as Qty,CPrice as Price')
+		return $this->db->select('PManuId,ProductId,CQty as Qty,CPrice as Price')
 			->join('product', 'ProductId = CProductId', 'inner')
 			->where('CUserId',$id)->get($this->table)->result();		
     }

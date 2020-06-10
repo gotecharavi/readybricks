@@ -18,6 +18,10 @@ class Api extends CI_Controller {
         $this->load->model('Product_model');
         $this->load->model('Inventory_model');
         $this->load->model('Cart_model');
+        $this->load->model('Order_model');
+        $this->load->model('Order_Detail_model');
+        $this->load->model('Vehicle_model');
+        $this->load->model('Driver_model');
  
 
         $this->load->model('Models_model');
@@ -25,7 +29,6 @@ class Api extends CI_Controller {
 
         $this->load->model('Category_model');
         $this->load->model('Menu_model');
-        $this->load->model('Order_model');
         $this->load->model('Store_model');
         $this->load->model('Demo_model');
         $this->load->model('SerialNumber_model');
@@ -126,8 +129,10 @@ class Api extends CI_Controller {
                 }
             }
             $updateUser=$this->Users_model->update($UserId,array('Address'=>$Address,'Landmark'=>$Landmark,'CountryId'=>$CountryId,'StateId'=>$StateId,'CityId'=>$CityId,'IsAccount'=>$IsAccount,'Status'=>1));
+
             if($updateUser){
-                print json_encode(array('success'=>1, 'msg'=>'Signup successful','data'=>$updateUser));
+              $getUser1=$this->Users_model->getId($UserId);
+                print json_encode(array('success'=>1, 'msg'=>'Signup successful','data'=>$getUser1));
                 exit;
             }else{
                 print json_encode(array('success'=>0, 'msg'=>'Something Wrong'));
@@ -344,9 +349,10 @@ class Api extends CI_Controller {
 
         $Manufacture      = isset($post->Manufacture) ? $post->Manufacture: '';
         $Price      = isset($post->Price) ? $post->Price: '';
+        $Sorting      = isset($post->Sorting) ? $post->Sorting: '';
 
 
-        $getallproduct=$this->Product_model->get_all($Manufacture,$Price);
+        $getallproduct=$this->Product_model->get_all($Manufacture,$Price,$Sorting);
 
         $getallmenufature = $this->Manufacture_model->get_all_active_manufacture();
 
@@ -398,6 +404,26 @@ class Api extends CI_Controller {
 
 
     }
+
+    public function updatecartbyid(){
+        $post=json_decode( file_get_contents('php://input') );
+         $CartId      = $post->CartId;
+         $Qty      = $post->Qty;
+         $curdate= date('Y-m-d h:i:s');
+
+         $updatetocart = $this->Cart_model->update($CartId,array('CQty'=>$Qty,'UpdatedAt'=>$curdate));
+         if($updatetocart){
+            print json_encode(array('success'=>1, 'msg'=>'Cart Updated Successfully'));
+
+         }else{
+            print json_encode(array('success'=>0, 'msg'=>'Product Not Add'));
+
+         }
+
+
+    }
+
+
    public function addorder(){
         $post=json_decode( file_get_contents('php://input') );
          $UserId      = $post->UserId;
@@ -416,15 +442,19 @@ class Api extends CI_Controller {
          $getallcart=$this->Cart_model->get_all_cart_by_userid($UserId);
 
          $total = 0;
+
+        $addorder = $this->Order_model->add(array('OUserId'=>$UserId,'OAddress'=>$Address,'OLandMark'=>$Landmark,'OCountryId'=>$CountryId,'OStateId'=>$StateId,'OCityId'=>$CityId,'IsSameAddress'=>$IsSameAddress,'ODeliveryDate'=>$DeliveryDate,"OStatus"=>'1','Created_At'=>$curdate,'Updated_At'=>$curdate));
          foreach($getallcart as $cart){
+
+            $addorderdetail = $this->Order_Detail_model->add(array('OdManuId'=>$cart->PManuId,'OdProductId'=>$cart->ProductId,'OdQty'=>$cart->Qty,'OdPrice'=>$cart->Price,'OdOrderId'=>$addorder));
 
             $productPrice = $cart->Price* $cart->Qty;
 
+
             $total += $productPrice;
          }
-        $cartJson = json_encode($getallcart);
+        $updateorder = $this->Order_model->update($addorder,array('OTotal'=>$total));
 
-        $addorder = $this->Order_model->add(array('JsonDetails'=>$cartJson,'OUserId'=>$UserId,'OAddress'=>$Address,'OLandMark'=>$Landmark,'OCountryId'=>$CountryId,'OStateId'=>$StateId,'OCityId'=>$CityId,'IsSameAddress'=>$IsSameAddress,'ODeliveryDate'=>$DeliveryDate,"OTotal"=>$total,"OStatus"=>'1','Created_At'=>$curdate,'Updated_At'=>$curdate));
          if($addorder){
 
             $deleteCart =$this->Cart_model->delete_by_userid($UserId);
@@ -437,6 +467,77 @@ class Api extends CI_Controller {
 
 
     }
+    public function addvehicle(){
+        $post=json_decode( file_get_contents('php://input') );
+         $TransporterId      = $post->TransporterId;
+         $RcNo      = $post->RcNo;
+         $VNo      = $post->VNo;
+         $RcPhoto      = $post->RcImage;
+         $Image = "";
+         if(isset($post->RcPhoto) && $post->RcPhoto !=""){
+            $new_data=explode(",",$post->RcPhoto);
+            $exten=explode('/',$new_data[0]);
+            $exten1=explode(';',$exten[1]);
+            $decoded=base64_decode($new_data[1]);
+            $Image='vehicle_'.uniqid().'.'.$exten1[0];
+            file_put_contents(APPPATH.'../uploads/'.$Image,$decoded);
+         }
+
+
+         $curdate= date('Y-m-d h:i:s');
+
+         $addvehicle = $this->Vehicle_model->add(array('VTransId'=>$TransporterId,'VRcNo'=>$RcNo,'VNo'=>$VNo,'VRcImage'=>$Image,'CreatedAt'=>$curdate,'UpdatedAt'=>$curdate,'VStatus'=>0));
+         if($addvehicle){
+            print json_encode(array('success'=>1, 'msg'=>'Vehicle Added Successfully'));
+
+         }else{
+            print json_encode(array('success'=>0, 'msg'=>'Vehicle Not Add'));
+
+         }
+
+
+    }
+
+
+
+
+
+
+    public function adddriver(){
+        $post=json_decode( file_get_contents('php://input') );
+         $TransporterId      = $post->TransporterId;
+         $FirstName      = $post->FirstName;
+         $LastName      = $post->LastName;
+         $MobileNumber      = $post->MobileNumber;
+         $Password      = $post->Password;
+         $Address      = $post->Address;
+         $LicenceNo      = $post->LicenceNo;
+         $Image = "";
+         if(isset($post->LicenceImage) && $post->LicenceImage !=""){
+            $new_data=explode(",",$post->LicenceImage);
+            $exten=explode('/',$new_data[0]);
+            $exten1=explode(';',$exten[1]);
+            $decoded=base64_decode($new_data[1]);
+            $Image='driver_'.uniqid().'.'.$exten1[0];
+            file_put_contents(APPPATH.'../uploads/'.$Image,$decoded);
+         }
+
+
+         $curdate= date('Y-m-d h:i:s');
+
+         $adddriver = $this->Driver_model->add(array('DTransId'=>$TransporterId,'DFirstName'=>$FirstName,'DLastName'=>$LastName,'DMobileNumber'=>$MobileNumber,'DPassword'=>md5($Password),'DAddress'=>$Address,'DLicenceNo'=>$LicenceNo,'DLicenceImage'=>$Image,'CreatedAt'=>$curdate,'UpdatedAt'=>$curdate,'DStatus'=>0));
+         if($adddriver){
+            print json_encode(array('success'=>1, 'msg'=>'Driver Added Successfully'));
+
+         }else{
+            print json_encode(array('success'=>0, 'msg'=>'Driver Not Add'));
+
+         }
+
+
+    }
+
+
 
 
 

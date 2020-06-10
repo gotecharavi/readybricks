@@ -1,8 +1,8 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 date_default_timezone_set("Asia/Kolkata");
-class Order_model extends CI_Model
+class Order_detail_model extends CI_Model
 {
-    public $table = 'orders';
+    public $table = 'orders_detail';
 
     public function get_all()
     {
@@ -16,74 +16,46 @@ class Order_model extends CI_Model
 		->join('pump', 'pump.PumpId = orders.PumpId', 'inner')
 		->order_by('OrderId', 'DESC')->get($this->table)->result();
     }
-    public function get_order_status_all($status)
-    {
-        $this->db->select('OrderId,CustId,customer.Name as CustomerName,PhoneNo,AltPhoneNo,orders.Address,orders.PaymentCollection,orders.oUserId,orders.MainType,orders.PaymentMode,orders.OrderBy,orders.SerialNo,cPersonName,orders.Remark,orders.PermanentRemark,orders.OrderType,orders.Status,orders.SolutionType,orders.Reason,orders.DateTime,orders.PaymentReceivedBy,orders.ModelId,models.Name as ModelName,pump.PumpId,pump.Name as PumpName') //,oMenuId,Qty,Price,SubTotal,Tax,GrandTotal // 1 pending 2 approved 3 processing  4 ready for devliery 5 deliveryed
-		->join('customer', 'OCustId = CustId', 'inner')
-		->join('models', 'models.ModelId = orders.ModelId', 'inner')
-		->join('pump', 'pump.PumpId = orders.PumpId', 'inner')
-		->where('orders.Status', $status);
 
+	public function get_order_detail($filter){
+		$where ="";
+		$this->db
+		 ->join('orders', 'orders.OId = orders_detail.OdOrderId')
+		 ->join('product', 'product.ProductId = orders_detail.OdProductId')
+		->join('country','country.CId=orders.OCountryId','left')
+		->join('city','city.CityId=orders.OCityId','left')
+		->join('state','state.StateId=orders.OStateId','left')
 
-		if($status == 3){
-			$this->db->order_by('orders.PaymentReceivedBy', 'ASC');
-		}else{
-			$this->db->order_by('DateTime', 'ASC');
-		}
-		return $this->db->get($this->table)->result();
-    }
-    public function get_payment_status_all($status)
-    {
+		 ->select('city.CName as CityName,country.CName,state.SName,orders_detail.*,orders.*,product.PName')
+		->where("orders_detail.OdId",$filter->id);
+		$data=$this->db->get($this->table)->row();
 
-         $this->db->select('OrderId,CustId,customer.Name as CustomerName,PhoneNo,AltPhoneNo,orders.Address,orders.PaymentCollection,orders.oUserId,orders.MainType,orders.SolutionType,orders.PaymentMode,orders.ModelId,orders.OrderBy,orders.SerialNo,cPersonName,orders.PermanentRemark,orders.Remark,orders.OrderType,orders.PaymentReceivedBy,orders.Status,orders.DateTime,pump.PumpId,pump.Name as PumpName') //,oMenuId,Qty,Price,SubTotal,Tax,GrandTotal // 1 pending 2 approved 3 processing  4 ready for devliery 5 deliveryed
-		->join('customer', 'OCustId = CustId', 'inner')
-		->join('pump', 'pump.PumpId = orders.PumpId', 'inner')
-		->where('orders.Status', '3')
-		->where('orders.PaymentReceivedBy !=', '');
+		$getcustomer = $this->db->select('users.*,city.CName as CityName,country.CName,state.SName')
+			->join('country','country.CId=users.CountryId','left')
+			->join('city','city.CityId=users.CityId','left')
+			->join('state','state.StateId=users.StateId','left')
+			->where('UserId',$data->OUserId)->get('users')->row(); 
+		$getmanufactur = $this->db->where('UserId',$data->OdManuId)->get('users')->row(); 
+		$gettransporter = $this->db->where('UserId',$data->OdTransId)->get('users')->row(); 
+		$getallTransporter = $this->db
+			->select('transporter.TransId,users.UserId,users.CompanyName,users.MobileNumber')
+			->join('users','users.UserId=transporter.UserId')
+			->where('users.isAccount','1')
+			->where('users.PUserId','0')
+			->get('transporter')->result();
 
-    	if($status=='Pending'){
-			$this->db->where('orders.PaymentMode',$status);
-    	}else{			
-    		$this->db->where('orders.PaymentMode !=','Pending');
-    	
-    	}
-		return $this->db->order_by('OrderId', 'DESC')->get($this->table)->result();
-    }
-
-
-    public function get_employee_orders($id,$status)
-    {
-        return $this->db->select('OrderId,orders.OUserId,orders.ModelId,orders.SerialNo,cPersonName,CustId,customer.Name as CustomerName,PhoneNo,AltPhoneNo,orders.Address,orders.PaymentCollection,orders.PaymentMode,orders.OrderBy,orders.Remark,orders.OrderType,orders.MainType,PermanentRemark,orders.Status,orders.DateTime,models.Name as ModelName,pump.PumpId,pump.Name as PumpName') //,oMenuId,Qty,Price,SubTotal,Tax,GrandTotal // 1 pending 2 approved 3 processing  4 ready for devliery 5 deliveryed
-		->join('customer', 'OCustId = CustId', 'inner')
-		->join('models', 'models.ModelId = orders.ModelId', 'inner')
-		->join('pump', 'pump.PumpId = orders.PumpId', 'inner')
-		->where('orders.Status', $status)
-		->where("orders.OUserId LIKE '%$id%'")
-//		->where_in('orders.OUserId',$id)
-
-		->order_by('DateTime', 'Asc')->get($this->table)->result();
-    }
-
-
+		return array("data"=>$data,'customer'=>$getcustomer,'manufactur'=>$getmanufactur,'transporter'=>$gettransporter,'alltransporters'=>$getallTransporter);
+	}
 
 	public function get_page($size, $pageno,$filter){
 		$where ="";
-	// 	if($filter->search !=null){
-	// 		$where = " And  orders.OrderId = '".$filter->search."' ";
-	// 	}
-	//  $query= $this->db->query("SELECT orders.OrderId,CustId,customer.Name as CustomerName,SerialNo,cPersonName,PhoneNo,orders.Address,orders.PaymentCollection,orders.Signature,orders.BuildingType,orders.PaymentMode,orders.DateTime,orders.OrderBy,orders.Remark,orders.OrderType,orders.Status,pump.PumpId,pump.Name as PumpName, GROUP_CONCAT(models.Name SEPARATOR ',') as ModelName,GROUP_CONCAT(concat(users.FirstName, ' ', users.LastName) SEPARATOR ',') as UserFullName FROM orders INNER JOIN  customer ON OCustId = CustId INNER JOIN pump ON pump.PumpId = orders.PumpId INNER JOIN models INNER JOIN users   WHERE  FIND_IN_SET(models.ModelId,orders.ModelId)<> 0 AND FIND_IN_SET(users.UserId,orders.OUserId)<> 0   AND OrderType= 'Installation' $where GROUP BY orders.OrderId  ORDER BY orders.OrderId DESC LIMIT $pageno,$size ");
-	 	
-
-	// 	$data = $query->result();
-	$this->db
+		$this->db
+		 ->join('orders', 'orders.OId = orders_detail.OdOrderId')
+		 ->join('product', 'product.ProductId = orders_detail.OdProductId')
 		 ->limit($size, $pageno)
-		->select('orders.OId,orders.Created_At,users.FirstName,users.LastName,users.MobileNumber,count(orders_detail.OdProductId) as TotalProduct,sum(orders_detail.OdQty) as TotalQty,orders.OTotal,orders.OStatus')
-		 ->join('users', 'users.UserId = orders.OUserId')
-		 ->join('orders_detail', 'orders_detail.OdOrderId = orders.OId')
-		 ->group_by('orders.OId');
-
+		 ->select('orders_detail.*,orders.*,product.PName')
+		->where("orders_detail.OdOrderId",$filter->Id);
 		$data=$this->db->get($this->table)->result();
-		
 		$total=count($data);
 		return array("data"=>$data, "total"=>$total);
 	}
@@ -121,9 +93,76 @@ class Order_model extends CI_Model
 	}
 
 
+	public function get_page_maintenance($size, $pageno){
+		$this->db
+			->limit($size, $pageno)
+			->select('OrderId,CustId,customer.Name as CustomerName,SerialNo,cPersonName,PhoneNo,orders.Address,orders.PaymentCollection,orders.Signature,orders.BuildingType,orders.PaymentMode,orders.DateTime,orders.OrderBy,orders.Remark,orders.OrderType,orders.Status,models.ModelId,models.Name as ModelName,pump.PumpId,pump.Name as PumpName') 
+		->join('customer', 'OCustId = CustId', 'inner')
+		->join('models', 'models.ModelId = orders.ModelId', 'inner')
+		->join('pump', 'pump.PumpId = orders.PumpId', 'inner')
+		->where('OrderType', 'Maintenance')
+		->order_by('OrderId', 'DESC');
+		$data=$this->db->get($this->table)->result();
+		$total=$this->count_all_maintenance();
+		return array("data"=>$data, "total"=>$total);
+	}
+	public function get_page_where_maintenance($size, $pageno, $params){
+		$this->db->limit($size, $pageno)
+			->select('OrderId,CustId,customer.Name as CustomerName,SerialNo,cPersonName,PhoneNo,orders.Address,orders.PaymentCollection,orders.DateTime,orders.OrderBy,orders.Remark,orders.OrderType,orders.Status,models.ModelId,models.Name as ModelName,pump.PumpId,pump.Name as PumpName')
+//			->join('users', 'oUserId = UserId', 'left outer');
+		->join('customer', 'OCustId = CustId', 'inner')
+		->join('models', 'models.ModelId = orders.ModelId', 'inner')
+		->join('pump', 'pump.PumpId = orders.PumpId', 'inner');
+		if(isset($params->search) && !empty($params->search)){
+				$this->db->where("customer.Name LIKE '%$params->search%' OR models.Name LIKE '%$params->search%' OR PhoneNo LIKE '%$params->search%' OR OrderBy LIKE '%$params->search%' ");
+
+		}	
+		$this->db->where('OrderType', 'Maintenance')
+		->order_by('OrderId', 'DESC');
+
+		$data=$this->db->get($this->table)->result();
+		$total=$this->count_where_maintenance($params);
+		return array("data"=>$data, "total"=>$total);
+	}
+	public function count_where_maintenance($params)
+	{	
+		if(isset($params->search) && !empty($params->search)){
+
+ 		$this->db->join('customer', 'OCustId = CustId', 'inner')
+		->join('models', 'models.ModelId = orders.ModelId', 'inner')
+		->join('pump', 'pump.PumpId = orders.PumpId', 'inner')
+		->where("customer.Name LIKE '%$params->search%' OR  models.Name LIKE '%$params->search%' OR PhoneNo LIKE '%$params->search%' OR OrderBy LIKE '%$params->search%' ")
+		->where('OrderType', 'Maintenance');
+			
+		}	
+
+		return $this->db->count_all_results($this->table);
+	}
+    public function count_all_maintenance()
+	{
+		return $this->db
+		->join('customer', 'OCustId = CustId', 'inner')
+		->join('models', 'models.ModelId = orders.ModelId', 'inner')
+		->join('pump', 'pump.PumpId = orders.PumpId', 'inner')
+		->where('OrderType', 'Maintenance')
+		->order_by('OrderId', 'DESC')
+				
+			->count_all_results($this->table);
+	}
+
+
+
+
+
+
+
+
+
+
+
     public function get($id)
     {
-        return $this->db->where('OId', $id)->get($this->table)->row();
+        return $this->db->where('OrderId', $id)->get($this->table)->row();
     }
     public function get_where_user($uid)
     {
@@ -141,7 +180,7 @@ class Order_model extends CI_Model
 
     public function update($id, $data)
     {
-        return $this->db->where('OId', $id)->update($this->table, $data);
+        return $this->db->where('OrderId', $id)->update($this->table, $data);
     }
 
     public function delete($id)
@@ -151,7 +190,7 @@ class Order_model extends CI_Model
     }
     public function changestatus($id, $data)
     {
-        return $this->db->where('OrderId', $id)->update($this->table, $data);
+        return $this->db->where('OdId', $id)->update($this->table, $data);
     }
 	
 	public function getserialno($cust){

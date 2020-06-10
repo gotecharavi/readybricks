@@ -15,10 +15,13 @@ class Manufacture_model extends CI_Model
     }
     public function get_all_active_manufacture()
     {
-		return $this->db->join('users','users.UserId=manufacture.UserId')
+		return $this->db->select('users.UserId,users.CompanyName')->join('users','users.UserId=manufacture.UserId')
+			->join('product','product.PManuId=users.UserId')
 			->where('users.IsAccount','1')
 			->where('users.Status','1')
-			->where('users.PUserId','0')->get($this->table)->result();		
+			->where('users.PUserId','0')
+		 	->group_by('users.UserId')
+			->get($this->table)->result();		
     }
 	public function get_page($size, $pageno){
 		$this->db

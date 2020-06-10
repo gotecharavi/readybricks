@@ -28,6 +28,8 @@ angular.module('project', ['ui.bootstrap', 'ngGrid', 'jQuery-ui','ui.utils']).
     when('/Requests', { templateUrl:BASE_URL+'Requests_ctrl'}).   
     when('/editprofile', { templateUrl:BASE_URL+'EditProfile_ctrl'}).
     when('/viewRequestProfile', { templateUrl:BASE_URL+'Requests_ctrl'}).   
+    when('/viewItemOrder', { templateUrl:BASE_URL+'Order_ctrl'}).   
+    when('/viewOrderDetail', { templateUrl:BASE_URL+'Order_ctrl'}).   
 
     when('/api', { templateUrl:BASE_URL+'Api'}).   
 
