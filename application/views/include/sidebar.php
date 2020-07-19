@@ -655,11 +655,19 @@
                     <ul class="sub-menu">
                         <li><a href="<?php echo site_url(); ?>/#/Country">Country</a></li>
                         <li><a href="<?php echo site_url(); ?>/#/State">State</a></li>
+                        <li><a href="<?php echo site_url(); ?>/#/District">District</a></li>
                         <li><a href="<?php echo site_url(); ?>/#/City">City</a></li>
                     </ul>
                 </div>
               </div>
             </li>
+            <li class="">
+              <a href="<?php echo site_url(); ?>/#/Offers"><div class="icon-w"><div class="os-icon os-icon-menu"></div></div><span>Manage Offers</span></a>
+            </li>
+            <li class="">
+              <a href="<?php echo site_url(); ?>/#/Notification"><div class="icon-w"><div class="os-icon os-icon-menu"></div></div><span>Manage Notification</span></a>
+            </li>
+
 
             <li class="">
               <a href="<?php echo site_url(); ?>/#/Reports"><div class="icon-w"><div class="os-icon os-icon-paperclip"></div></div><span>Reports</span></a>

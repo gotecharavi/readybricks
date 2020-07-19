@@ -22,6 +22,12 @@ class Cart_model extends CI_Model
 			->join('product', 'ProductId = CProductId', 'inner')
 			->where('CUserId',$id)->get($this->table)->result();		
     }
+    public function get_with_userid($id,$productid)
+    {
+		return $this->db->select('CartId,CQty')
+			->join('product', 'ProductId = CProductId', 'inner')
+			->where('CUserId',$id)->where('CProductId',$productid)->get($this->table)->row();		
+    }
     public function get_all()
     {
 		return $this->db->get($this->table)->result();		
@@ -84,7 +90,7 @@ class Cart_model extends CI_Model
 
     public function delete($id)
     {
-        $this->db->where('MenuId', $id)->delete($this->table);
+        $this->db->where('CartId', $id)->delete($this->table);
         return $this->db->affected_rows();
     }
     public function delete_by_userid($id)

@@ -11,12 +11,13 @@ class Customer_model extends CI_Model
 	public function get_page($size, $pageno){
 		$this->db
 			->limit($size, $pageno)
-			->select('city.CName as CityName,country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,customer.CustId,users.FirstName,users.LastName,users.MobileNumber ,users.Address,users.Email,users.Status,customer.GSTIN,customer.VatNumber')
+			->select('city.CName as CityName,country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,customer.CustId,users.FirstName,users.LastName,users.Image,users.MobileNumber ,users.Address,users.Email,users.Status,customer.GSTIN,customer.VatNumber')
 			->join('users','users.UserId=customer.UserId')
 			->join('country','country.CId=users.CountryId','left')
 			->join('city','city.CityId=users.CityId','left')
 			->join('state','state.StateId=users.StateId','left')
 			->where('users.IsAccount','1')
+			->order_by('users.UserId')
 			->where('users.PUserId','0');
 			
 		$data=$this->db->get($this->table)->result();
@@ -25,15 +26,16 @@ class Customer_model extends CI_Model
 	}
 	public function get_page_where($size, $pageno, $params){
 		$this->db->limit($size, $pageno)
-			->select('city.CName as CityName,country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,customer.CustId,users.FirstName,users.LastName,users.MobileNumber ,users.Address,users.Email,users.Status,customer.GSTIN,customer.VatNumber')
+			->select('city.CName as CityName,country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,customer.CustId,users.FirstName,users.LastName,users.Image,users.MobileNumber ,users.Address,users.Email,users.Status,customer.GSTIN,customer.VatNumber')
 			->join('users','users.UserId=customer.UserId')
 			->join('city','city.CityId=users.CityId','left')
 			->join('country','country.CId=users.CountryId','left')
 			->join('state','state.StateId=users.StateId','left')
+			->order_by('users.UserId')
 			->where('users.IsAccount','1')
 			->where('users.PUserId','0');
 		if(isset($params->search) && !empty($params->search)){
-				$this->db->where("users.FirstName LIKE '%$params->search%' OR users.LastName LIKE '%$params->search%' OR Email LIKE '%$params->search%' OR Address LIKE '%$params->search%' OR MobileNumber LIKE '%$params->search%'  ");
+				$this->db->where("CONCAT(users.FirstName, ' ', users.LastName)  LIKE '%$params->search%' OR Email LIKE '%$params->search%' OR Address LIKE '%$params->search%' OR MobileNumber LIKE '%$params->search%'  ");
 //				$this->db->like("catName",$params->search);
 			}	
 
@@ -53,7 +55,7 @@ class Customer_model extends CI_Model
 			->where('users.PUserId','0');
 
 		if(isset($params->search) && !empty($params->search)){
-				$this->db->where("users.FirstName LIKE '%$params->search%' OR users.LastName LIKE '%$params->search%' OR Email LIKE '%$params->search%' OR Address LIKE '%$params->search%' OR MobileNumber LIKE '%$params->search%'  ");
+				$this->db->where("CONCAT(users.FirstName, ' ', users.LastName) LIKE '%$params->search%' OR Email LIKE '%$params->search%' OR Address LIKE '%$params->search%' OR MobileNumber LIKE '%$params->search%'  ");
 				// $this->db->like("catName",$params->search);
 			}	
 	 	return count($this->db->get($this->table)->result());
@@ -85,6 +87,18 @@ class Customer_model extends CI_Model
     {
         return $this->db->where('CustId', $id)->update($this->table, $data);
     }
+	public function getId($id){
+		$this->db
+			->select('city.CName as CityName,district.DName,country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,customer.CustId,users.FirstName,users.LastName,users.MobileNumber ,users.Address,users.Landmark,users.Email,users.Status,customer.GSTIN,customer.VatNumber')
+			->join('users','users.UserId=customer.UserId')
+			->join('country','country.CId=users.CountryId','left')
+			->join('city','city.CityId=users.CityId','left')
+			->join('district','district.DistrictId=users.DistrictId','left')
+			->join('state','state.StateId=users.StateId','left')
+			->where('users.UserId', $id);
+		return $this->db->get($this->table)->row();
+	}
+
 
     public function delete($id)
     {

@@ -10,7 +10,7 @@ class Product_model extends CI_Model
     public function get_all($Manufacture,$Price,$Sorting)
     {
     	if($Manufacture !=""){	
-			$this->db->where_in('PManuId',array($Manufacture));    		
+			$this->db->where_in('PManuId',explode(',',$Manufacture));    		
     	}
     	if($Price !=""){	
 			$this->db->where('PPrice <='.$Price);    		
@@ -32,31 +32,33 @@ class Product_model extends CI_Model
 
 		->where('product.IsAccount','1')
 		->where('product.IsEdited','0')
+		->where('product.PProductId','0')
 		->where('product.PStatus','1')->get($this->table)->result();		
     }
     public function get_all_by_userid($id)
     {
-		return $this->db->where('PManuId',$id)->get($this->table)->result();		
+		return $this->db->where('PManuId',$id)->where('product.PProductId','0')->get($this->table)->result();		
     }
 	public function get_page($size, $pageno){
+
 		$this->db
 			// ->join('manufacture', 'product.PManuId = manufacture.MenuId', 'left')
 			->join('users', 'users.UserId = product.PManuId', 'left')
+		 	->order_by('product.ProductId desc')
 			->limit($size, $pageno)
 			->select('product.*,users.CompanyName');
-// 			->get('category')
-			
-// ->join('Navigations', 'Roles.NavigationId = Navigations.NavigationId', 'left outer');
-			
 		$data=$this->db->get($this->table)->result();
 		$total=$this->count_all();
 		return array("data"=>$data, "total"=>$total);
 	}
 	public function get_page_where($size, $pageno, $params){
 		$this->db->limit($size, $pageno)
-		->select('catId,catName,catStatus');
+			->join('users', 'users.UserId = product.PManuId', 'left')
+		 	->order_by('product.ProductId desc')
+			->select('product.*,users.CompanyName');
 		if(isset($params->search) && !empty($params->search)){
-				$this->db->where("catName LIKE '%$params->search%'");
+				$this->db->where("product.PName LIKE '%$params->search%' OR CompanyName LIKE '%$params->search%'
+					OR PPrice LIKE '%$params->search%'");
 //				$this->db->like("catName",$params->search);
 			}	
 
@@ -66,11 +68,12 @@ class Product_model extends CI_Model
 	}
 	public function count_where($params)
 	{	
-// 		$this->db
-// ->join('Navigations', 'Roles.NavigationId = Navigations.NavigationId', 'left outer');
+		$this->db
+			->join('users', 'users.UserId = product.PManuId', 'left');
 
 		if(isset($params->search) && !empty($params->search)){
-				$this->db->where("catName LIKE '%$params->search%'");
+				$this->db->where("product.PName LIKE '%$params->search%' OR CompanyName LIKE '%$params->search%'
+					OR PPrice LIKE '%$params->search%'");
 				// $this->db->like("catId",$params->search);
 				// $this->db->like("catName",$params->search);
 			}	
@@ -79,6 +82,7 @@ class Product_model extends CI_Model
     public function count_all()
 	{
 		return $this->db			
+			->join('users', 'users.UserId = product.PManuId', 'left')
 			->count_all_results($this->table);
 	}
     public function get($id)
@@ -104,7 +108,7 @@ class Product_model extends CI_Model
     }
     public function changestatus($id, $data)
     {
-        return $this->db->where('CatId', $id)->update($this->table, $data);
+        return $this->db->where('ProductId', $id)->update($this->table, $data);
 	}
 	public function getId($id)
     {

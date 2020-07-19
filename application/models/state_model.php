@@ -19,11 +19,9 @@ class State_model extends CI_Model
 		$this->db
 			->limit($size, $pageno)
 			->select('state.StateId,state.SCountryId,state.SName,state.SStatus,country.CName')
-			->join('country', 'country.CId = state.SCountryId', 'inner');
-// 			->get('category')
-			
-// ->join('Navigations', 'Roles.NavigationId = Navigations.NavigationId', 'left outer');
-			
+			->join('country', 'country.CId = state.SCountryId', 'inner')
+			->order_by('StateId desc');
+
 		$data=$this->db->get($this->table)->result();
 		$total=$this->count_all();
 
@@ -31,9 +29,11 @@ class State_model extends CI_Model
 	}
 	public function get_page_where($size, $pageno, $params){
 		$this->db->limit($size, $pageno)
-		->select('catId,catName,catStatus');
+		->select('state.StateId,state.SCountryId,state.SName,state.SStatus,country.CName')
+		->join('country', 'country.CId = state.SCountryId', 'inner')
+		->order_by('StateId desc');
 		if(isset($params->search) && !empty($params->search)){
-				$this->db->where("catName LIKE '%$params->search%'");
+				$this->db->where("CName LIKE '%$params->search%' OR SName LIKE '%$params->search%'");
 //				$this->db->like("catName",$params->search);
 			}	
 
@@ -43,11 +43,10 @@ class State_model extends CI_Model
 	}
 	public function count_where($params)
 	{	
-// 		$this->db
-// ->join('Navigations', 'Roles.NavigationId = Navigations.NavigationId', 'left outer');
-
+		$this->db
+		->join('country', 'country.CId = state.SCountryId', 'inner');
 		if(isset($params->search) && !empty($params->search)){
-				$this->db->where("catName LIKE '%$params->search%'");
+				$this->db->where("CName LIKE '%$params->search%'");
 				// $this->db->like("catId",$params->search);
 				// $this->db->like("catName",$params->search);
 			}	
@@ -56,6 +55,7 @@ class State_model extends CI_Model
     public function count_all()
 	{
 		return $this->db			
+			->join('country', 'country.CId = state.SCountryId', 'inner')
 			->count_all_results($this->table);
 	}
     public function get($id)

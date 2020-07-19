@@ -5,21 +5,34 @@ function VehicleCtrl($scope, $http){
 	
 	//Grid,dropdown data loading
 	loadGridData($scope.pagingOptions.pageSize,1);
+	loadData('get_Transporter_list',{}).success(function(data){$scope.TransporterList=data; $scope.item.Transporter=null;});
 	
 	//CRUD operation
 	$scope.saveItem=function(){	
 		var record={};
 		$scope.errors = {};
-		$scope.nameError =false;
+		$scope.transporterError =false;
+		$scope.vnumberError =false;
+		$scope.rcError= false;
 		console.log($scope.item);
 		if($scope.item==null || $scope.item=="" ){
-            $scope.nameError = true;
-            $scope.errors.nameMsg = 'Please enter type name.';
+            $scope.transporterError = true;
+            $scope.errors.transporterMsg = 'Please select transporter.';
             return false;
         }
-		if($scope.item.Name==null || $scope.item.Name=="" ){
-            $scope.nameError = true;
-            $scope.errors.nameMsg = 'Please enter type name.';
+		if($scope.item.Transporter==null || $scope.item.Transporter=="" ){
+            $scope.transporterError = true;
+            $scope.errors.transporterMsg = 'Please select transporter.';
+            return false;
+        }
+		if($scope.item.VRcNo==null || $scope.item.VRcNo=="" ){
+            $scope.rcError = true;
+            $scope.errors.rcMsg = 'Please enter RC Book Number.';
+            return false;
+        }
+		if($scope.item.VNo==null || $scope.item.VNo=="" ){
+            $scope.vnumberError = true;
+            $scope.errors.vnumberMsg = 'Please enter vehicle number.';
             return false;
         }
 		angular.extend(record,$scope.item);
@@ -37,6 +50,8 @@ function VehicleCtrl($scope, $http){
 				loadGridData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
 				$scope.fgShowHide=true;			
 				$scope.item=null;
+				$("#baseimagename").attr('src','');
+
 			}
 		});
 	};			
@@ -44,7 +59,8 @@ function VehicleCtrl($scope, $http){
 		console.log(row.entity);
 		$scope.item=row;
 		$scope.datatype='Edit';
-		console.log($scope.item);
+		$scope.item.Transporter = row.VTransId;
+		$("#baseimagename").attr('src','uploads/'+row.VRcImage);
 		
 		$scope.fgShowHide=false;				
 	};
@@ -61,6 +77,17 @@ function VehicleCtrl($scope, $http){
 			});
 		}
 	};
+	$scope.getfilename=function(file){
+
+ 		var reader = new FileReader();
+		reader.readAsDataURL(file.files[0]);
+		reader.onload = function (e) {
+			var data = e.target.result.replace(/^data:image\/\w+;base64,/, "");
+			$scope.item.baseimage =  e.target.result;//data;
+			$("#baseimagename").attr('src',e.target.result);
+		}
+
+	}
 	$scope.changeItemStatus=function(row,status){
 			var data = {'id':row,'status':status};
 			loadData('changestatus',data).success(function(data){

@@ -8,6 +8,120 @@ class Order_detail_model extends CI_Model
     {
 		return $this->db->get($this->table)->result();		
     }
+
+    public function get_all_orders_by_customer($id,$status = 0)
+    {
+ 		$this->db
+		 ->join('orders', 'orders.OId = orders_detail.OdOrderId')
+		 ->join('product', 'product.ProductId = orders_detail.OdProductId')
+		 ->join('users', 'users.UserId = orders_detail.OdManuId','left')
+		->join('country','country.CId=orders.OCountryId','left')
+		->join('city','city.CityId=orders.OCityId','left')
+		->join('district','district.DistrictId=orders.ODistrictId', 'left')
+		->join('state','state.StateId=orders.OStateId','left')
+
+		 ->select('orders_detail.*,orders.*,product.PName,product.PImage,users.CompanyName as manufactureCompanyName,users.MobileNumber,city.CName as CityName,district.DName as DistrictName,country.CName as CountryName,state.SName as StateName')
+		->where("orders.OUserId",$id);
+
+		if($status ==0){
+		$this->db->where("orders_detail.OdStatus <=",3);
+
+		}else{
+		$this->db->where("orders_detail.OdStatus >",3);
+		}
+
+		$this->db->order_by('orders_detail.OdOrderId', 'DESC');
+//		echo count($this->db->get($this->table)->result());
+		return $this->db->get($this->table)->result();
+
+
+   }
+    public function get_all_orders_by_transporter($id,$status)
+    {
+ 		$this->db
+		 ->join('orders', 'orders.OId = orders_detail.OdOrderId')
+		 ->join('product', 'product.ProductId = orders_detail.OdProductId')
+		 ->join('users', 'users.UserId =orders_detail.OdManuId','left')
+		->join('country','country.CId=orders.OCountryId','left')
+		->join('city','city.CityId=orders.OCityId','left')
+		->join('district','district.DistrictId=orders.ODistrictId', 'left')
+		->join('state','state.StateId=orders.OStateId','left')
+		->join('driver','driver.DId=orders_detail.OdDriverId','left')
+		->join('vehicle','vehicle.VId=orders_detail.OdVehicleId','left')
+
+		 ->select('orders_detail.*,orders.*,product.PName,product.PImage,users.CompanyName as manufactureCompanyName,users.MobileNumber as manufactureMobileNumber,users.Address as manufactureAddress,users.Landmark as manufactureLandmark,city.CName as CityName,district.DName as DistrictName,country.CName as CountryName,state.SName as StateName,driver.DFirstName,driver.DLastName,driver.DMobileNumber,vehicle.VNo')
+		->where("orders_detail.OdTransId",$id);
+
+		if($status ==0){
+		$this->db->where("orders_detail.OdStatus IN (2,3)");
+
+		}else{
+		$this->db->where("orders_detail.OdStatus IN (4,5)");
+		}
+		$this->db->order_by('orders_detail.OdOrderId', 'DESC');
+
+		// ->where("orders_detail.OdStatus >=",2);
+//		echo count($this->db->get($this->table)->result());
+		return $this->db->get($this->table)->result();
+
+
+   }
+    public function get_all_orders_by_manufacture($id,$status)
+    {
+ 		$this->db
+		 ->join('orders', 'orders.OId = orders_detail.OdOrderId')
+		 ->join('product', 'product.ProductId = orders_detail.OdProductId')
+		 ->join('users', 'users.UserId =orders_detail.OdManuId','left')
+		->join('country','country.CId=orders.OCountryId','left')
+		->join('city','city.CityId=orders.OCityId','left')
+		->join('district','district.DistrictId=orders.ODistrictId', 'left')
+		->join('state','state.StateId=orders.OStateId','left')
+		 ->select('orders_detail.*,orders.*,product.PName,product.PImage,users.CompanyName as manufactureCompanyName,city.CName as CityName,district.DName as DistrictName,country.CName as CountryName,state.SName as StateName')
+		->where("orders_detail.OdManuId",$id);
+
+		if($status ==0){
+		$this->db->where("orders_detail.OdStatus <=",3);
+
+		}else{
+		$this->db->where("orders_detail.OdStatus >",3);
+		}
+		$this->db->order_by('orders_detail.OdOrderId', 'DESC');
+
+//		echo count($this->db->get($this->table)->result());
+		return $this->db->get($this->table)->result();
+
+
+   }
+    public function get_all_orders_by_driver($id,$status)
+    {
+ 		$this->db
+		 ->join('orders', 'orders.OId = orders_detail.OdOrderId')
+		 ->join('product', 'product.ProductId = orders_detail.OdProductId')
+		 ->join('users', 'users.UserId =orders_detail.OdManuId','left')
+		->join('country','country.CId=orders.OCountryId','left')
+		->join('city','city.CityId=orders.OCityId','left')
+		->join('district','district.DistrictId=orders.ODistrictId', 'left')
+		->join('state','state.StateId=orders.OStateId','left')
+
+		 ->select('orders_detail.*,orders.*,product.PName,product.PImage,users.CompanyName as manufactureCompanyName,users.MobileNumber as manufactureMobileNumber,users.Address as manufactureAddress,users.Landmark as manufactureLandmark,city.CName as CityName,district.DName as DistrictName,country.CName as CountryName,state.SName as StateName')
+		->where("orders_detail.OdDriverId",$id);
+		if($status ==0){
+		$this->db->where("orders_detail.OdStatus <=",3);
+
+		}else{
+		$this->db->where("orders_detail.OdStatus >",3);
+		}
+
+		$this->db->order_by('orders_detail.OdOrderId', 'DESC');
+
+//		->where("orders_detail.OdStatus >=",3);
+//		echo count($this->db->get($this->table)->result());
+		return $this->db->get($this->table)->result();
+
+
+   }
+
+
     public function get_order_all()
     {
         return $this->db->select('OrderId,CustId,customer.Name as CustomerName,PhoneNo,AltPhoneNo,orders.Address,orders.PaymentCollection,orders.DateTime,orders.PermanentRemark,orders.OrderBy,orders.Remark,orders.OrderType,orders.Status,models.ModelId,cPersonName,models.Name as ModelName,pump.PumpId,pump.Name as PumpName') //,oMenuId,Qty,Price,SubTotal,Tax,GrandTotal // 1 pending 2 approved 3 processing  4 ready for devliery 5 deliveryed
@@ -24,15 +138,19 @@ class Order_detail_model extends CI_Model
 		 ->join('product', 'product.ProductId = orders_detail.OdProductId')
 		->join('country','country.CId=orders.OCountryId','left')
 		->join('city','city.CityId=orders.OCityId','left')
+		->join('district','district.DistrictId=orders.ODistrictId', 'left')
 		->join('state','state.StateId=orders.OStateId','left')
+		->join('driver','driver.DId=orders_detail.OdDriverId','left')
+		->join('vehicle','vehicle.VId=orders_detail.OdVehicleId','left')
 
-		 ->select('city.CName as CityName,country.CName,state.SName,orders_detail.*,orders.*,product.PName')
+		 ->select('city.CName as CityName,district.DName,country.CName,state.SName,DFirstName,DLastName,VNo,DMobileNumber,orders_detail.*,orders.*,product.PName')
 		->where("orders_detail.OdId",$filter->id);
 		$data=$this->db->get($this->table)->row();
 
-		$getcustomer = $this->db->select('users.*,city.CName as CityName,country.CName,state.SName')
+		$getcustomer = $this->db->select('users.*,city.CName as CityName,district.DName,country.CName,state.SName')
 			->join('country','country.CId=users.CountryId','left')
 			->join('city','city.CityId=users.CityId','left')
+			->join('district','district.DistrictId=users.DistrictId', 'left')
 			->join('state','state.StateId=users.StateId','left')
 			->where('UserId',$data->OUserId)->get('users')->row(); 
 		$getmanufactur = $this->db->where('UserId',$data->OdManuId)->get('users')->row(); 
@@ -44,8 +162,21 @@ class Order_detail_model extends CI_Model
 			->where('users.PUserId','0')
 			->get('transporter')->result();
 
-		return array("data"=>$data,'customer'=>$getcustomer,'manufactur'=>$getmanufactur,'transporter'=>$gettransporter,'alltransporters'=>$getallTransporter);
+		$getfirstlocations = $this->db->select('locationid as lid ,Latitude as lat,Longitude as lng')->where('LOrderDetailId',$data->OdId)->limit(50)->get('orders_locations')->result(); 
+		// $getlastlocations = $this->db->limit(1)->select('Latitude as lat,Longitude as lng')->where('LOrderDetailId',$data->OdId)->order_by('LocationId','desc')->get('orders_locations')->row(); 
+
+		// $locations[] =$getfirstlocations; 
+		// $locations[] =$getlastlocations; 
+
+		return array("data"=>$data,'customer'=>$getcustomer,'manufactur'=>$getmanufactur,'transporter'=>$gettransporter,'alltransporters'=>$getallTransporter,'orderLocations'=>$getfirstlocations);
 	}
+    public function get_order_detail_latest_location($id,$oid)
+    {
+		return $this->db->select('locationid as lid ,Latitude as lat,Longitude as lng')->where('LOrderDetailId',$oid)->where('LocationId >', $id)->limit(50)->get('orders_locations')->result(); 
+
+
+    }//->where('cMenuId', $mid)
+  
 
 	public function get_page($size, $pageno,$filter){
 		$where ="";
@@ -59,6 +190,9 @@ class Order_detail_model extends CI_Model
 		$total=count($data);
 		return array("data"=>$data, "total"=>$total);
 	}
+
+
+
 	public function get_page_where($size, $pageno, $params){
 
 
@@ -180,7 +314,7 @@ class Order_detail_model extends CI_Model
 
     public function update($id, $data)
     {
-        return $this->db->where('OrderId', $id)->update($this->table, $data);
+        return $this->db->where('OdId', $id)->update($this->table, $data);
     }
 
     public function delete($id)

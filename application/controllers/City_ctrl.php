@@ -8,6 +8,7 @@ class City_ctrl extends base_ctrl {
 		$this->load->model('country_model','country');
 	    $this->load->model('state_model','state');
 	    $this->load->model('city_model','city');
+	    $this->load->model('district_model','district');
 	}
 	public function index()
 	{
@@ -35,10 +36,11 @@ class City_ctrl extends base_ctrl {
 		$tmpdata['CName']=$data->Name;
 		$tmpdata['CCountryId']=$data->Country;
 		$tmpdata['CStateId']=isset($data->State)?$data->State:$data->CStateId;
+		$tmpdata['CDistrictId']=isset($data->District)?$data->District:$data->CDistrictId;
 		$tmpdata['CStatus']='1';
 		if(!isset($data->CityId))
 		{
-			if($this->model->getName($data->Name,$data->State,$data->Country)){
+			if($this->model->getName($data->Name,$data->District,$data->State,$data->Country)){
 				$msg='Data Already Exist';
 				$success=FALSE;
 			}else{
@@ -55,7 +57,7 @@ class City_ctrl extends base_ctrl {
 				// echo "<pre>";
 				// print_r($this->model->getName($data->Name,$data->State,$data->Country,$data->CityId));
 				// exit;
-				if($this->model->getName($data->Name,$tmpdata['CStateId'],$data->Country,$data->CityId)){
+				if($this->model->getName($data->Name,$tmpdata['CDistrictId'],$tmpdata['CStateId'],$data->Country,$data->CityId)){
 					$msg='Data Already Exist';
 					$success=FALSE;
 				}else{
@@ -121,6 +123,10 @@ class City_ctrl extends base_ctrl {
 	public function get_State_list(){
 		$data=$this->post();
 		print  json_encode($this->state->get_all_by_countryId($data->id));
+	}
+	public function get_District_list(){
+		$data=$this->post();
+		print  json_encode($this->district->get_all_by_countryId_stateId($data->cid,$data->sid));
 	}
 	public function get_City_list(){
 		$data=$this->post();

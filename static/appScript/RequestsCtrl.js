@@ -163,7 +163,7 @@ function RequestsCtrl($scope, $http){
 
 				});
 			}
-			if(name !="" && name=='Product'){
+			if(name !="" && name=='Vehicle'){
 				$scope.isLoadingBar = true;
 				$scope.fgShowHide=false;				
 				$scope.viewProfileDetail =name;
@@ -172,32 +172,110 @@ function RequestsCtrl($scope, $http){
 				// call API
 		
 		
-					loadData('getProductById',{'PId' : getParam( 'id' )}).success(function(row){
+					loadData('getVehicleById',{'VId' : getParam( 'id' )}).success(function(row){
 						// console.log(row);
-						row1=row.product_by_id;
-						prow=row.product_by_pid;
+						row1=row.vehicle_by_id;
+						prow=row.vehicle_by_pid;
 						$scope.item=row1;
-						$scope.PName=row1.PName;
-						$scope.PImage=row1.PImage;
-						$scope.PMinDeliveryDays=row1.PMinDeliveryDays;
-						$scope.PPrice=row1.PPrice;
 						$scope.CompanyName=row1.CompanyName;
-						$scope.Reason=row1.Reason;
-						$scope.IsAccount=row1.IsAccount;
-						$scope.PDescription=row1.PDescription;
+						$scope.VRcNo=row1.VRcNo;
+						$scope.VNo=row1.VNo;
+						$scope.VRcImage=row1.VRcImage;
+						$scope.VStatus=row1.VStatus;
+                        $scope.IsAccount=row1.IsAccount;
+                        $scope.Reason=row1.Reason;
 						
-						$scope.PName2=prow.PName;
-						$scope.PImage2=prow.PImage;
-						$scope.PMinDeliveryDays2=prow.PMinDeliveryDays;
-						$scope.PPrice2=prow.PPrice;
 						$scope.CompanyName2=prow.CompanyName;
-						$scope.Reason2=prow.Reason;
-						$scope.IsAccount2=prow.IsAccount;
-						$scope.PDescription2=prow.PDescription;
+						$scope.VRcNo2=prow.VRcNo;
+						$scope.VNo2=prow.VNo;
+						$scope.VRcImage2=prow.VRcImage;
+						$scope.VStatus2=prow.VStatus;
+                        $scope.IsAccount2=prow.IsAccount;
+                        $scope.Reason2=prow.Reason;
+
 						$scope.isLoadingBar = false;
 		
 					});
 				}
+
+			if(name !="" && name=='Driver'){
+				$scope.isLoadingBar = true;
+				$scope.fgShowHide=false;				
+				$scope.viewProfileDetail =name;
+				$scope.viewtype = type;
+		
+				// call API
+		
+		
+					loadData('getDriverById',{'DId' : getParam( 'id' )}).success(function(row){
+						// console.log(row);
+						row1=row.driver_by_id;
+						prow=row.driver_by_pid;
+						$scope.item=row1;
+						$scope.CompanyName=row1.CompanyName;
+						$scope.DFirstName=row1.DFirstName;
+						$scope.DLastName=row1.DLastName;
+						$scope.DMobileNumber=row1.DMobileNumber;
+						$scope.DImage=row1.DImage;
+						$scope.DLicenceImage=row1.DLicenceImage;
+						$scope.DStatus=row1.DStatus;
+                        $scope.IsAccount=row1.IsAccount;
+                        $scope.Reason=row1.Reason;
+						
+						$scope.CompanyName2=prow.CompanyName;
+						$scope.DFirstName2=prow.DFirstName;
+						$scope.DLastName2=prow.DLastName;
+						$scope.DMobileNumber2=prow.DMobileNumber;
+						$scope.DImage2=row1.DImage2;
+						$scope.DLicenceImage2=prow.DLicenceImage;
+						$scope.DStatus2=prow.DStatus;
+                        $scope.IsAccount2=prow.IsAccount;
+                        $scope.Reason2=prow.Reason;
+
+						$scope.isLoadingBar = false;
+		
+					});
+				}
+
+            if(name !="" && name=='Product'){
+                $scope.isLoadingBar = true;
+                $scope.fgShowHide=false;                
+                $scope.viewProfileDetail =name;
+				$scope.viewtype = type;
+
+                    loadData('getProductById',{'PId' : getParam( 'id' )}).success(function(row){
+                        // console.log(row);
+                        row1=row.product_by_id;
+                        prow=row.product_by_pid;
+                        $scope.item=row1;
+                        $scope.PName=row1.PName;
+                        $scope.PImage=row1.PImage;
+                        $scope.PMinDeliveryDays=row1.PMinDeliveryDays;
+                        $scope.PPrice=row1.PPrice;
+                        $scope.CompanyName=row1.CompanyName;
+                        $scope.Reason=row1.Reason;
+                        $scope.IsAccount=row1.IsAccount;
+                        $scope.PDescription=row1.PDescription;
+                        $scope.PStatus=row1.PStatus;
+                        
+                        $scope.PName2=prow.PName;
+                        $scope.PImage2=prow.PImage;
+                        $scope.PMinDeliveryDays2=prow.PMinDeliveryDays;
+                        $scope.PPrice2=prow.PPrice;
+                        $scope.CompanyName2=prow.CompanyName;
+                        $scope.PDescription2=prow.PDescription;
+                        $scope.Reason2=prow.Reason;
+                        $scope.IsAccount2=prow.IsAccount;
+                        $scope.PStatus2=prow.PStatus;
+
+                        $scope.isLoadingBar = false;
+        
+                    });
+                }
+
+
+
+
 	}
 	$scope.viewManufacturerItem=function(row){	
                        
@@ -315,6 +393,99 @@ function RequestsCtrl($scope, $http){
 	// 		});
 	// 	}
 	// };
+
+	$scope.approveVehicle=function(row){
+		if(confirm('Sure!')){
+			var id = {'id':$scope.item.VId,'viewtype': $scope.viewtype};
+			loadData('approve_vehicle',id).success(function(data){
+				loadGridData($scope.pagingOptions.pageSize,1);
+				window.location=BASE_URL+"#/Requests";
+				$scope.viewProfileDetail=false;
+					$scope.fgShowHide=true;
+		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data Approved successfully</p>', {
+		                type: 'info',
+		                delay: 2500,
+		                allow_dismiss: true
+		            });
+			});
+		}
+	};
+	$scope.rejectReject=function(row){
+		console.log($scope.item);
+		console.log(row);
+		// $scope.viewProfileDetail(getParam( 'user' ),getParam( 'type' ));
+		$scope.item = $scope.item;
+	}
+	$scope.rejectSaveVehicle=function(row){
+
+			var id = {'data':row};
+			loadData('rejectSaveVehicle',id).success(function(data){
+				console.log(data);
+				loadGridData($scope.pagingOptions.pageSize,1);
+		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data rejected successfully</p>', {
+		                type: 'info',
+		                delay: 2500,
+		                allow_dismiss: true
+					});
+					$scope.VStatus=2;
+					$('.reject_vehicle_cancel').hide();
+					// $scope.viewProfileDetail=false;
+					// $scope.fgShowHide=true;
+					// $scope.fgShowHide = false;
+					// $window.open('localhost/readybricks5/index.php/#/Requests');
+					// $scope.viewProfileDetail(getParam( 'user' ),getParam( 'type' ));
+					document.getElementById("openVehicleModalButton").click();
+					// window.location.href="/#/Requests";
+					
+			});
+			
+	}
+
+
+
+	$scope.approveDriver=function(row){
+		if(confirm('Sure!')){
+			var id = {'id':$scope.item.DId,'viewtype': $scope.viewtype};
+			loadData('approve_driver',id).success(function(data){
+				loadGridData($scope.pagingOptions.pageSize,1);
+				window.location=BASE_URL+"#/Requests";
+				$scope.viewProfileDetail=false;
+					$scope.fgShowHide=true;
+		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data Approved successfully</p>', {
+		                type: 'info',
+		                delay: 2500,
+		                allow_dismiss: true
+		            });
+			});
+		}
+	};
+
+	$scope.rejectSaveDriver=function(row){
+
+			var id = {'data':row};
+			loadData('rejectSaveDriver',id).success(function(data){
+				console.log(data);
+				loadGridData($scope.pagingOptions.pageSize,1);
+		            $.bootstrapGrowl('<h4>Success!</h4> <p>Data rejected successfully</p>', {
+		                type: 'info',
+		                delay: 2500,
+		                allow_dismiss: true
+					});
+					$scope.VStatus=2;
+					$('.reject_driver_cancel').hide();
+					// $scope.viewProfileDetail=false;
+					// $scope.fgShowHide=true;
+					// $scope.fgShowHide = false;
+					// $window.open('localhost/readybricks5/index.php/#/Requests');
+					// $scope.viewProfileDetail(getParam( 'user' ),getParam( 'type' ));
+					document.getElementById("openDriverModalButton").click();
+					// window.location.href="/#/Requests";
+					
+			});
+			
+	}
+
+
 	$scope.reject=function(row){
 		console.log($scope.item);
 		console.log(row);
@@ -403,7 +574,7 @@ function RequestsCtrl($scope, $http){
 		params['search']=$scope.search;
 		loadData(action,params).success(function(res){
 			$scope.list=res.data;
-		    $scope.totalpaging=Math.ceil(res.total/$scope.pagingOptions.pageSize);
+		    $scope.mtotalpaging=Math.ceil(res.total.manufacturer/$scope.pagingOptions.pageSize);
 //    console.log($scope.totalpaging);
 
 			$scope.totalItems=res.total

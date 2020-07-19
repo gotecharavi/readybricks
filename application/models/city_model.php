@@ -18,9 +18,11 @@ class City_model extends CI_Model
 	public function get_page($size, $pageno){
 		$this->db
 			->limit($size, $pageno)
-			->select('city.CityId,city.CName,city.CStatus,city.CCountryId,city.CStateId,state.SName,country.CName as country_name')
+			->select('city.CityId,city.CName,city.CStatus,city.CCountryId,city.CStateId,state.SName,country.CName as country_name,district.DistrictId,district.DName')
+			->join('district','district.DistrictId=city.CDistrictId')
 			->join('state','state.StateId=city.CStateId')
-			->join('country','country.CId=city.CCountryId');
+			->join('country','country.CId=city.CCountryId')
+			->order_by('CityId desc');
 // 			->get('category')
 			
 // ->join('Navigations', 'Roles.NavigationId = Navigations.NavigationId', 'left outer');
@@ -31,9 +33,13 @@ class City_model extends CI_Model
 	}
 	public function get_page_where($size, $pageno, $params){
 		$this->db->limit($size, $pageno)
-		->select('catId,catName,catStatus');
+		->select('city.CityId,city.CName,city.CStatus,city.CCountryId,city.CStateId,state.SName,country.CName as country_name,district.DistrictId,district.DName')
+		->join('district','district.DistrictId=city.CDistrictId')
+		->join('state','state.StateId=city.CStateId')
+		->join('country','country.CId=city.CCountryId')
+		->order_by('CityId desc');
 		if(isset($params->search) && !empty($params->search)){
-				$this->db->where("catName LIKE '%$params->search%'");
+				$this->db->where("country.CName LIKE '%$params->search%' OR SName LIKE '%$params->search%' OR DName LIKE '%$params->search%' OR city.CName LIKE '%$params->search%'");
 //				$this->db->like("catName",$params->search);
 			}	
 
@@ -43,11 +49,14 @@ class City_model extends CI_Model
 	}
 	public function count_where($params)
 	{	
-// 		$this->db
+		$this->db
 // ->join('Navigations', 'Roles.NavigationId = Navigations.NavigationId', 'left outer');
+		->join('district','district.DistrictId=city.CDistrictId')
+		->join('state','state.StateId=city.CStateId')
+		->join('country','country.CId=city.CCountryId');
 
 		if(isset($params->search) && !empty($params->search)){
-				$this->db->where("catName LIKE '%$params->search%'");
+				$this->db->where("country.CName LIKE '%$params->search%' OR SName LIKE '%$params->search%' OR DName LIKE '%$params->search%' OR city.CName LIKE '%$params->search%'");
 				// $this->db->like("catId",$params->search);
 				// $this->db->like("catName",$params->search);
 			}	
@@ -56,18 +65,21 @@ class City_model extends CI_Model
     public function count_all()
 	{
 		return $this->db			
+			->join('district','district.DistrictId=city.CDistrictId')
+			->join('state','state.StateId=city.CStateId')
+			->join('country','country.CId=city.CCountryId')
 			->count_all_results($this->table);
 	}
     public function get($id)
     {
         return $this->db->where('CityId', $id)->get($this->table)->row();
 	}
-	public function getName($name,$state,$country,$id=null)
+	public function getName($name,$district,$state,$country,$id=null)
     {
 		if($id){
 			return $this->db->where('CName', $name)->where('CStateId',$state)->where('CCountryId',$country)->where('CityId !=',$id)->get($this->table)->row();
 		}
-        return $this->db->where('CName', $name)->where('CStateId',$state)->where('CCountryId',$country)->get($this->table)->row();
+        return $this->db->where('CName', $name)->where('CDistrictId',$district)->where('CStateId',$state)->where('CCountryId',$country)->get($this->table)->row();
     }
   
     public function add($data)

@@ -1,4 +1,10 @@
-<script src="static/appScript/OrderCtrl.js?fdddddd"></script>
+<script src="static/appScript/OrderCtrl.js"></script>
+<style type="text/css">
+ #mapNew {
+    height: 400px;
+    width: 100%;
+  }
+</style>
 
 <script>function getAuth(){ <?php echo $fx ?>;}</script>
 <?php if ($read): ?>
@@ -68,10 +74,11 @@
                         </td>
 
                         <td>
-                       <a href="<?php echo site_url(); ?>/#/viewItemOrder?&type=OrderItem&id={{item.OId}}" class="btn  btn-xs btn-warning"> <i class="os-icon os-icon-eye" style="margin-top: -3px;"></i></a>
+                         <a href="<?php echo site_url(); ?>/#/viewItemOrder?&type=OrderItem&id={{item.OId}}" class="ml-3 mb-2 btn  btn-xs btn-warning"> <i class="os-icon os-icon-eye" ></i></a>
 
-<!--                         <button type="button" class="ml-3 btn  btn-xs btn-warning" ng-click="viewItemDetail(item)"><i class="os-icon os-icon-eye" style="margin-top: -3px;"></i></button>
- -->                        <button type="button" class="btn  btn-xs btn-danger" ng-click="deleteItem(item.OrderId)"><i class="os-icon os-icon-ui-15" style="margin-top: -3px;"></i></button> </td>
+                         <a href="javascript:void(0)" ng-click="deleteItem(item.OrderId)" class=" btn  btn-xs btn-danger"> <i class="os-icon os-icon-ui-15"></i></a>
+
+                        </td>
 
 
                     </tr>
@@ -89,9 +96,12 @@
 
               </div>
 
-
 <div class="element-wrapper" ng-show="viewOrderItem">
      <!-- Datatables Content -->
+    <div class="element-wrapper">
+
+
+
                 <h6 class="element-header">
                     <a href="<?php echo base_url(); ?>index.php/#/Order" class="btn btn-sm btn-success"   >Back </a>
                   Manage Order Item
@@ -143,8 +153,11 @@
                         <td class="text-capitalize text-center">{{item.OdPrice * item.OdQty}}</td>
                         <td>
                             <a ng-show="item.OdStatus == '0'" class="badge badge-danger" href="">Queue</a>
-                            <a ng-show="item.OdStatus == '1'" class="badge badge-success" href="">Assigned</a>
-                            <a ng-show="item.OdStatus == '2'" class="badge badge-primary" href="">Completed</a>
+                            <a ng-show="item.OdStatus == '1'" class="badge badge-success" href="">Approved</a>
+                            <a ng-show="item.OdStatus == '2'" class="badge badge-success" href="">Transporter Assigned</a>
+                            <a ng-show="item.OdStatus == '3'" class="badge badge-primary" href="">Driver Assigned</a>
+                            <a ng-show="item.OdStatus == '4'" class="badge badge-primary" href="">Completed</a>
+                            <a ng-show="item.OdStatus == '5'" class="badge badge-primary" href="">Rejected</a>
                         </td>
 
                         <td>
@@ -166,10 +179,19 @@
                 </div>
 
               </div>
-
+</div>
 <div ng-show="viewOrderDetail" style="display:none">
+
+    <div class="element-wrapper" ng-if="isLoadingBar">
+          <div class="loading-customizer-btn">
+              <div class="icon-w ">
+                  <i class="os-icon os-icon-loader os-icon-spin"></i>
+                </div>
+              </div>
+    </div>
+
 <div class="row">
-  <div class="col-md-8 ">
+  <div class="col-md-8 "  ng-if="!isLoadingBar">
     <div class="element-wrapper">
     <div class="order-box ">
                     <a href="<?php echo base_url(); ?>index.php/#/Order" class="btn btn-sm btn-success"   >Back </a>
@@ -183,13 +205,15 @@
           <span>Placed On</span><strong>{{OrderDetail.Created_At}}</strong>
         </div>
       </div>
-      <div class="order-controls">
+      <div class="order-controls" ng-if="OrderDetail.OdStatus !=5 && OrderDetail.OdStatus !=4 && OrderDetail.OdStatus !=3">
         <form class="form-inline">
           <div class="form-group col-md-3">
             <label for="">Order Status</label>
             <select class="form-control form-control-sm" ng-model="item.Status" id="order_status">
-              <option value="0" > Pending </option>
+              <option value="null" selected> Select </option>
               <option value="1" ng-if="OrderDetail.OdStatus !=1"> Accept </option>
+              <option value="2" ng-if="OrderDetail.OdStatus !=2"> Assign </option>
+              <option value="5" ng-if="OrderDetail.OdStatus !=5"> Reject </option>
 <!--               <option value="2"> Reject </option>
               <option value="3"> Process</option>
               <option value="4"> Shipped</option>
@@ -199,17 +223,19 @@
 
           </div>
           <div class="form-group col-md-6">
-            <label for="" ng-if="OrderDetail.OdTransId ==0">Assign Transporter</label>
+            <label for="" ng-if="OrderDetail.OdTransId ==0 && item.Status==2">Assign Transporter</label>
             <!-- <select class="form-control form-control-sm text-capitalize">
               <option> Select Transporter </option>
               <option> Hareshbhai Hindocha </option>
               <option> Sitram Faundri</option>
             </select> -->
-            <select name="transporter" id="transporter" ng-model="item.Transporter"  class="form-control" ng-focus="hideErrorMsg('transporterError')" ng-if="OrderDetail.OdTransId ==0"  class="form-control">
+            <select name="transporter" id="transporter" ng-model="item.Transporter"  class="form-control" ng-focus="hideErrorMsg('transporterError')" ng-if="OrderDetail.OdTransId ==0 && item.Status==2"  class="form-control">
                 <option value="null">Select Transporter</option>
                 <option  ng-repeat="transporter in TransporterList" value="{{transporter.UserId}}" ng-selected="item.TransId == transporter.TransId">{{transporter.CompanyName}}</option>
 
             </select>
+            <span ng-show="TransporterError" ng-bind="TransporterMsg" class="help-block"></span>
+
           </div>
 <!--           <div class="form-group">
             <label for="">Payment Status</label><select class="form-control form-control-sm">
@@ -325,47 +351,48 @@
 
 }
   </style>
-<div class="col-md-4">
+<div class="col-md-4" ng-if="!isLoadingBar">
     <div class="element-wrapper">
         <h6 class="element-header"> Time Line</h6>
             <div class="element-box-tp">
                   <div class="activity-boxes-w" >
-                    <div class="activity-box-w" ng-if="OrderDetail.OdStatus ==4">
-                      <div class="activity-time"> January 18th,2020 </div>
+                    <div class="activity-box-w" ng-if="OrderDetail.OdStatus ==5">
+                      <div class="activity-time"> {{OrderDetail.RejectedAt}} </div>
+                      <div class="activity-box"> 
+                        <div class="activity-info">
+                            <strong class="activity-title">Order RejectedAt</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="activity-box-w" ng-if="OrderDetail.OdStatus >=4 && OrderDetail.OdStatus !=5">
+                      <div class="activity-time"> {{OrderDetail.CompletedAt}} </div>
                       <div class="activity-box"> 
                         <div class="activity-info">
                             <strong class="activity-title">Order Completed</strong>
                         </div>
                       </div>
                     </div>
-                    <div class="activity-box-w" ng-if="OrderDetail.OdStatus ==4">
-                      <div class="activity-time"> January 18th,2020 </div>
+<!--                     <div class="activity-box-w" ng-if="OrderDetail.OdStatus >=4">
+                      <div class="activity-time"> {{OrderDetail.CompletedAt}} </div>
                       <div class="activity-box"> 
                         <div class="activity-info">
                             <strong class="activity-title">Order Dispatch</strong>
                         </div>
                       </div>
                     </div>
-
-                    <div class="activity-box-w" ng-if="OrderDetail.OdStatus ==3">
-                      <div class="activity-time"> January 17th,2020 </div>
+ -->
+                    <div class="activity-box-w" ng-if="OrderDetail.OdStatus >=3 && OrderDetail.OdStatus !=5">
+                      <div class="activity-time"> {{OrderDetail.ProcessedAt}} </div>
                       <div class="activity-box"> 
                         <div class="activity-info">
-                            <strong class="activity-title">Vehicel and Driver Assigned</strong>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="activity-box-w" ng-if="OrderDetail.OdStatus ==2">
-                      <div class="activity-time"> January 17th,2020 </div>
-                      <div class="activity-box"> 
-                        <div class="activity-info">
-                            <strong class="activity-title">Order Placed</strong>
+                            <strong class="activity-title">Vehicle and Driver Assigned</strong>
                         </div>
                       </div>
                     </div>
 
-                    <div class="activity-box-w" ng-if="OrderDetail.OdStatus >=1">
-                      <div class="activity-time"> {{OrderDetail.CreatedAt}} </div>
+                    <div class="activity-box-w" ng-if="OrderDetail.OdStatus >=2 && OrderDetail.OdStatus !=5">
+                      <div class="activity-time"> {{OrderDetail.AssignedAt}} </div>
                       <div class="activity-box"> 
                         <div class="activity-info">
                             <strong class="activity-title">Transporter Assigned</strong>
@@ -373,8 +400,8 @@
                       </div>
                     </div>
 
-                    <div class="activity-box-w" ng-if="OrderDetail.OdStatus >=1">
-                      <div class="activity-time"> {{OrderDetail.CreatedAt}} </div>
+                    <div class="activity-box-w" ng-if="OrderDetail.OdStatus >=1 && OrderDetail.OdStatus !=5">
+                      <div class="activity-time"> {{OrderDetail.AcceptedAt}} </div>
                       <div class="activity-box"> 
                         <div class="activity-info">
                             <strong class="activity-title">Order Accepted</strong>
@@ -393,7 +420,7 @@
                 </div>
 </div>
 </div>
-<div class="row" style="width:100%">
+<div class="row" style="width:100%"  ng-if="!isLoadingBar">
   <div class="col-md-4">
     <div class="element-wrapper">
         <h6 class="element-header"> Customer Detail</h6>
@@ -429,14 +456,15 @@
             Delivery Address
           </div>
           <div class="sub-info-value" ng-if="OrderDetail.IsSameAddress == 1">
-           {{CustomerDetail.Address}} <br/>
+           {{CustomerDetail.Address.split('|')[0]}} <br/>
            {{CustomerDetail.Landmark}} <br/>
-           {{CustomerDetail.CityName}} ,{{CustomerDetail.SName}},{{CustomerDetail.CName}}
+           {{CustomerDetail.CityName}} ,{{CustomerDetail.DName}},{{CustomerDetail.CName}}
           </div>
           <div class="sub-info-value" ng-if="OrderDetail.IsSameAddress == 0">
-           {{OrderDetail.OAddress}} <br/>
+           {{OrderDetail.OAddress.split('|')[0]}} <br/>
+           {{OrderDetail.OAddress.split('|')[1]}} <br/>
            {{OrderDetail.OLandMark}} <br/>
-           {{OrderDetail.CityName}} ,{{OrderDetail.SName}},{{OrderDetail.CName}}
+           {{OrderDetail.CityName}},{{OrderDetail.DName}},{{OrderDetail.SName}},{{OrderDetail.CName}}
           </div>
         </div>
 <!--         <div class="ecc-sub-info-row">
@@ -517,20 +545,20 @@
         <div class="sub-info-value"><a href="#">{{TransporterDetail.MobileNumber}}</a></div>
       </div>
 
-<!--      <div class="ecc-sub-info-row">
+     <div class="ecc-sub-info-row" ng-if="OrderDetail.VNo!=null">
         <div class="sub-info-label">Assigned Vehicle No.</div>
-        <div class="sub-info-value"><a href="#">DEL-01-2011</a></div>
+        <div class="sub-info-value"><a href="#">{{OrderDetail.VNo}}</a></div>
       </div>
 
-      <div class="ecc-sub-info-row">
+      <div class="ecc-sub-info-row" ng-if="OrderDetail.DFirstName!=null">
         <div class="sub-info-label">Assigned Driver Name</div>
-        <div class="sub-info-value">HARESHBHAI ADIYECHA</div>
+        <div class="sub-info-value">{{OrderDetail.DFirstName}} {{OrderDetail.DLastName}}</div>
       </div>
-      <div class="ecc-sub-info-row">
+      <div class="ecc-sub-info-row" ng-if="OrderDetail.DMobileNumber!=null">
         <div class="sub-info-label">Assigned Driver Phone No.</div>
-        <div class="sub-info-value"><a href="#">9824453899</a> </div>
+        <div class="sub-info-value"><a href="#">{{OrderDetail.DMobileNumber}}</a> </div>
       </div>
- -->
+
     </div>
   </div>
 
@@ -539,27 +567,25 @@
 
 
 </div>
-<div class="col-md-8">
+</div>
+<div class="row" style="width:100%;">
+<div class="col-md-8" ng-show="!isLoadingBar">
 
-    <div class="element-wrapper">
+    <div class="element-wrapper" >
     &nbsp;
-<!--         <h6 class="element-header"> Order Tracking</h6>
+        <h6 class="element-header"> Order Tracking</h6>
         <div class="element-box">
-            <iframe width="100%"
-              height="350"
-              frameborder="0" style="border:0"
-              src="https://www.google.com/maps/embed/v1/place?key=AIzaSyADAWa_qgxsfFsx6s6onnad8VCrVCUjL7E
-                &q=Delhi,India" allowfullscreen>
-            </iframe>
+            <div id="mapNew"></div>
+
         </div>
- -->    </div>
+    </div>
 
 </div>
-<div class="col-md-4">
+<div class="col-md-4" ng-if="OrderDetail.IsReview ==0">
 
 <div class="element-wrapper">
     &nbsp;
-<!--     <h6 class="element-header"> Customer Review</h6>
+    <h6 class="element-header"> Customer Review</h6>
         <div class="element-box">
             <div class="">
             <i class="os-icon os-icon-star-full btn-success btn"></i>
@@ -570,8 +596,24 @@
             <br/>
             <h5>Very Nice Product </h5>
         </div>
- -->       
+       
 </div>
+<div class="element-wrapper">
+    &nbsp;
+    <h6 class="element-header"> Customer Review</h6>
+        <div class="element-box">
+            <div class="">
+            <i class="os-icon os-icon-star-full btn-success btn"></i>
+            <i class="os-icon os-icon-star-full btn-success btn"></i>
+            <i class="os-icon os-icon-star-full btn-success btn"></i>
+            <i class="os-icon os-icon-star-full btn-success btn"></i>
+            </div>
+            <br/>
+            <h5>Very Nice Product </h5>
+        </div>
+       
+</div>
+
 
 </div>
 

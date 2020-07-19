@@ -15,19 +15,15 @@ class Country_model extends CI_Model
 		$this->db
 			->limit($size, $pageno)
 			->select('country.CId,country.CName,country.CStatus');
-// 			->get('category')
-			
-// ->join('Navigations', 'Roles.NavigationId = Navigations.NavigationId', 'left outer');
 			
 		$data=$this->db->get($this->table)->result();
 		$total=$this->count_all();
 		return array("data"=>$data, "total"=>$total);
 	}
 	public function get_page_where($size, $pageno, $params){
-		$this->db->limit($size, $pageno)
-		->select('CId,catName,catStatus');
+		$this->db->limit($size, $pageno);
 		if(isset($params->search) && !empty($params->search)){
-				$this->db->where("catName LIKE '%$params->search%'");
+				$this->db->where("CName LIKE '%$params->search%'");
 //				$this->db->like("catName",$params->search);
 			}	
 
@@ -41,9 +37,7 @@ class Country_model extends CI_Model
 // ->join('Navigations', 'Roles.NavigationId = Navigations.NavigationId', 'left outer');
 
 		if(isset($params->search) && !empty($params->search)){
-				$this->db->where("catName LIKE '%$params->search%'");
-				// $this->db->like("CId",$params->search);
-				// $this->db->like("catName",$params->search);
+				$this->db->where("CName LIKE '%$params->search%'");
 			}	
 		return $this->db->count_all_results($this->table);
 	}

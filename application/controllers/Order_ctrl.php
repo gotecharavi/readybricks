@@ -150,11 +150,27 @@ public function get_Navigations_list(){
 		$data=$this->post();
 		print json_encode($this->model->get_page_where($data->size, $data->pageno, $data));
 	}	
+	public function get_order_detail_latest_location()
+	{	
+		$data=$this->post();
+		print json_encode($this->order_detail_model->get_order_detail_latest_location($data->id, $data->odid));
+	}	
 	public function changestatus()
 	{
 		$data=$this->post();
-		$newdata['OdTransId']=$data->transId;
 		$newdata['OdStatus']=$data->status;
+		$curdate= date('Y-m-d h:i:s');
+		if($data->status == 1){
+		$newdata['AcceptedAt'] = $curdate;
+		}
+		if(isset($data->transId) !=null && $data->status ==2){
+		$newdata['AssignedAt'] = $curdate;
+		$newdata['OdTransId']=$data->transId;
+
+		}
+		if($data->status ==5){
+		$newdata['RejectedAt'] = $curdate;
+		}
 		$this->order_detail_model->changestatus($data->id,$newdata);
 		$success=TRUE;
 		$msg='Status Changed successfully';				

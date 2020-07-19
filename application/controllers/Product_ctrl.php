@@ -66,7 +66,7 @@ class Product_ctrl extends base_ctrl {
 	public function changestatus()
 	{
 		$data=$this->post();
-		$newdata['catStatus']=$data->status;
+		$newdata['PStatus']=$data->status;
 		$this->model->changestatus($data->id,$newdata);
 		$success=TRUE;
 		$msg='Status Changed successfully';				

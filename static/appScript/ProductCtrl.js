@@ -5,7 +5,7 @@ function ProductCtrl($scope, $http){
 	$scope.datatype = "Add";
 	//Grid,dropdown data loading
 	loadGridData($scope.pagingOptions.pageSize,1);
-	loadData('get_manufacture_list',{}).success(function(data){$scope.ManufactureList=data; $scope.item.Manufacture=null;});
+	loadData('get_manufacture_list',{}).success(function(data){$scope.ManufactureList=data;});
 	//CRUD operation
 	$scope.saveItem=function(){	
 		var record={};
@@ -75,10 +75,39 @@ function ProductCtrl($scope, $http){
 	};
 	
 	//pager events
+	$scope.arrayTwo = function(c, m){
+	  var binary = [];
+	  var current = c,
+	        last = m,
+	        delta = 2,
+	        left = current - delta,
+	        right = current + delta + 1,
+	        range = [],
+	        rangeWithDots = [],
+	        l;
+
+	    for (let i = 1; i <= last; i++) {
+	        if (i == 1 || i == last || i >= left && i < right) {
+	            range.push(i);
+	        }
+	    }
+
+	    for (let i of range) {
+	        if (l) {
+	            if (i - l === 2) {
+	                rangeWithDots.push(l + 1);
+	            } else if (i - l !== 1) {
+	                rangeWithDots.push('...');
+	            }
+	        }
+	        rangeWithDots.push(i);
+	        l = i;
+	    }
+    return rangeWithDots;
+  }
 	
 	$scope.setPage = function(page){
-console.log(page);
-		$scope.pagingOptions.currentPage=page + 1;
+		$scope.pagingOptions.currentPage=page;
 	 	loadGridData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
 	}
 	//search
@@ -140,7 +169,7 @@ ProductCtrl.prototype.configureGrid=function($scope){
 	$scope.totalItems = 0;
     $scope.pagingOptions = {
         pageSizes: [10, 20, 30, 50, 100, 500, 1000],
-        pageSize: 30,
+        pageSize: 10,
         currentPage: 1
     };	
 	

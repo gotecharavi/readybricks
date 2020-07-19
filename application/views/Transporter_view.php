@@ -26,18 +26,18 @@
                         <thead>
                             <tr>
                                 <th>Name</th><th>Phone No</th><th>Email</th><th>Address</th><th>Status</th> 
-                                <th colspan="2">Action</th>
+                                <th >Action</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>Name</th><th>Phone No</th><th>Email</th><th>Address</th><th>Status</th> 
-                                <th colspan="2">Action</th>
+                                <th >Action</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             <tr ng-repeat="item in list">
-                                <td>{{item.FirstName}} {{item.LastName}}</td>
+                                <td>{{item.CompanyName}}</td>
                                 <td>{{item.MobileNumber}}</td>
                                 <td>{{item.Email}}</td>
                                 <td>{{item.Address}}</td>
@@ -45,19 +45,17 @@
                                   <lable ng-show="item.Status == '1'" class="badge badge-success">Active</lable>
                                   <lable ng-show="item.Status == '0'" class="badge badge-danger">Deactive</lable>
                                 </td>
-                                <td class="text-center">
+                                <td>
 
                                   <button type="button" class="ml-3 mb-2 btn  btn-xs btn-success" ng-show="item.Status == '0'" ng-click="changeItemStatus(item,1)">Active</button>
                                   <button type="button" class="ml-3 mb-2 btn  btn-xs btn-danger" ng-show="item.Status == '1'" ng-click="changeItemStatus(item,0)">Deactive</button>
-                                </td>
-                                <td>
 
-                                    <button class="ml-3 mb-2 btn btn-outline-info " ng-click="viewItem(item)" type="button">  <i class="os-icon os-icon-eye" style="margin-top: -3px;"></i></button>
+                                    <button class="ml-1 mb-2 btn btn-outline-info " ng-click="viewItem(item)" type="button">  <i class="os-icon os-icon-eye" style="margin-top: -3px;"></i></button>
                                     <button class="mb-2 btn btn-outline-info " ng-click="editItem(item)" type="button">  <i class="os-icon os-icon-ui-49" style="margin-top: -3px;"></i></button>
                                     <button class=" mb-2 btn btn-outline-danger " ng-click="deleteItem(item)" type="button"> <i class="os-icon os-icon-ui-15" style="margin-top: -3px;"></i></button>
                                 </td>
                             </tr>
-                            <tr ng-show="list.length ==0"><td colspan="10" class="text-center">Customer Not found</td></tr>
+                            <tr ng-show="list.length ==0"><td colspan="10" class="text-center">Transporter Not found</td></tr>
 
                             </tbody></table>
                   </div>
@@ -211,7 +209,8 @@
                <h6 class="element-header"><a href="" class="btn btn-sm btn-success"   ng-click="hideForm()">Back </a> Transporter Detail</h6>
             <div class="ecommerce-customer-info">
             <div class="ecommerce-customer-main-info">
-              <div class="ecc-avatar" style="background-image: url(<?php echo base_url(); ?>/static/img/avatar1.jpg)"></div>
+              <div class="ecc-avatar" ng-if="Image !=''" style="background-image: url(<?php echo base_url(); ?>/uploads/{{Image}})"></div>
+              <div class="ecc-avatar" ng-if="Image ==''" style="background-image: url(<?php echo base_url(); ?>/static/img/avatar1.jpg)"></div>
               <div class="ecc-name">
                {{Name}}
               </div>
@@ -221,14 +220,20 @@
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Email </div>
-                <div class="sub-info-value"><a href="#">{{Email}}</a><strong class="badge badge-danger" style="float: right;"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong></div>
+                <div class="sub-info-value"><a href="#">{{Email}}</a>
+                  <strong class="badge badge-danger" style="float: right;" ng-if="item.IsEmailVerify ==0">
+                      <i class="os-icon os-icon-close "></i>
+                  </strong>
+                  <strong class="badge badge-success" style="float: right;"><i class="os-icon os-icon-checkmark " ng-if="item.IsEmailVerify ==1"></i></strong>
               </div>
+            </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Phone Number</div>
                 <div class="sub-info-value"><a href="#">{{MobileNumber}}</a> 
-                  <strong class="badge badge-success" style="float: right;"  ng-If="IsMobileNumberVerify"><i class="os-icon os-icon-checkmark " ></i></strong>
-                  <strong class="badge badge-danger" style="float: right;" ng-If="!IsMobileNumberVerify"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong>
+                        <strong class="badge badge-danger" style="float: right;" ng-if="item.isMobileNumberVerify ==0"><i class="os-icon os-icon-close "></i>
+                        </strong>
+                        <strong class="badge badge-success" style="float: right;"><i class="os-icon os-icon-checkmark " ng-if="item.isMobileNumberVerify ==1"></i></strong>
 
                 </div>
               </div>

@@ -25,20 +25,21 @@
                         <table  width="100%" class="table table-lightborder">
                         <thead>
                             <tr>
-                                <th>Country Name</th><th>State Name</th><th>City Name</th>
-                                <th>Action</th>
+                                <th>Country Name</th><th>State Name</th><th>District Name</th><th>City Name</th>
+                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>Country Name</th><th>State Name</th><th>City Name</th>
-                                <th>Action</th>
+                                <th>Country Name</th><th>State Name</th><th>District Name</th><th>City Name</th>
+                                <th class="text-center">Action</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             <tr ng-repeat="item in list">
                                 <td>{{item.country_name}}</td>
                                 <td>{{item.SName}}</td>
+                                <td>{{item.DName}}</td>
                                 <td>{{item.CName}}</td>
                                 <td class="text-center">
                                     <button class="mb-2 btn btn-outline-info " ng-click="editItem(item)" type="button">  <i class="os-icon os-icon-ui-49" style="margin-top: -3px;"></i></button>
@@ -87,11 +88,20 @@
 
         <div class="form-group" ng-class="stateError ? 'has-error':''">
             <label>Select State</label>
-            <select name="state" id="state" ng-model="item.State"  class="form-control" ng-focus="hideErrorMsg('stateError')"  class="form-control">
+            <select name="state" id="state" ng-model="item.State"  class="form-control" ng-focus="hideErrorMsg('stateError')" ng-change="getDistrictList()"  class="form-control">
                 <option selected>Select State</option>
                 <option  ng-repeat="state in StateList" value="{{state.StateId}}" ng-selected="item.CStateId == state.StateId">{{state.SName}}</option>
             </select>
             <span ng-show="stateError" ng-bind="errors.stateMsg" class="help-block form-text text-muted form-control-feedback"></span>
+        </div>
+
+        <div class="form-group" ng-class="districtError ? 'has-error':''">
+            <label>Select District</label>
+            <select name="district" id="district" ng-model="item.District"  class="form-control" ng-focus="hideErrorMsg('districtError')"  class="form-control">
+                <option selected>Select District</option>
+                <option  ng-repeat="district in DistrictList" value="{{district.DistrictId}}" ng-selected="item.DistrictId == district.DistrictId">{{district.DName}}</option>
+            </select>
+            <span ng-show="districtError" ng-bind="errors.districtMsg" class="help-block form-text text-muted form-control-feedback"></span>
         </div>
 
         <div class="form-group" ng-class="nameError ? 'has-error':''">

@@ -33,6 +33,7 @@ class Manufacture_model extends CI_Model
 			->join('city','city.CityId=users.CityId','left')
 			->where('users.IsAccount','1')
 			->where('users.PUserId','0')
+			->order_by('users.UserId')
 		 	->group_by('users.UserId');
 		$data=$this->db->get($this->table)->result();
 		$total=$this->count_all();
@@ -45,6 +46,7 @@ class Manufacture_model extends CI_Model
 			->join('country','country.CId=users.CountryId','left')
 			->join('state','state.StateId=users.StateId','left')
 			->join('city','city.CityId=users.CityId','left')
+			->order_by('users.UserId')
 			->where('users.IsAccount','1');
 		if(isset($params->search) && !empty($params->search)){
 				$this->db->where("CompanyName LIKE '%$params->search%' OR Email LIKE '%$params->search%' OR Address LIKE '%$params->search%' OR MobileNumber LIKE '%$params->search%'  ");
@@ -86,10 +88,21 @@ class Manufacture_model extends CI_Model
     {
         return $this->db->where('MenuId', $id)->get($this->table)->row();
 	}
-	public function getId($id)
-    {
-        return $this->db->where('MenuId', $id)->get($this->table)->row();
-    }
+	public function getId($id){
+		$this->db
+			->select('city.CName as CityName, country.CName,state.SName,district.DName,users.*,manufacture.MenuId,manufacture.GSTIN,manufacture.VatNumber')
+			 ->join('users', 'users.UserId = manufacture.UserId', 'inner')
+			->join('country','country.CId=users.CountryId','left')
+			->join('state','state.StateId=users.StateId','left')
+			->join('district','district.DistrictId=users.DistrictId','left')
+			->join('city','city.CityId=users.CityId','left')
+			->where('users.IsAccount','1')
+			->where('users.PUserId','0')
+			->where('users.UserId', $id)
+		 	->group_by('users.UserId');
+		return $this->db->get($this->table)->row();
+	}
+
     public function getWithJoin($id)
     {
 		$data['trans1']=$this->db->select('users.*,country.CName,state.SName,manufacture.*,city.CName as CityName')->join('users','users.UserId=manufacture.UserId')

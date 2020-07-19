@@ -49,10 +49,12 @@ function CityCtrl($scope, $http){
 	};			
 	$scope.editItem=function(row){	
 		$scope.item=row;
+		console.log(row);
 		$scope.item.Country =row.CCountryId;
 		$scope.item.State = null;
 		$scope.item.Name = row.CName;
-		loadData('get_State_list',{'id': row.CCountryId}).success(function(data){$scope.StateList=data; $scope.item.State =row.StateId});
+		loadData('get_State_list',{'id': row.CCountryId}).success(function(data){$scope.StateList=data; $scope.item.State =row.CStateId});
+		loadData('get_District_list',{'cid': row.CCountryId,'sid': row.CStateId}).success(function(data){$scope.DistrictList=data; $scope.item.District =row.DistrictId});
 		
 		$scope.fgShowHide=false;				
 	};
@@ -91,6 +93,21 @@ function CityCtrl($scope, $http){
 			return false;
 		}
 	loadData('get_State_list',{'id': $scope.item.Country}).success(function(data){$scope.StateList=data; $scope.item.State =null});
+	};
+	$scope.getDistrictList=function(){
+			$scope.errors = {};
+	
+		if($scope.item.Country ==null || $scope.item.Country ==''){
+			$scope.countryError = true;
+			$scope.errors.countryMsg = 'Please select Country.';
+			return false;
+		}
+		if($scope.item.State ==null || $scope.item.State ==''){
+			$scope.stateError = true;
+			$scope.errors.stateMsg = 'Please select State.';
+			return false;
+		}
+	loadData('get_District_list',{'cid': $scope.item.Country,'sid': $scope.item.State}).success(function(data){$scope.DistrictList=data; $scope.item.District =null});
 	};
 	
 	//pager events

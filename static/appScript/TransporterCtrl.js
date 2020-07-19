@@ -113,6 +113,7 @@ function TransporterCtrl($scope, $http){
 		console.log(row);
 		$scope.item = row;
 		$scope.Email=row.Email;
+		$scope.Image=row.Image;
 		$scope.Name=row.FirstName+' '+row.LastName;
 		$scope.MobileNumber=row.MobileNumber;
 		$scope.IsMobileNumberVerify=row.IsMobileNumberVerify;
@@ -247,7 +248,7 @@ TransporterCtrl.prototype.configureGrid=function($scope){
 	$scope.totalItems = 0;
     $scope.pagingOptions = {
         pageSizes: [10, 20, 30, 50, 100, 500, 1000],
-        pageSize: 30,
+        pageSize: 10,
         currentPage: 1
     };	
 

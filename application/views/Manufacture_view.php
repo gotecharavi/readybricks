@@ -26,12 +26,12 @@
                         <thead>
                             <tr>
                                 <th>Company Name</th><th>Phone No</th><th>Email</th><th>Address</th><th>Status</th> 
-                                <th class="text-center" colspan="2">Action</th>
+                                <th class="text-center">Action</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>Company Name</th><th>Phone No</th><th>Email</th><th>Address</th><th>Status</th> <th class="text-center" colspan="2">Action</th> 
+                                <th>Company Name</th><th>Phone No</th><th>Email</th><th>Address</th><th>Status</th> <th class="text-center">Action</th> 
                             </tr>
                         </tfoot>
                         <tbody>
@@ -44,13 +44,11 @@
                                   <lable ng-show="item.Status == '1'" class="badge badge-success">Active</lable>
                                   <lable ng-show="item.Status == '0'" class="badge badge-danger">Deactive</lable>
                                 </td>
-                                <td class="text-center">
+                                <td >
 
                                   <button type="button" class="ml-3 mb-2 btn  btn-xs btn-success" ng-show="item.Status == '0'" ng-click="changeItemStatus(item.UserId,1)">Active</button>
                                   <button type="button" class="ml-3 mb-2 btn  btn-xs btn-danger" ng-show="item.Status == '1'" ng-click="changeItemStatus(item.UserId,0)">Deactive</button>
-                                </td>
-                                <td class="text-center">
-                                  <button class="ml-3 mb-2 btn btn-outline-info " ng-click="viewItem(item)" type="button">  
+                                  <button class="ml-1 mb-2 btn btn-outline-info " ng-click="viewItem(item)" type="button">  
                                     <i class="os-icon os-icon-eye" style="margin-top: -3px;"></i>
                                   </button>
                                   <button class="mb-2 btn btn-outline-info " ng-click="editItem(item)" type="button">  
@@ -61,7 +59,7 @@
                                   </button>
                                 </td>
                             </tr>
-                            <tr ng-show="list.length ==0"><td colspan="10" class="text-center">Customer Not found</td></tr>
+                            <tr ng-show="list.length ==0"><td colspan="10" class="text-center">Manufacture Not found</td></tr>
 
                             </tbody></table>
                   </div>
@@ -241,7 +239,14 @@
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Email </div>
-                <div class="sub-info-value"><a href="#">{{Email}}</a></div>
+                <div class="sub-info-value"><a href="#">{{Email}}</a>
+                  <strong class="badge badge-danger" style="float: right;" ng-if="item.IsEmailVerify ==0">
+                      <i class="os-icon os-icon-close "></i>
+                  </strong>
+                  <strong class="badge badge-success" style="float: right;"><i class="os-icon os-icon-checkmark " ng-if="item.IsEmailVerify ==1"></i></strong>
+
+
+                </div>
               </div>
 
               <div class="ecc-sub-info-row">

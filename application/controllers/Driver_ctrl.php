@@ -4,7 +4,7 @@ require_once('./application/libraries/base_ctrl.php');
 class Driver_ctrl extends base_ctrl {
 	function __construct() {
 		parent::__construct();		
-	    $this->load->model('customer_model','model');
+	    $this->load->model('driver_model','model');
 	}
 	public function index()
 	{
@@ -26,9 +26,15 @@ class Driver_ctrl extends base_ctrl {
 		$success=FALSE;
 		$msg= 'You are not permitted.';
 		$id=0;
-		$tmpdata['Name']=$data->Name;
-		$tmpdata['Status']='1';
-		if(!isset($data->CustId))
+		$tmpdata['DTransId']=$data->Transporter;
+		$tmpdata['DFirstName']=$data->DFirstName;
+		$tmpdata['DLastName']=$data->DLastName;
+		$tmpdata['DMobileNumber']=$data->DMobileNumber;
+		$tmpdata['Reason']='';
+		$tmpdata['IsAccount']=1;
+		$tmpdata['IsEdited']=0;
+		$tmpdata['DStatus']='1';
+		if(!isset($data->DId))
 		{
 			if($this->auth->IsInsert){
 				$id=$this->model->add($tmpdata);
@@ -39,7 +45,31 @@ class Driver_ctrl extends base_ctrl {
 		}
 		else{
 			if($this->auth->IsUpdate){
-				$id=$this->model->update($data->PumpId, $data);
+			if(isset($data->baseimage)){
+		 		$new_data=explode(",",$data->baseimage);
+		        $exten=explode('/',$new_data[0]);
+	            $exten1=explode(';',$exten[1]);
+	            $decoded=base64_decode($new_data[1]);
+	            $img_name='img_'.uniqid().'.'.$exten1[0];
+	            file_put_contents(APPPATH.'../uploads/'.$img_name,$decoded);
+	            $tmpdata['DLicenceImage']=$img_name;
+		        unset($data->baseimage);
+	        }
+			if(isset($data->baseimage1)){
+		 		$new_data=explode(",",$data->baseimage1);
+		        $exten=explode('/',$new_data[0]);
+	            $exten1=explode(';',$exten[1]);
+	            $decoded=base64_decode($new_data[1]);
+	            $img_name='img_'.uniqid().'.'.$exten1[0];
+	            file_put_contents(APPPATH.'../uploads/'.$img_name,$decoded);
+	            $tmpdata['DImage']=$img_name;
+		        unset($data->baseimage1);
+	        }
+	        if(isset($data->Password)){
+				$tmpdata['DPassword']=md5($data->Password);
+	        }
+
+				$id=$this->model->update($data->DId, $tmpdata);
 				$success=TRUE;
 				$msg='Data updated successfully';				
 			}		
@@ -61,7 +91,7 @@ class Driver_ctrl extends base_ctrl {
 	public function changestatus()
 	{
 		$data=$this->post();
-		$newdata['Status']=$data->status;
+		$newdata['DStatus']=$data->status;
 		$this->model->changestatus($data->id,$newdata);
 		$success=TRUE;
 		$msg='Status Changed successfully';				
@@ -71,6 +101,9 @@ class Driver_ctrl extends base_ctrl {
 
 	public function get_Navigations_list(){
 		print  json_encode($this->model->get_Navigations_list());
+	}
+	public function get_Transporter_list(){
+		print  json_encode($this->model->get_Transporter_list());
 	}
 	
 	public function get()

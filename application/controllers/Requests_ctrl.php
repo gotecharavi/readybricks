@@ -9,6 +9,8 @@ class Requests_ctrl extends base_ctrl {
 		$this->load->model('users_model','users_model');
 		$this->load->model('transporter_model','transporter_model');
 		$this->load->model('Product_model','product_model');
+		$this->load->model('Vehicle_model','vehicle_model');
+		$this->load->model('Driver_model','driver_model');
 		
 		
 	}
@@ -107,6 +109,75 @@ class Requests_ctrl extends base_ctrl {
 //		print json_encode( array("success"=>TRUE,"msg"=>$this->model->approve($data->id)));
 
 	}
+	public function approve_vehicle()
+	{
+		$data=$this->post();
+		if($data->viewtype == 'Edited'){
+
+				$getrows= $this->vehicle_model->getWithJoin($data->id);
+				$record = array('VRcNo'=>$getrows['vehicle_by_pid']->VRcNo,'VNo'=>$getrows['vehicle_by_pid']->VNo,'Reason'=>'','IsAccount'=>'1','IsEdited'=>0,'VStatus'=>'1');
+				if($getrows['vehicle_by_pid']->VRcImage !=""){
+					$record['VRcImage']=$getrows['vehicle_by_pid']->VRcImage;
+				}
+
+
+	             $updateUser=$this->vehicle_model->update($getrows['vehicle_by_id']->VId,$record);
+
+	            $deleteSubUser = $this->vehicle_model->delete($getrows['vehicle_by_pid']->VId);
+
+				print json_encode( array("success"=>TRUE,"msg"=>'Approved'));
+
+
+
+		}else{
+
+		print json_encode( array("success"=>TRUE,"msg"=>$this->vehicle_model->approve_vehicle($data->id)));
+		}
+
+	}
+	public function rejectSaveVehicle()
+	{
+		$data=$this->post();
+		print json_encode( array("success"=>TRUE,"msg"=>$this->vehicle_model->rejectSaveVehicle($data)));
+
+	}
+
+	public function approve_driver()
+	{
+		$data=$this->post();
+		if($data->viewtype == 'Edited'){
+
+				$getrows= $this->driver_model->getWithJoin($data->id);
+				$record= array('DFirstName'=>$getrows['driver_by_pid']->DFirstName,'DLastName'=>$getrows['driver_by_pid']->DLastName,'DMobileNumber'=>$getrows['driver_by_pid']->DMobileNumber,'DPassword'=>$getrows['driver_by_pid']->DPassword,'DAddress'=>$getrows['driver_by_pid']->DAddress,'DLicenceNo'=>$getrows['driver_by_pid']->DLicenceNo,'Reason'=>'','IsAccount'=>'1','IsEdited'=>0,'DStatus'=>'1');
+				if($getrows['driver_by_pid']->DImage !=""){
+					$record['DImage']=$getrows['driver_by_pid']->DImage;
+				}
+				if($getrows['driver_by_pid']->DLicenceImage !=""){
+					$record['DLicenceImage']=$getrows['driver_by_pid']->DLicenceImage;
+				}
+
+
+	             $updateUser=$this->driver_model->update($getrows['driver_by_id']->DId,$record);
+
+	            $deleteSubUser = $this->driver_model->delete($getrows['driver_by_pid']->DId);
+
+				print json_encode( array("success"=>TRUE,"msg"=>'Approved'));
+
+
+
+		}else{
+
+		print json_encode( array("success"=>TRUE,"msg"=>$this->driver_model->approve_driver($data->id)));
+		}
+
+	}
+	public function rejectSaveDriver()
+	{
+		$data=$this->post();
+		print json_encode( array("success"=>TRUE,"msg"=>$this->driver_model->rejectSaveDriver($data)));
+
+	}
+
 	public function approve_product()
 	{
 		$data=$this->post();
@@ -182,6 +253,18 @@ class Requests_ctrl extends base_ctrl {
 		$data=$this->post();
 
 		print json_encode($this->product_model->getWithJoin($data->PId));
+	}
+	public function getDriverById()
+	{	
+		$data=$this->post();
+
+		print json_encode($this->driver_model->getWithJoin($data->DId));
+	}
+	public function getVehicleById()
+	{	
+		$data=$this->post();
+
+		print json_encode($this->vehicle_model->getWithJoin($data->VId));
 	}
 	public function get_all()
 	{		

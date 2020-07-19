@@ -11,12 +11,13 @@ class Transporter_model extends CI_Model
 	public function get_page($size, $pageno){
 		$this->db
 			->limit($size, $pageno)
-			->select('city.CName as CityName,country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,transporter.TransId,users.FirstName,users.LastName,users.MobileNumber ,users.Address,users.PUserId,users.IsEdited,users.Email,users.Status,transporter.GSTIN,transporter.VatNumber')
+			->select('city.CName as CityName,country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,transporter.TransId,users.FirstName,users.LastName,users.Image,users.MobileNumber ,users.Address,users.PUserId,users.IsEdited,users.Email,users.Status,transporter.GSTIN,transporter.VatNumber')
 			->join('users','users.UserId=transporter.UserId')
 			->join('country','country.CId=users.CountryId','left')
 			->join('city','city.CityId=users.CityId','left')
 			->where('users.isAccount','1')
 			->where('users.PUserId','0')
+			->order_by('users.UserId')
 			->join('state','state.StateId=users.StateId','left');
 			
 		$data=$this->db->get($this->table)->result();
@@ -28,13 +29,14 @@ class Transporter_model extends CI_Model
 	}
 	public function get_page_where($size, $pageno, $params){
 		$this->db->limit($size, $pageno)
-			->select('city.CName as CityName,country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,transporter.TransId,users.FirstName,users.LastName,users.MobileNumber ,users.Address,users.PUserId,users.IsEdited,users.Email,users.Status,transporter.GSTIN,transporter.VatNumber')
+			->select('city.CName as CityName,country.CName,state.SName,users.UserId,users.CountryId,users.StateId,users.CityId,users.CompanyName,transporter.TransId,users.FirstName,users.LastName,users.Image,users.MobileNumber ,users.Address,users.PUserId,users.IsEdited,users.Email,users.Status,transporter.GSTIN,transporter.VatNumber')
 			->join('users','users.UserId=transporter.UserId')
 			->join('country','country.CId=users.CountryId','left')
 			->where('users.isAccount','1')
 			->join('state','state.StateId=users.StateId','left')
 			->join('city','city.CityId=users.CityId','left')
 			->where('users.isAccount','1')
+			->order_by('users.UserId')
 			->where('users.PUserId','0');
 		if(isset($params->search) && !empty($params->search)){
 				$this->db->where("CompanyName LIKE '%$params->search%' OR Email LIKE '%$params->search%' OR Address LIKE '%$params->search%' OR MobileNumber LIKE '%$params->search%'  ");

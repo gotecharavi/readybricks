@@ -26,9 +26,14 @@ class Vehicle_ctrl extends base_ctrl {
 		$success=FALSE;
 		$msg= 'You are not permitted.';
 		$id=0;
-		$tmpdata['Name']=$data->Name;
-		$tmpdata['Status']='1';
-		if(!isset($data->CustId))
+		$tmpdata['VTransId']=$data->Transporter;
+		$tmpdata['VRcNo']=$data->VRcNo;
+		$tmpdata['VNo']=$data->VNo;
+		$tmpdata['Reason']='';
+		$tmpdata['IsAccount']=1;
+		$tmpdata['IsEdited']=0;
+		$tmpdata['VStatus']='1';
+		if(!isset($data->VId))
 		{
 			if($this->auth->IsInsert){
 				$id=$this->model->add($tmpdata);
@@ -39,7 +44,19 @@ class Vehicle_ctrl extends base_ctrl {
 		}
 		else{
 			if($this->auth->IsUpdate){
-				$id=$this->model->update($data->PumpId, $data);
+
+			if(isset($data->baseimage)){
+		 		$new_data=explode(",",$data->baseimage);
+		        $exten=explode('/',$new_data[0]);
+	            $exten1=explode(';',$exten[1]);
+	            $decoded=base64_decode($new_data[1]);
+	            $img_name='img_'.uniqid().'.'.$exten1[0];
+	            file_put_contents(APPPATH.'../uploads/'.$img_name,$decoded);
+	            $tmpdata['VRcImage']=$img_name;
+		        unset($data->baseimage);
+	        }
+
+				$id=$this->model->update($data->VId, $tmpdata);
 				$success=TRUE;
 				$msg='Data updated successfully';				
 			}		
@@ -61,7 +78,7 @@ class Vehicle_ctrl extends base_ctrl {
 	public function changestatus()
 	{
 		$data=$this->post();
-		$newdata['Status']=$data->status;
+		$newdata['VStatus']=$data->status;
 		$this->model->changestatus($data->id,$newdata);
 		$success=TRUE;
 		$msg='Status Changed successfully';				
@@ -71,6 +88,9 @@ class Vehicle_ctrl extends base_ctrl {
 
 	public function get_Navigations_list(){
 		print  json_encode($this->model->get_Navigations_list());
+	}
+	public function get_Transporter_list(){
+		print  json_encode($this->model->get_Transporter_list());
 	}
 	
 	public function get()

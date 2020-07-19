@@ -81,6 +81,62 @@
  
 
 
+  <div aria-hidden="true" aria-labelledby="mySmallModalLabel" class="modal fade bd-vehicle-modal-sm" role="dialog" tabindex="-1">
+  <form action="#"  name="myFormd" method="post" enctype="multipart/form-data"  onsubmit="return false;">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+              Confirm
+            </h5>
+            <button aria-label="Close" class="close" data-dismiss="modal" id="openVehicleModalButton" type="button"><span aria-hidden="true"> &times;</span></button>
+          </div>
+          <div class="modal-body">
+            <!-- <form> -->
+              <div class="form-group">
+              <input class="form-control" name="reason" id="reason" ng-model="item.VID"   type="hidden">
+                <label for=""> Reason</label><input class="form-control" name="reason" id="reason" ng-model="item.Reason"  placeholder="Enter Reason" type="text">
+              </div>
+            <!-- </form> -->
+          </div>
+          <div class="modal-footer text-left">
+            <button class="btn btn-secondary"   data-dismiss="modal" type="button"> Close</button>
+            <button class="btn btn-primary" ng-click="rejectSaveVehicle(item)"  type="button"> Confirm</button>
+          </div>
+        </div>
+      </div>
+      </form>
+    </div>
+ 
+
+  <div aria-hidden="true" aria-labelledby="mySmallModalLabel" class="modal fade bd-driver-modal-sm" role="dialog" tabindex="-1">
+  <form action="#"  name="myFormd" method="post" enctype="multipart/form-data"  onsubmit="return false;">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+              Confirm
+            </h5>
+            <button aria-label="Close" class="close" data-dismiss="modal" id="openDriverModalButton" type="button"><span aria-hidden="true"> &times;</span></button>
+          </div>
+          <div class="modal-body">
+            <!-- <form> -->
+              <div class="form-group">
+              <input class="form-control" name="reason" id="reason" ng-model="item.DID"   type="hidden">
+                <label for=""> Reason</label><input class="form-control" name="reason" id="reason" ng-model="item.Reason"  placeholder="Enter Reason" type="text">
+              </div>
+            <!-- </form> -->
+          </div>
+          <div class="modal-footer text-left">
+            <button class="btn btn-secondary"   data-dismiss="modal" type="button"> Close</button>
+            <button class="btn btn-primary" ng-click="rejectSaveDriver(item)"  type="button"> Confirm</button>
+          </div>
+        </div>
+      </div>
+      </form>
+    </div>
+ 
+
 
 
 <div ng-show="!fgShowHide && !viewProfileDetail" style="display:none">
@@ -340,9 +396,15 @@
 
     </div>              
 </div>
-
 <div ng-show="viewProfileDetail == 'Vehicle'" style="display:none">
-    <div class="element-wrapper">
+    <div class="element-wrapper" ng-if="isLoadingBar">
+          <div class="loading-customizer-btn">
+              <div class="icon-w ">
+                  <i class="os-icon os-icon-loader os-icon-spin"></i>
+                </div>
+              </div>
+    </div>
+    <div class="element-wrapper" ng-if="!isLoadingBar">
 
       <div class="row m-b">
 
@@ -356,7 +418,7 @@
             <div class="ecommerce-customer-info">
             <div class="ecommerce-customer-main-info">
               <div class="ecc-name">
-               HARESHBHAI ADIYECHA
+               {{CompanyName}}
               </div>
             </div>
             <div class="ecommerce-customer-sub-info">
@@ -364,19 +426,27 @@
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">RC NO. </div>
-                <div class="sub-info-value"><a href="#">Abc123</a><strong class="badge badge-danger" style="float: right;" ng-if="viewtype=='Edited'"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong></div>
+                <div class="sub-info-value"><a href="#">{{VRcNo}}</a><strong class="badge badge-danger" style="float: right;" ng-if="viewtype=='Edited'"></strong></div>
               </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">VEHICLE NUMBER</div>
-                <div class="sub-info-value"><a href="#">DEL-01-2011</a> <strong class="badge badge-success" style="float: right;" ng-if="viewtype=='Edited'"><i class="os-icon os-icon-checkmark " ></i></strong></div>
+                <div class="sub-info-value"><a href="#">{{VNo}}</a> <strong class="badge badge-success" style="float: right;" ng-if="viewtype=='Edited'"></strong></div>
+              </div>
+              <div class="ecc-sub-info-row">
+                <div class="sub-info-label">RC Book</div>
+                <div class="sub-info-value" ng-if="VRcImage !=''"><img src="<?php echo base_url(); ?>uploads/{{VRcImage}}" width="120px"></div>
+              </div>
+              <div ng-if="IsAccount == 2" class="ecc-sub-info-row">
+                <div class="sub-info-label">Reason</div>
+                <div class="sub-info-value">{{Reason}}</div>
               </div>
 
 
             </div>   
             <div ng-if="viewtype=='New'">
-              <button   ng-click="saveItem()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
-              <button class="btn btn-warning cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+              <button   ng-click="approveVehicle()" class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
+              <button ng-click="rejectVehicle()"  ng-if="IsAccount != 2"  class="btn btn-warning cancel reject_vehicle_cancel" data-target=".bd-vehicle-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
             </div>
       </div>
         
@@ -386,7 +456,7 @@
             <div class="ecommerce-customer-info">
             <div class="ecommerce-customer-main-info">
               <div class="ecc-name">
-               HARESHBHAI ADIYECHA
+               {{CompanyName2}}
               </div>
             </div>
             <div class="ecommerce-customer-sub-info">
@@ -394,13 +464,22 @@
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">RC NO. </div>
-                <div class="sub-info-value"><a href="#">Cde123</a></div>
+                <div class="sub-info-value"><a href="#">{{VRcNo2}}</a></div>
               </div>
 
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">VEHICLE NUMBER</div>
-                <div class="sub-info-value"><a href="#">DEL-01-1555</a> </div>
+                <div class="sub-info-value"><a href="#">{{VNo2}}</a> </div>
               </div>
+              <div class="ecc-sub-info-row">
+                <div class="sub-info-label">RC Book</div>
+                <div class="sub-info-value" ng-if="VRcImage2 !=''"><img src="<?php echo base_url(); ?>uploads/{{VRcImage2}}" width="120px"></div>
+              </div>
+              <div ng-if="IsAccount == 2" class="ecc-sub-info-row">
+                <div class="sub-info-label">Reason</div>
+                <div class="sub-info-value">{{Reason}}</div>
+              </div>
+
 
 
             </div>
@@ -413,9 +492,11 @@
       <div class="row m-b" ng-if="viewtype=='Edited'">
           <div class="text-center col-md-12">
            <div class="ecommerce-customer-info">
-              <button   ng-click="saveItem()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
-              <button class="btn btn-warning cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
-            </div></div>
+              <button   ng-click="approveVehicle()" class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
+              <button ng-click="rejectVehicle()"  ng-if="IsAccount != 2"  class="btn btn-warning cancel reject_vehicle_cancel" data-target=".bd-vehicle-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+
+            </div>
+          </div>
     </div>
 
 
@@ -427,7 +508,14 @@
 
 
 <div ng-show="viewProfileDetail == 'Driver'" style="display:none">
-    <div class="element-wrapper">
+    <div class="element-wrapper" ng-if="isLoadingBar">
+          <div class="loading-customizer-btn">
+              <div class="icon-w ">
+                  <i class="os-icon os-icon-loader os-icon-spin"></i>
+                </div>
+              </div>
+    </div>
+    <div class="element-wrapper" ng-if="!isLoadingBar">
 
       <div class="row m-b">
 
@@ -440,32 +528,38 @@
            <div class="" ng-class="viewtype=='Edited' ? 'col-md-6' : 'col-md-8 offset-md-2'">
             <div class="ecommerce-customer-info">
             <div class="ecommerce-customer-main-info">
+              <div class="ecc-avatar" style="background-image: url(<?php echo base_url(); ?>/uploads/{{DImage}})" ng-if="DImage !=''"></div>
+
               <div class="ecc-name">
-               HARESHBHAI ADIYECHA
+               {{CompanyName}}
               </div>
             </div>
             <div class="ecommerce-customer-sub-info">
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Driver Name</div>
-                <div class="sub-info-value">HARESHBHAI ADIYECHA</div>
+                <div class="sub-info-value">{{DFirstName}} {{DLastName}}</div>
               </div>
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Phone No. </div>
-                <div class="sub-info-value"><a href="#">9824453899</a><strong class="badge badge-danger" style="float: right;" ng-if="viewtype=='Edited'"><i class="os-icon os-icon-close " style="font-weight: bold;"></i></strong></div>
+                <div class="sub-info-value"><a href="#">{{DMobileNumber}}</a></div>
+              </div>
+              <div class="ecc-sub-info-row">
+                <div class="sub-info-label">LICENSE Image</div>
+                <div class="sub-info-value" ng-if="DLicenceImage !=''"><img src="<?php echo base_url(); ?>uploads/{{DLicenceImage}}" width="120px"></div>
+              </div>
+              <div ng-if="IsAccount == 2" class="ecc-sub-info-row">
+                <div class="sub-info-label">Reason</div>
+                <div class="sub-info-value">{{Reason}}</div>
               </div>
 
-              <div class="ecc-sub-info-row">
-                <div class="sub-info-label">LICENSE NO</div>
-                <div class="sub-info-value"><a href="#">gj0310202020</a> <strong class="badge badge-success" style="float: right;" ng-if="viewtype=='Edited'"><i class="os-icon os-icon-checkmark " ></i></strong></div>
-              </div>
 
 
             </div>   
             <div ng-if="viewtype=='New'">
-              <button   ng-click="saveItem()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
-              <button class="btn btn-warning cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+              <button   ng-click="approveDriver()" class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
+              <button ng-click="rejectDriver()"  ng-if="IsAccount != 2"  class="btn btn-warning cancel reject_driver_cancel" data-target=".bd-driver-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
             </div>
       </div>
         
@@ -474,8 +568,9 @@
         <div class="col-md-6 " ng-if="viewtype=='Edited'">
             <div class="ecommerce-customer-info">
             <div class="ecommerce-customer-main-info">
+              <div class="ecc-avatar" style="background-image: url(<?php echo base_url(); ?>/uploads/{{DImage2}})" ng-if="DImage2 !=''"></div>
               <div class="ecc-name">
-               HARESHBHAI ADIYECHA
+               {{CompanyName2}}
               </div>
             </div>
             <div class="ecommerce-customer-sub-info">
@@ -483,18 +578,23 @@
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Driver Name</div>
-                <div class="sub-info-value">SITARAM FAUNDRI</div>
+                <div class="sub-info-value">{{DFirstName2}} {{DLastName2}}</div>
               </div>
               
               <div class="ecc-sub-info-row">
                 <div class="sub-info-label">Phone No. </div>
-                <div class="sub-info-value"><a href="#">8787878788</a></div>
+                <div class="sub-info-value"><a href="#">{{DMobileNumber2}}</a></div>
               </div>
 
               <div class="ecc-sub-info-row">
-                <div class="sub-info-label">LICENSE NO</div>
-                <div class="sub-info-value"><a href="#">gj0310201020</a> </div>
+                <div class="sub-info-label">LICENSE Image</div>
+                <div class="sub-info-value" ng-if="DLicenceImage2 !=''"><img src="<?php echo base_url(); ?>uploads/{{DLicenceImage2}}" width="120px"></div>
               </div>
+              <div ng-if="IsAccount == 2" class="ecc-sub-info-row">
+                <div class="sub-info-label">Reason</div>
+                <div class="sub-info-value">{{Reason}}</div>
+              </div>
+
 
 
             </div>
@@ -507,8 +607,8 @@
       <div class="row m-b" ng-if="viewtype=='Edited'">
           <div class="text-center col-md-12">
            <div class="ecommerce-customer-info">
-              <button   ng-click="saveItem()"  class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
-              <button class="btn btn-warning cancel" data-target=".bd-example-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
+              <button   ng-click="approveDriver()" class="btn btn-primary"><i class="fa fa-angle-right"></i> Approve</button>
+              <button ng-click="rejectDriver()"  ng-if="IsAccount != 2"  class="btn btn-warning cancel reject_driver_cancel" data-target=".bd-driver-modal-sm" data-toggle="modal"><i class="icon-close icon-white"></i>Reject</button>
             </div></div>
     </div>
 

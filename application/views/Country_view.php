@@ -43,7 +43,7 @@
                                     <button class="ml-0 mb-2 btn btn-outline-danger " ng-click="deleteItem(item)" type="button"> <i class="os-icon os-icon-ui-15" style="margin-top: -3px;"></i></button>
                                 </td>
                             </tr>
-                            <tr ng-show="list.length ==0"><td colspan="10" class="text-center">Customer Not found</td></tr>
+                            <tr ng-show="list.length ==0"><td colspan="10" class="text-center">Country Not found</td></tr>
 
                             </tbody></table>
                   </div>

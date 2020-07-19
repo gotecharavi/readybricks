@@ -22,6 +22,7 @@ angular.module('project', ['ui.bootstrap', 'ngGrid', 'jQuery-ui','ui.utils']).
     when('/Driver', { templateUrl:BASE_URL+'Driver_ctrl'}).   
     when('/Country', { templateUrl:BASE_URL+'Country_ctrl'}). 
     when('/State', { templateUrl:BASE_URL+'State_ctrl'}).   
+    when('/District', { templateUrl:BASE_URL+'District_ctrl'}).   
     when('/City', { templateUrl:BASE_URL+'City_ctrl'}).   
     when('/Products', { templateUrl:BASE_URL+'Product_ctrl'}).   
     when('/Stock', { templateUrl:BASE_URL+'Stock_ctrl'}).   
@@ -30,6 +31,8 @@ angular.module('project', ['ui.bootstrap', 'ngGrid', 'jQuery-ui','ui.utils']).
     when('/viewRequestProfile', { templateUrl:BASE_URL+'Requests_ctrl'}).   
     when('/viewItemOrder', { templateUrl:BASE_URL+'Order_ctrl'}).   
     when('/viewOrderDetail', { templateUrl:BASE_URL+'Order_ctrl'}).   
+    when('/Offers', { templateUrl:BASE_URL+'Offers_ctrl'}).   
+    when('/Notification', { templateUrl:BASE_URL+'Notification_ctrl'}).   
 
     when('/api', { templateUrl:BASE_URL+'Api'}).   
 

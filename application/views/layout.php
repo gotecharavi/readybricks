@@ -48,6 +48,9 @@
 
     <script src="<?php echo base_url(); ?>static/bower_components/jquery/dist/jquery.min.js"></script>
     <script src="static/js/angular.js"></script>
+<!--   <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-2DyR1P8Ct3NfvusOJjYl1HbPz6SbR3o"></script>
+ -->
     <script src="static/js/angular-resource.js"></script>
     <script src="static/js/ng-grid.js"></script>  
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-utils/0.1.1/angular-ui-utils.min.js"></script>
@@ -89,7 +92,7 @@
 
 
 
-<!--   <script src="<?php echo base_url(); ?>static/js/vendor/jquery.min.js"></script> -->
+<!--   <script src="<?php echo base_url(); ?>static/js/vendor/jquery.min.js"></script>
 <!-- 
    <script src="static/js/jquery-1.9.1.js"></script> -->
    

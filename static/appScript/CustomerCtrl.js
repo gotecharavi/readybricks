@@ -73,6 +73,7 @@ function CustomerCtrl($scope, $http){
 		$scope.item=row;
 		$scope.datatype='Edit';
 		$scope.item.VatNo=row.VatNumber;
+		$scope.item.Image=row.Image;
 		$scope.item.GstNo=row.GSTIN;
 		$scope.item.Name=row.FirstName+' '+row.LastName;
 		$scope.item.Address=row.Address;
@@ -90,6 +91,7 @@ function CustomerCtrl($scope, $http){
 		console.log(row);
 		$scope.item = row;
 		$scope.Email=row.Email;
+		$scope.Image=row.Image;
 		$scope.Name=row.FirstName+' '+row.LastName;
 		$scope.CompanyName=row.CompanyName;
 		$scope.MobileNumber=row.MobileNumber;
@@ -225,7 +227,7 @@ CustomerCtrl.prototype.configureGrid=function($scope){
 	$scope.totalItems = 0;
     $scope.pagingOptions = {
         pageSizes: [10, 20, 30, 50, 100, 500, 1000],
-        pageSize: 30,
+        pageSize: 10,
         currentPage: 1
     };	
 

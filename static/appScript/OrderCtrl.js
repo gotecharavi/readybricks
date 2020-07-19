@@ -1,5 +1,5 @@
 
-function OrderCtrl($scope, $http,$location){	
+function OrderCtrl($scope, $http,$location,$timeout){	
 	$scope.auth=getAuth();
 	this.init($scope);	
 	function getParam( name )
@@ -16,6 +16,63 @@ function OrderCtrl($scope, $http,$location){
 
 	var url = window.location.href; 
 
+ // $scope.initialize = function() {
+ // 	console.log('2222');
+ //          var map = new google.maps.Map(document.getElementById('map_div'), {
+ //             center: {lat: -34.397, lng: 150.644},
+ //             zoom: 8
+ //          });
+ //       }    
+       
+//       google.maps.event.addDomListener(window, 'load', $scope.initialize);  
+ $scope.initialize = function() {
+        $scope.mapOptions = {
+            zoom: 8,
+            center: new google.maps.LatLng(22.649907498685803, 88.36255413913727)
+        };
+        $scope.map = new google.maps.Map(document.getElementById('mapNew'), $scope.mapOptions);
+        console.log('2222');
+    }
+
+    $scope.loadScript = function() {
+
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyB-2DyR1P8Ct3NfvusOJjYl1HbPz6SbR3o&libraries=geometry';
+        document.body.appendChild(script);
+        // setTimeout(function() {
+        //     $scope.initialize();
+        // }, 500);
+    }
+	$scope.loadScript();
+	$scope.googlemap = function($luxian){
+	loadData('get_order_detail_latest_location',{id:$luxian[$luxian.length- 1].lid,odid:$scope.OrderDetail.OdId}).success(function(data){
+			console.log(data);
+			if(data){
+				$newlatlng =data;
+		        for (var i = 0; i < $newlatlng.length; i++) {
+		                path.push(new google.maps.LatLng(parseFloat($newlatlng[i].lat), parseFloat($newlatlng[i].lng)));
+		        }
+
+        var line = new google.maps.Polyline({
+            path: path,
+            strokeColor: "#FF0000",
+            strokeOpacity: 1.0,
+            strokeWeight: 3,
+            geodesic: true,
+            map: map
+        });
+
+
+
+			}
+
+	});
+
+
+
+	}
+
 	if(getParam('type')=='OrderItem'){
 		$scope.fgShowHide = false;
 		$scope.viewOrderItem = true;
@@ -25,15 +82,81 @@ function OrderCtrl($scope, $http,$location){
 		$scope.fgShowHide = false;
 		$scope.viewOrderItem = false;
 		$scope.viewOrderDetail = true;
+		$scope.isLoadingBar = true;
+
 		loadData('get_order_detail',{id:getParam('id')}).success(function(data){
 			console.log(data);
+			$scope.isLoadingBar = false;
 			$scope.OrderDetail=data.data;
+			$scope.item= {};
+			$scope.item.Transporter = null;
+			$scope.item.Status = null;
 			$scope.CustomerDetail=data.customer;
 			$scope.ManufactuerDetail=data.manufactur;
 			$scope.TransporterDetail=data.transporter;
 			$scope.TransporterList=data.alltransporters;
 			$("#order_status").val(data.data.OdStatus);
+
+			if(data.orderLocations[0] !=""){
+
+
+	$luxian = data.orderLocations ;
+	 var map = new google.maps.Map(document.getElementById("mapNew"), {
+            zoom: 13,
+            center: new google.maps.LatLng(data.orderLocations[0].lat, data.orderLocations[0].lng),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+
+	  var path = [];
+            var position = new google.maps.LatLng(data.orderLocations[0].lat, data.orderLocations[0].lng);
+            marker = new google.maps.Marker({
+                position: position,
+                map: map,
+                label: 'A',
+  //              title: markers[i][0]
+            });
+
+
+        for (var i = 0; i < $luxian.length; i++) {
+                path.push(new google.maps.LatLng(parseFloat($luxian[i].lat), parseFloat($luxian[i].lng)));
+        }
+
+        var position1 = new google.maps.LatLng($luxian[$luxian.length- 1].lat, $luxian[$luxian.length - 1].lng);
+        marker = new google.maps.Marker({
+            position: position1,
+            map: map,
+            label: 'B',
+//              title: markers[i][0]
+        });
+
+        var line = new google.maps.Polyline({
+            path: path,
+            strokeColor: "#FF0000",
+            strokeOpacity: 1.0,
+            strokeWeight: 3,
+            geodesic: true,
+            map: map
+        });
+
+        // get user live geo location
+
+
+
+
+
+	$timeout( function(){
+//		$scope.googlemap($luxian);
+
+	 }, 3000);
+
+
+
+      }
+
+
 		});
+
 	}else{
 		$scope.fgShowHide = true;
 		$scope.viewOrderItem = false;
@@ -43,6 +166,8 @@ function OrderCtrl($scope, $http,$location){
 	}
 
 //	loadData('get_all_user',{}).success(function(data){$scope.UserList=data;});
+
+	
 
 
 	//CRUD operation
@@ -115,20 +240,37 @@ function OrderCtrl($scope, $http,$location){
 		$scope.viewOrderDetail = true;
 	}
 	$scope.updateOrderStatus=function(){
-			var data = {'id':getParam( 'id' ),'transId':$("#transporter").val(),'status':$scope.item.Status};
-			console.log($scope.item);
-			if($scope.item.Status ==null){
+//		console.log($scope.item.Status);
+		$scope.StatusError = false;
+		$scope.TransporterError = false;
+		console.log($("#transporter").val());
+
+		if($("#order_status").val() ==""){
 				$scope.StatusError = true;
 				$scope.StatusMsg = "Select Status";
+				return false;
+		}
+
+
+			var data = {'id':getParam( 'id' ),'transId':$("#transporter").val(),'status':$("#order_status").val()};
+			console.log($scope.item);
+			if($scope.item.Status ==null || $scope.item.Status =="null"){
+				$scope.StatusError = true;
+				$scope.StatusMsg = "Select Status";
+				return false;
 			}
-			if($scope.item.Transporter ==null || $scope.item.Transporter ==""){
+			if(($scope.item.Transporter==null || $scope.item.Transporter =="null") && $("#order_status").val() =='2'){
 				$scope.TransporterError = true;
 				$scope.TransporterMsg = "Select Transporter";
+				return false;
 			}
 			loadData('changestatus',data).success(function(data){
 //				loadGridData($scope.pagingOptions.pageSize,$scope.pagingOptions.currentPage);
 		loadData('get_order_detail',{id:getParam('id')}).success(function(data){
 			console.log(data);
+			$scope.item= {};
+			$scope.item.Transporter = null;
+			$scope.item.Status = null;
 			$scope.OrderDetail=data.data;
 			$scope.CustomerDetail=data.customer;
 			$scope.ManufactuerDetail=data.manufactur;
@@ -303,7 +445,7 @@ OrderCtrl.prototype.configureGrid=function($scope){
 	$scope.totalItems = 0;
     $scope.pagingOptions = {
         pageSizes: [10, 20, 30, 50, 100, 500, 1000],
-        pageSize: 30,
+        pageSize: 10,
         currentPage: 1
     };	
 

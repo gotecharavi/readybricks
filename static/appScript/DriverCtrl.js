@@ -5,23 +5,46 @@ function DriverCtrl($scope, $http){
 	
 	//Grid,dropdown data loading
 	loadGridData($scope.pagingOptions.pageSize,1);
+	loadData('get_Transporter_list',{}).success(function(data){$scope.TransporterList=data;});
+	
 	
 	//CRUD operation
 	$scope.saveItem=function(){	
 		var record={};
 		$scope.errors = {};
 		$scope.nameError =false;
+		$scope.firstnameError = false;
+		$scope.lastnameError = false;
+		$scope.phonenoError = false;
+		$scope.addressError = false;
+		$scope.dlicenceError = false;
 		console.log($scope.item);
 		if($scope.item==null || $scope.item=="" ){
-            $scope.nameError = true;
-            $scope.errors.nameMsg = 'Please enter type name.';
+            $scope.transporterError = true;
+            $scope.errors.transporterMsg = 'Please select transporter.';
             return false;
         }
-		if($scope.item.Name==null || $scope.item.Name=="" ){
-            $scope.nameError = true;
-            $scope.errors.nameMsg = 'Please enter type name.';
+		if($scope.item.Transporter==null || $scope.item.Transporter=="" ){
+            $scope.transporterError = true;
+            $scope.errors.transporterMsg = 'Please select transporter.';
             return false;
         }
+		if($scope.item.DFirstName==null || $scope.item.DFirstName=="" ){
+            $scope.firstnameError = true;
+            $scope.errors.firstnameMsg = 'Please enter firstname.';
+            return false;
+        }
+		if($scope.item.DLastName==null || $scope.item.DLastName=="" ){
+            $scope.lastnameError = true;
+            $scope.errors.lastnameMsg = 'Please enter lastname.';
+            return false;
+        }
+		if($scope.item.DMobileNumber==null || $scope.item.DMobileNumber=="" ){
+            $scope.phonenoError = true;
+            $scope.errors.phonenoMsg = 'Please enter mobile number.';
+            return false;
+        }
+
 		angular.extend(record,$scope.item);
 				//record.name=undefined;
 
@@ -37,6 +60,8 @@ function DriverCtrl($scope, $http){
 				loadGridData($scope.pagingOptions.pageSize, $scope.pagingOptions.currentPage);
 				$scope.fgShowHide=true;			
 				$scope.item=null;
+				$("#baseimagename").attr('src','');
+				$("#baseimagename1").attr('src','');
 			}
 		});
 	};			
@@ -44,10 +69,37 @@ function DriverCtrl($scope, $http){
 		console.log(row.entity);
 		$scope.item=row;
 		$scope.datatype='Edit';
-		console.log($scope.item);
-		
+		$scope.item.Transporter = row.DTransId;
+		$("#baseimagename1").attr('src','uploads/'+row.DImage);
+		$("#baseimagename").attr('src','uploads/'+row.DLicenceImage);
+			
 		$scope.fgShowHide=false;				
 	};
+
+	$scope.getfilename=function(file){
+
+ 		var reader = new FileReader();
+		reader.readAsDataURL(file.files[0]);
+		reader.onload = function (e) {
+			var data = e.target.result.replace(/^data:image\/\w+;base64,/, "");
+			$scope.item.baseimage =  e.target.result;//data;
+			$("#baseimagename").attr('src',$scope.item.baseimage);
+		}
+
+	}
+
+	$scope.getfilename1=function(file){
+
+ 		var reader = new FileReader();
+		reader.readAsDataURL(file.files[0]);
+		reader.onload = function (e) {
+			var data = e.target.result.replace(/^data:image\/\w+;base64,/, "");
+			$scope.item.baseimage1 =  e.target.result;//data;
+			$("#baseimagename1").attr('src',$scope.item.baseimage1);
+		}
+
+	}
+
 	$scope.deleteItem=function(row){
 		if(confirm('Delete sure!')){
 			var id = {'id':row};
@@ -157,7 +209,6 @@ function DriverCtrl($scope, $http){
 	$scope.item=null;
 	$scope.list = null;
 	$scope.fgShowHide=true;
-	
 	$scope.searchDialog=false;
 	$scope.DepartmentList=null;	
 	
@@ -181,6 +232,7 @@ DriverCtrl.prototype.searchPopup=function($scope){
 	$scope.showForm=function(){$scope.fgShowHide=false; $scope.item=null;};
 	
 	$scope.hideForm=function(){$scope.fgShowHide=true; $scope.datatype='Add';};
+	
 	$scope.openSearchDialog=function(){		
 		$scope.searchDialog=true;
 	};

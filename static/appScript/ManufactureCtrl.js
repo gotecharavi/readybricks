@@ -169,6 +169,7 @@ console.log($scope.item);
 		$scope.item = row;
 		$scope.Email=row.Email;
 		$scope.CompanyName=row.CompanyName;
+		$scope.Image=row.Image;
 		$scope.MobileNumber=row.MobileNumber;
 		$scope.IsMobileNumberVerify=row.IsMobileNumberVerify;
 		$scope.Address=row.Address;
@@ -320,7 +321,7 @@ ManufactureCtrl.prototype.configureGrid=function($scope){
 	$scope.totalItems = 0;
     $scope.pagingOptions = {
         pageSizes: [10, 20, 30, 50, 100, 500, 1000],
-        pageSize: 30,
+        pageSize: 10,
         currentPage: 1
     };	
 

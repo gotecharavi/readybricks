@@ -68,55 +68,60 @@ class Order_model extends CI_Model
 
 	public function get_page($size, $pageno,$filter){
 		$where ="";
-	// 	if($filter->search !=null){
-	// 		$where = " And  orders.OrderId = '".$filter->search."' ";
-	// 	}
-	//  $query= $this->db->query("SELECT orders.OrderId,CustId,customer.Name as CustomerName,SerialNo,cPersonName,PhoneNo,orders.Address,orders.PaymentCollection,orders.Signature,orders.BuildingType,orders.PaymentMode,orders.DateTime,orders.OrderBy,orders.Remark,orders.OrderType,orders.Status,pump.PumpId,pump.Name as PumpName, GROUP_CONCAT(models.Name SEPARATOR ',') as ModelName,GROUP_CONCAT(concat(users.FirstName, ' ', users.LastName) SEPARATOR ',') as UserFullName FROM orders INNER JOIN  customer ON OCustId = CustId INNER JOIN pump ON pump.PumpId = orders.PumpId INNER JOIN models INNER JOIN users   WHERE  FIND_IN_SET(models.ModelId,orders.ModelId)<> 0 AND FIND_IN_SET(users.UserId,orders.OUserId)<> 0   AND OrderType= 'Installation' $where GROUP BY orders.OrderId  ORDER BY orders.OrderId DESC LIMIT $pageno,$size ");
-	 	
-
-	// 	$data = $query->result();
-	$this->db
+		$this->db
 		 ->limit($size, $pageno)
-		->select('orders.OId,orders.Created_At,users.FirstName,users.LastName,users.MobileNumber,count(orders_detail.OdProductId) as TotalProduct,sum(orders_detail.OdQty) as TotalQty,orders.OTotal,orders.OStatus')
+		 ->select('orders.OId,orders.Created_At,users.FirstName,users.LastName,users.MobileNumber,count(orders_detail.OdProductId) as TotalProduct,sum(orders_detail.OdQty) as TotalQty,orders.OTotal,orders.OStatus')
 		 ->join('users', 'users.UserId = orders.OUserId')
 		 ->join('orders_detail', 'orders_detail.OdOrderId = orders.OId')
+		 ->order_by('orders.OId desc')
 		 ->group_by('orders.OId');
 
 		$data=$this->db->get($this->table)->result();
-		
-		$total=count($data);
+		$total=$this->count_all();
 		return array("data"=>$data, "total"=>$total);
 	}
 	public function get_page_where($size, $pageno, $params){
+		$this->db->limit($size, $pageno)
+		 ->select('orders.OId,orders.Created_At,users.FirstName,users.LastName,users.MobileNumber,count(orders_detail.OdProductId) as TotalProduct,sum(orders_detail.OdQty) as TotalQty,orders.OTotal,orders.OStatus')
+		 ->join('users', 'users.UserId = orders.OUserId')
+		 ->join('orders_detail', 'orders_detail.OdOrderId = orders.OId')
+		 ->order_by('orders.OId desc')
+		 ->group_by('orders.OId');
+		if(isset($params->search) && !empty($params->search)){
+				$this->db->where("CONCAT(users.FirstName, ' ', users.LastName)  LIKE '%$params->search%' OR MobileNumber LIKE '%$params->search%' ");
 
+		}	
 
-	 $query= $this->db->query("SELECT orders.OrderId,CustId,customer.Name as CustomerName,SerialNo,cPersonName,PhoneNo,orders.Address,orders.PaymentCollection,orders.Signature,orders.BuildingType,orders.PaymentMode,orders.DateTime,orders.OrderBy,orders.Remark,orders.OrderType,orders.Status,pump.PumpId,pump.Name as PumpName, GROUP_CONCAT(models.Name SEPARATOR ',') as ModelName,GROUP_CONCAT(concat(users.FirstName, ' ', users.LastName) SEPARATOR ',') as UserFullName FROM orders INNER JOIN  customer ON OCustId = CustId INNER JOIN pump ON pump.PumpId = orders.PumpId INNER JOIN models INNER JOIN users   WHERE  FIND_IN_SET(models.ModelId,orders.ModelId)<> 0 AND FIND_IN_SET(users.UserId,orders.OUserId)<> 0   AND OrderType= 'Installation' AND (orders.OrderId LIKE '%$params->search%' OR customer.Name LIKE '%$params->search%' OR customer.Name LIKE '%$params->search%' OR OrderBy LIKE '%$params->search%' OR SerialNo LIKE '%$params->search%' OR orders.Address LIKE '%$params->search%' OR orders.PaymentCollection LIKE '%$params->search%'  OR orders.Address LIKE '%$params->search%' OR PhoneNo LIKE '%$params->search%' OR orders.BuildingType LIKE '%$params->search%' OR orders.PaymentMode LIKE '%$params->search%' OR orders.DateTime LIKE '%$params->search%')          
-
-	 	GROUP BY orders.OrderId  ORDER BY orders.OrderId DESC LIMIT $pageno,$size
-
-
-");
-		$data = $query->result();
-		$total=count($this->count_where($params));
+		$data=$this->db->get($this->table)->result();
+		$total=$this->count_where($params);
 		return array("data"=>$data, "total"=>$total);
 	}
 	public function count_where($params)
 	{	
-		if(isset($params->search) && !empty($params->search)){
-	return	$query= $this->db->query("SELECT count(orders.OrderId) as total  FROM orders INNER JOIN  customer ON OCustId = CustId INNER JOIN pump ON pump.PumpId = orders.PumpId INNER JOIN models INNER JOIN users   WHERE  FIND_IN_SET(models.ModelId,orders.ModelId)<> 0 AND FIND_IN_SET(users.UserId,orders.OUserId)<> 0   AND OrderType= 'Installation' AND (orders.OrderId LIKE '%$params->search%' OR customer.Name LIKE '%$params->search%' OR customer.Name LIKE '%$params->search%' OR OrderBy LIKE '%$params->search%' OR SerialNo LIKE '%$params->search%' OR orders.Address LIKE '%$params->search%' OR orders.PaymentCollection LIKE '%$params->search%'  OR orders.Address LIKE '%$params->search%' OR PhoneNo LIKE '%$params->search%' OR orders.BuildingType LIKE '%$params->search%' OR orders.PaymentMode LIKE '%$params->search%' OR orders.DateTime LIKE '%$params->search%')          
+        $this->db
+		 ->join('users', 'users.UserId = orders.OUserId')
+		 ->join('orders_detail', 'orders_detail.OdOrderId = orders.OId')
+		 ->group_by('orders.OId');
 
-	 	GROUP BY orders.OrderId  ORDER BY orders.OrderId DESC")->result();
+		if(isset($params->search) && !empty($params->search)){
+				$this->db->where("CONCAT(users.FirstName, ' ', users.LastName)  LIKE '%$params->search%' OR MobileNumber LIKE '%$params->search%' ");
+			
 		}	
 
+		return $this->db->count_all_results($this->table);
+
 	}
-    public function count_all($filter)
+    public function count_all($filter ="")
 	{
 		$where= "";
-		if($filter->search !=null){
-			$where = " And  orders.OrderId = '".$filter->search."' ";
-		}
-		return $this->db->query("SELECT count(orders.OrderId) as total FROM orders INNER JOIN  customer ON OCustId = CustId INNER JOIN pump ON pump.PumpId = orders.PumpId INNER JOIN models INNER JOIN users   WHERE  FIND_IN_SET(models.ModelId,orders.ModelId)<> 0 AND FIND_IN_SET(users.UserId,orders.OUserId)<> 0   AND OrderType= 'Installation' $where GROUP BY orders.OrderId  ORDER BY orders.OrderId DESC")
-			->result();
+		// if($filter->search !=null){
+		// 	$where = " And  orders.OrderId = '".$filter->search."' ";
+		// }
+		return $this->db			
+			 ->join('users', 'users.UserId = orders.OUserId')
+			 ->join('orders_detail', 'orders_detail.OdOrderId = orders.OId')
+			 ->group_by('orders.OId')
+			->get($this->table)->num_rows();
 
 	}
 
